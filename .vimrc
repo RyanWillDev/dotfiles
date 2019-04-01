@@ -4,21 +4,17 @@ set nocompatible
 " Helps force plugins to load correctly when it is turned back on below
 filetype off
 
-" Plugins
-call plug#begin('~/.local/share/nvim/site')
+"""""""""""""
+"  PLUGINS  "
+"""""""""""""
+
+call plug#begin('~/.local/share/nvim/site/plugged')
 " Colorschemes
 Plug 'joshdick/onedark.vim'
 
 Plug 'w0rp/ale'
 
-" Auto Complete
- if has('nvim')
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-else
-  Plug 'Shougo/deoplete.nvim'
-  Plug 'roxma/nvim-yarp'
-  Plug 'roxma/vim-hug-neovim-rpc'
-endif
+Plug 'vimwiki/vimwiki'
 
 Plug 'jiangmiao/auto-pairs'
 Plug 'tpope/vim-endwise'
@@ -26,9 +22,6 @@ Plug 'airblade/vim-gitgutter'
 
 " Elixir
 Plug 'elixir-lang/vim-elixir'
-Plug 'slashmili/alchemist.vim'
-" Crashes vim
-" Plug 'mhinz/vim-mix-format'
 
 " JavaScript
 Plug 'pangloss/vim-javascript'
@@ -38,43 +31,89 @@ Plug 'HerringtonDarkholme/yats.vim'
 Plug 'mhartington/nvim-typescript', {'do': './install.sh'}
 call plug#end()
 
+"""""""""""""""""
+"  END PLUGINS  "
+"""""""""""""""""
+
 """"""""""""""""""
-" Plugins Config
+"    VIM WIKI    "
 """"""""""""""""""
 
-" Ale
+let g:vimwiki_list = [{'path': '~/notes/',
+                       \ 'syntax': 'markdown', 'ext': '.md'},]
+
+""""""""""""""""""
+"  END VIM WIKI  "
+""""""""""""""""""
+
+""""""""""""""""""
+"      ALE       "
+""""""""""""""""""
+
+let g:ale_completion_enabled = 1
 let g:ale_lint_on_save = 1
 let g:ale_fix_on_save = 1 
 let g:ale_fixers = {
       \'javascript': ['prettier'],
+      \'markdown': ['prettier'],
+      \'css': ['prettier'],
+      \'elixir': ['mix_format'],
       \}
+let g:ale_elixir_elixir_ls_release='/Users/ryan/elixir-ls/rel'
+let g:ale_linters = {'elixir': ['elixir-ls', 'credo']}
 
-" GitGutter
+""""""""""""""""""
+"     END ALE    "
+""""""""""""""""""
 
-" Update gutter faster
+""""""""""""""""""
+"    GITGUTTER   "
+""""""""""""""""""
+
 set updatetime=300
 
-" Auto Complete
-let g:deoplete#enable_at_startup = 1
-let g:python3_host_prog = '/usr/local/bin/python3'
+""""""""""""""""""
+" END GITGUTTER  "
+""""""""""""""""""
 
-" Elixir
-" Crashes vim
-" let g:mix_format_on_save = 1
-autocmd BufWritePost *.exs,*.ex silent :!mix format %
+""""""""""""""""""
+"  KEY MAPPINGS  "
+""""""""""""""""""
 
-""""""""""""""""""""
-" End Plugins Config
-""""""""""""""""""""
+let mapleader = ","
+
+inoremap jk <esc>
+
+" Move up/down editor lines
+nnoremap j gj
+nnoremap k gk
+
+" Searching
+nnoremap / /\v
+vnoremap / /\v
+map <leader><space> :let @/=''<cr> " clear search
+
+" Remap help key.
+inoremap <F1> <ESC>:set invfullscreen<CR>a
+nnoremap <F1> :set invfullscreen<CR>
+vnoremap <F1> :set invfullscreen<CR>
+
+" Formatting
+map <leader>q gqip
+
+""""""""""""""""""""""
+"  END KEY MAPPINGS  "
+""""""""""""""""""""""
+
+""""""""""""""""""
+"     CONIFG     "
+""""""""""""""""""
 
 " Turn on syntax highlighting
 syntax on
 
 " For plugins to load correctly
 filetype plugin indent on
-
-" Set leader key
-let mapleader = ","
 
 " Security
 set modelines=0
@@ -111,10 +150,6 @@ set backspace=indent,eol,start
 set matchpairs+=<:> " use % to jump between pairs
 runtime! macros/matchit.vim
 
-" Move up/down editor lines
-nnoremap j gj
-nnoremap k gk
-
 " Allow hidden buffers
 set hidden
 
@@ -128,25 +163,11 @@ set laststatus=2
 set showmode
 set showcmd
 
-" Searching
-nnoremap / /\v
-vnoremap / /\v
 set hlsearch
 set incsearch
 set ignorecase
 set smartcase
 set showmatch
-map <leader><space> :let @/=''<cr> " clear search
-
-" Remap help key.
-inoremap <F1> <ESC>:set invfullscreen<CR>a
-nnoremap <F1> :set invfullscreen<CR>
-vnoremap <F1> :set invfullscreen<CR>
-
-" Textmate holdouts
-
-" Formatting
-map <leader>q gqip
 
 " Visualize tabs and newlines
 set listchars=tab:▸\ ,eol:¬
@@ -155,8 +176,6 @@ set listchars=tab:▸\ ,eol:¬
 " Or use your leader key + l to toggle on/off
 map <leader>l :set list!<CR> " Toggle tabs and EOL
 
-" Map jk to esc in insert
-inoremap jk <esc>
 
 " Color scheme (terminal)
 set t_Co=256 
@@ -167,3 +186,8 @@ let g:solarized_termtrans=1
 " https://raw.github.com/altercation/vim-colors-solarized/master/colors/solarized.vim
 " in ~/.vim/colors/ and uncomment:
 colorscheme onedark 
+
+""""""""""""""""""
+"   END CONFIG   "
+""""""""""""""""""
+
