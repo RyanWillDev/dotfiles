@@ -9,6 +9,8 @@ call plug#begin('~/.local/share/nvim/site')
 " Colorschemes
 Plug 'joshdick/onedark.vim'
 
+Plug 'w0rp/ale'
+
 " Auto Complete
  if has('nvim')
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
@@ -25,14 +27,30 @@ Plug 'airblade/vim-gitgutter'
 " Elixir
 Plug 'elixir-lang/vim-elixir'
 Plug 'slashmili/alchemist.vim'
+" Crashes vim
+" Plug 'mhinz/vim-mix-format'
 
 " JavaScript
 Plug 'pangloss/vim-javascript'
+
+" TypeScript
+Plug 'HerringtonDarkholme/yats.vim'
+Plug 'mhartington/nvim-typescript', {'do': './install.sh'}
 call plug#end()
 
-"Plugin Config
+""""""""""""""""""
+" Plugins Config
+""""""""""""""""""
+
+" Ale
+let g:ale_lint_on_save = 1
+let g:ale_fix_on_save = 1 
+let g:ale_fixers = {
+      \'javascript': ['prettier'],
+      \}
 
 " GitGutter
+
 " Update gutter faster
 set updatetime=300
 
@@ -40,10 +58,14 @@ set updatetime=300
 let g:deoplete#enable_at_startup = 1
 let g:python3_host_prog = '/usr/local/bin/python3'
 
-" Languages
-"
 " Elixir
+" Crashes vim
+" let g:mix_format_on_save = 1
 autocmd BufWritePost *.exs,*.ex silent :!mix format %
+
+""""""""""""""""""""
+" End Plugins Config
+""""""""""""""""""""
 
 " Turn on syntax highlighting
 syntax on
