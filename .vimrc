@@ -23,6 +23,9 @@ Plug 'airblade/vim-gitgutter'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 
+" Ruby
+Plug 'vim-ruby/vim-ruby'
+
 " Elixir
 Plug 'elixir-lang/vim-elixir'
 
