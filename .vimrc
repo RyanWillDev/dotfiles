@@ -16,12 +16,12 @@ Plug 'AlessandroYorba/Sierra'
 
 Plug 'scrooloose/nerdtree'
 Plug 'w0rp/ale'
-
 Plug 'vimwiki/vimwiki'
-
 Plug 'jiangmiao/auto-pairs'
 Plug 'tpope/vim-endwise'
 Plug 'airblade/vim-gitgutter'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
 
 " Elixir
 Plug 'elixir-lang/vim-elixir'
@@ -106,6 +106,11 @@ map <leader>q gqip
 
 " NerdTree
 nnoremap <leader>nt :NERDTreeToggle<CR>
+
+" FZF
+nnoremap <leader>ff :Files<CR>
+nnoremap <leader>fp :GFiles<CR>
+
 
 """"""""""""""""""""""
 "  END KEY MAPPINGS  "
