@@ -9,8 +9,8 @@ A collection of my dotfiles
 ## Requirements
 
 1. JavaScript/TypeScript
-    1. Prettier 
-    2. TypeScript
+    * Prettier 
+    * TypeScript
 2. Elixir
-    1. ElixirLS
-    2. Credo
+    * ElixirLS
+    * Credo
