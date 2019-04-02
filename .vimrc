@@ -22,6 +22,7 @@ Plug 'tpope/vim-endwise'
 Plug 'airblade/vim-gitgutter'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
+Plug 'nathanaelkane/vim-indent-guides'
 
 " Ruby
 Plug 'vim-ruby/vim-ruby'
@@ -81,6 +82,15 @@ set updatetime=300
 """"""""""""""""""
 " END GITGUTTER  "
 """"""""""""""""""
+
+""""""""""""""""""
+"  INDENT GUIDE  "
+""""""""""""""""""
+let g:indent_guides_enable_on_vim_startup = 1
+
+"""""""""""""""""""""
+" END INDENT GUIDE  "
+"""""""""""""""""""""
 
 """"""""""""""""""
 "  KEY MAPPINGS  "
@@ -192,7 +202,6 @@ set listchars=tab:▸\ ,eol:¬
 " set list " To enable by default
 " Or use your leader key + l to toggle on/off
 map <leader>l :set list!<CR> " Toggle tabs and EOL
-
 
 " Color scheme (terminal)
 set background=dark 
