@@ -120,8 +120,11 @@ nnoremap <leader>fp :GFiles<CR>
 """"""""""""""""""""""
 
 """"""""""""""""""
-"     CONIFG     "
+"     CONFIG     "
 """"""""""""""""""
+
+" Auto save buffers
+au FocusLost * silent! :wa
 
 " Turn on syntax highlighting
 syntax on
