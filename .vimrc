@@ -24,6 +24,9 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'nathanaelkane/vim-indent-guides'
 
+" HTML
+Plug 'mattn/emmet-vim'
+
 " Ruby
 Plug 'vim-ruby/vim-ruby'
 
@@ -61,10 +64,12 @@ let g:ale_completion_enabled = 1
 let g:ale_lint_on_save = 1
 let g:ale_fix_on_save = 1 
 let g:ale_fixers = {
-      \'javascript': ['prettier'],
-      \'markdown': ['prettier'],
       \'css': ['prettier'],
       \'elixir': ['mix_format'],
+      \'html': ['prettier'],
+      \'javascript': ['prettier'],
+      \'markdown': ['prettier'],
+      \'typescript': ['prettier']
       \}
 let g:ale_elixir_elixir_ls_release='/Users/ryan/elixir-ls/rel'
 let g:ale_linters = {'elixir': ['elixir-ls', 'credo']}
@@ -72,6 +77,16 @@ let g:ale_linters = {'elixir': ['elixir-ls', 'credo']}
 """"""""""""""""""
 "     END ALE    "
 """"""""""""""""""
+
+"""""""""""""
+"   EMMET   "
+"""""""""""""
+
+let g:user_emmet_leader_key='<leader>'
+
+""""""""""""""""
+"   END EMMET  "
+""""""""""""""""
 
 """"""""""""""""""
 "    GITGUTTER   "
