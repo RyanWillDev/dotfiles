@@ -11,6 +11,8 @@ filetype off
 call plug#begin('~/.local/share/nvim/site/plugged')
 " Colorschemes
 Plug 'joshdick/onedark.vim'
+Plug 'morhetz/gruvbox'
+Plug 'AlessandroYorba/Sierra'
 
 Plug 'w0rp/ale'
 
@@ -178,14 +180,9 @@ map <leader>l :set list!<CR> " Toggle tabs and EOL
 
 
 " Color scheme (terminal)
-set t_Co=256 
 set background=dark 
-let g:solarized_termcolors=256 
-let g:solarized_termtrans=1
-" put
-" https://raw.github.com/altercation/vim-colors-solarized/master/colors/solarized.vim
-" in ~/.vim/colors/ and uncomment:
-colorscheme onedark 
+set termguicolors
+colorscheme sierra
 
 """"""""""""""""""
 "   END CONFIG   "
