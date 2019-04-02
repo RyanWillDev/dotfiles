@@ -91,7 +91,6 @@ let g:user_emmet_leader_key='<leader>'
 """"""""""""""""""
 "    GITGUTTER   "
 """"""""""""""""""
-
 set updatetime=300
 
 """"""""""""""""""
@@ -138,6 +137,7 @@ nnoremap <leader>nt :NERDTreeToggle<CR>
 " FZF
 nnoremap <leader>ff :Files<CR>
 nnoremap <leader>fp :GFiles<CR>
+nnoremap <leader>fg :Commits<CR>
 
 
 """"""""""""""""""""""
@@ -147,6 +147,9 @@ nnoremap <leader>fp :GFiles<CR>
 """"""""""""""""""
 "     CONFIG     "
 """"""""""""""""""
+
+" Always keep sign column open
+set signcolumn=yes
 
 " Auto save buffers
 au FocusLost * silent! :wa
