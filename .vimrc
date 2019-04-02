@@ -14,6 +14,7 @@ Plug 'joshdick/onedark.vim'
 Plug 'morhetz/gruvbox'
 Plug 'AlessandroYorba/Sierra'
 
+Plug 'scrooloose/nerdtree'
 Plug 'w0rp/ale'
 
 Plug 'vimwiki/vimwiki'
@@ -102,6 +103,9 @@ vnoremap <F1> :set invfullscreen<CR>
 
 " Formatting
 map <leader>q gqip
+
+" NerdTree
+nnoremap <leader>nt :NERDTreeToggle<CR>
 
 """"""""""""""""""""""
 "  END KEY MAPPINGS  "
