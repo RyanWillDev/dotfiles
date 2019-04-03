@@ -154,6 +154,7 @@ set signcolumn=yes
 
 " Auto save buffers
 au FocusLost * silent! :wa
+au BufLeave * silent! :wa
 
 " Turn on syntax highlighting
 syntax on
