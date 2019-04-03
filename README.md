@@ -9,8 +9,11 @@ A collection of my dotfiles
 ## Requirements
 
 1. JavaScript/TypeScript
-    * Prettier 
-    * TypeScript
+    * Prettier - installed globaly
+    * TypeScript - installed in project or globally
 2. Elixir
     * ElixirLS
-    * Credo
+    * Credo - Installed in project
+3. Ruby
+    * Rubocop - installed globally
+4. tmux
