@@ -164,8 +164,9 @@ filetype plugin indent on
 " Security
 set modelines=0
 
-" Show line numbers
-set number
+" Show line numbers in hybrid
+set number relativenumber
+set nu rnu
 
 " Show file stats
 set ruler
