@@ -117,6 +117,10 @@ inoremap <space> <space>
 
 inoremap jk <esc>
 
+" Buffer Management
+nnoremap <leader>bv :vsp<CR><C-w>l
+nnoremap <leader>bh :sp<CR><C-w>j
+
 " Move up/down editor lines
 nnoremap j gj
 nnoremap k gk
