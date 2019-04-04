@@ -86,6 +86,10 @@ let g:ale_linters = {'elixir': ['elixir-ls', 'credo']}
 
 let g:user_emmet_leader_key=','
 
+" Only enable Emmet for html and css
+let g:user_emmet_install_global = 0
+au FileType html,css EmmetInstall
+
 """"""""""""""""
 "   END EMMET  "
 """"""""""""""""
