@@ -130,11 +130,6 @@ nnoremap / /\v
 vnoremap / /\v
 map <leader><space> :let @/=''<cr> " clear search
 
-" Remap help key.
-inoremap <F1> <ESC>:set invfullscreen<CR>a
-nnoremap <F1> :set invfullscreen<CR>
-vnoremap <F1> :set invfullscreen<CR>
-
 " Formatting
 map <leader>q gqip
 
