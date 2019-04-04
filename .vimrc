@@ -151,16 +151,27 @@ nnoremap <leader>fs :Rg<space>
 "  END KEY MAPPINGS  "
 """"""""""""""""""""""
 
+"""""""""""""""""""
+"  AUTO COMMANDS  "
+"""""""""""""""""""
+
+augroup saveandformat
+" Auto save buffers
+au FocusLost,BufLeave * silent! wa
+" Format file with ALE Fixers
+au FocusLost,BufLeave * ALEFix
+augroup END
+
+"""""""""""""""""""""""
+"  END AUTO COMMANDS  "
+"""""""""""""""""""""""
+
 """"""""""""""""""
 "     CONFIG     "
 """"""""""""""""""
 
 " Always keep sign column open
 set signcolumn=yes
-
-" Auto save buffers
-au FocusLost * silent! :wa
-au BufLeave * silent! :wa
 
 " Turn on syntax highlighting
 syntax on
