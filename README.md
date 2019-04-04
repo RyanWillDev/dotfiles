@@ -17,3 +17,5 @@ A collection of my dotfiles
 3. Ruby
     * Rubocop - installed globally
 4. tmux
+5. fzf.vim
+    * ripgrep
