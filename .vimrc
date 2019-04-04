@@ -155,11 +155,11 @@ nnoremap <leader>fs :Rg<space>
 "  AUTO COMMANDS  "
 """""""""""""""""""
 
-augroup saveandformat
-" Auto save buffers
-au FocusLost,BufLeave * silent! wa
-" Format file with ALE Fixers
-au FocusLost,BufLeave * ALEFix
+augroup autosave
+ autocmd!
+ " TODO: Figure out how to run fixers when buffer is autosaved
+ " au FileWritePre,BufWritePre * ALEFix
+ au FocusLost,BufLeave,WinLeave,TabLeave * :wa
 augroup END
 
 """""""""""""""""""""""
@@ -169,6 +169,8 @@ augroup END
 """"""""""""""""""
 "     CONFIG     "
 """"""""""""""""""
+" Autosave
+set autowriteall
 
 " Always keep sign column open
 set signcolumn=yes
