@@ -111,9 +111,8 @@ let g:indent_guides_enable_on_vim_startup = 1
 "  KEY MAPPINGS  "
 """"""""""""""""""
 
-let mapleader = " "
-" Remove leader in insert mode
-inoremap <space> <space>
+" Use space as leader
+map <space> <leader>
 
 inoremap jk <esc>
 
