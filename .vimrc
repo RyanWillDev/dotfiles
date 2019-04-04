@@ -154,13 +154,17 @@ nnoremap <leader>fs :Rg<space>
 """""""""""""""""""
 "  AUTO COMMANDS  "
 """""""""""""""""""
+function! AutoSaveAndFormat()
+  if !pumvisible()
+    wa
+  endif
 
-augroup autosave
- autocmd!
- " TODO: Figure out how to run fixers when buffer is autosaved
- " au FileWritePre,BufWritePre * ALEFix
- au FocusLost,BufLeave,WinLeave,TabLeave * :wa
-augroup END
+  if &modifiable
+    ALEFix
+  endif
+endfunction
+
+au FocusLost,BufLeave,WinLeave,TabLeave * call AutoSaveAndFormat()
 
 """""""""""""""""""""""
 "  END AUTO COMMANDS  "
