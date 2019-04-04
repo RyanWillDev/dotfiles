@@ -48,7 +48,7 @@ call plug#end()
 """"""""""""""""""
 "    VIM WIKI    "
 """"""""""""""""""
-
+let g:vimwiki_global_ext = 0
 let g:vimwiki_list = [{'path': '~/notes/',
                        \ 'syntax': 'markdown', 'ext': '.md'},]
 
@@ -133,6 +133,9 @@ nnoremap k gk
 nnoremap / /\v
 vnoremap / /\v
 map <leader><space> :let @/=''<cr> " clear search
+
+" Ale
+nnoremap gd :ALEGoToDefinition<CR>
 
 " Formatting
 map <leader>q gqip
