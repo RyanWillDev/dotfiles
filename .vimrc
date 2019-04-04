@@ -242,7 +242,7 @@ set listchars=tab:▸\ ,eol:¬
 map <leader>l :set list!<CR> " Toggle tabs and EOL
 
 " Color scheme (terminal)
-set background=dark 
+set background=dark
 set termguicolors
 colorscheme sierra
 
