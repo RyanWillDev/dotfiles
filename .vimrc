@@ -139,6 +139,7 @@ nnoremap <leader>nt :NERDTreeToggle<CR>
 nnoremap <leader>ff :Files<CR>
 nnoremap <leader>fp :GFiles<CR>
 nnoremap <leader>fg :Commits<CR>
+nnoremap <leader>fs :Rg<space>
 
 
 """"""""""""""""""""""
