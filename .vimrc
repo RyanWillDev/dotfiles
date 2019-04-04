@@ -83,7 +83,7 @@ let g:ale_linters = {'elixir': ['elixir-ls', 'credo']}
 "   EMMET   "
 """""""""""""
 
-let g:user_emmet_leader_key='<leader>'
+let g:user_emmet_leader_key=','
 
 """"""""""""""""
 "   END EMMET  "
@@ -111,7 +111,9 @@ let g:indent_guides_enable_on_vim_startup = 1
 "  KEY MAPPINGS  "
 """"""""""""""""""
 
-let mapleader = ","
+let mapleader = " "
+" Remove leader in insert mode
+inoremap <space> <space>
 
 inoremap jk <esc>
 
