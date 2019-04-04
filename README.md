@@ -4,7 +4,7 @@ A collection of my dotfiles
 
 ## TODO: Create a script to setup dotfiles on new computer
 1. Create .config/nvim/ dir and symlink .vimrc -> .config/init.vim
-2. symlink .zshrc && .prettierrc to home directory
+2. symlink .zshrc && .prettierrc && .tmux.conf to home directory
 
 ## Requirements
 
