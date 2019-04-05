@@ -23,6 +23,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'nathanaelkane/vim-indent-guides'
+Plug 'tpope/vim-fugitive'
 
 " HTML
 Plug 'mattn/emmet-vim'
@@ -103,6 +104,17 @@ set updatetime=300
 " END GITGUTTER  "
 """"""""""""""""""
 
+
+""""""""""""""""""
+"    FUGITIVE    "
+""""""""""""""""""
+nnoremap <leader>gb :Gblame<CR>
+nnoremap <leader>gd :Gdiff<CR>
+
+""""""""""""""""""
+"  END FUGITIVE  "
+""""""""""""""""""
+
 """"""""""""""""""
 "  INDENT GUIDE  "
 """"""""""""""""""
@@ -159,11 +171,12 @@ nnoremap <leader>fs :Rg<space>
 """""""""""""""""""
 function! AutoSaveAndFormat()
   if !pumvisible()
+  " BufLeave event was not triggered by popup
     wa
-  endif
 
-  if &modifiable
-    ALEFix
+    if &modifiable
+      ALEFix
+    endif
   endif
 endfunction
 
