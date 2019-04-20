@@ -72,6 +72,7 @@ let g:ale_fixers = {
       \'javascript': ['prettier'],
       \'markdown': ['prettier'],
       \'ruby': ['rubocop'],
+      \'scss': ['prettier'],
       \'typescript': ['prettier']
       \}
 let g:ale_elixir_elixir_ls_release='/Users/ryan/elixir-ls/rel'
