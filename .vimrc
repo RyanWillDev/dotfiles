@@ -40,6 +40,7 @@ Plug 'pangloss/vim-javascript'
 " TypeScript
 Plug 'HerringtonDarkholme/yats.vim'
 Plug 'mhartington/nvim-typescript', {'do': './install.sh'}
+
 call plug#end()
 
 """""""""""""""""
@@ -70,6 +71,7 @@ let g:ale_fixers = {
       \'elixir': ['mix_format'],
       \'html': ['prettier'],
       \'javascript': ['prettier'],
+      \'json': ['prettier'],
       \'markdown': ['prettier'],
       \'ruby': ['rubocop'],
       \'scss': ['prettier'],
@@ -155,6 +157,7 @@ map <leader>q gqip
 
 " NerdTree
 nnoremap <leader>nt :NERDTreeToggle<CR>
+nnoremap <leader>nf :NERDTreeFind<CR>
 
 " FZF
 nnoremap <leader>ff :Files<CR>
