@@ -2,7 +2,7 @@
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="/Users/ryan/.oh-my-zsh"
+export ZSH="/Users/${USER}/.oh-my-zsh"
 
 ZSH_DISABLE_COMPFIX=true
 
