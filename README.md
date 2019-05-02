@@ -19,3 +19,4 @@ A collection of my dotfiles
 4. tmux
 5. fzf.vim
     * ripgrep
+    * Install zsh autocompletions for fzf
