@@ -116,6 +116,11 @@ export RUST_SRC_PATH="/Users/ryan/rust/src"
 ##### POSTGRES #####
 export PATH="$PATH:/Applications/Postgres.app/Contents/Versions/latest/bin"
 
+
+##### FZF #####
+export FZF_DEFAULT_COMMAND="rg --hidden"
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
 ##### GIT ALIASES #####
 alias gs='git status'
 alias gb='git branch'
