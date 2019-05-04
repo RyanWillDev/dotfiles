@@ -128,11 +128,22 @@ nnoremap <leader>gd :Gdiff<CR>
 """"""""""""""""""
 "  INDENT GUIDE  "
 """"""""""""""""""
+
 let g:indent_guides_enable_on_vim_startup = 1
 
 """""""""""""""""""""
 " END INDENT GUIDE  "
 """""""""""""""""""""
+
+""""""""""""""""""
+"    NERDTREE    "
+""""""""""""""""""
+
+let NERDTreeShowHidden=1
+
+""""""""""""""""""
+"  END NERDTREE  " 
+""""""""""""""""""
 
 """"""""""""""""""
 "  KEY MAPPINGS  "
