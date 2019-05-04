@@ -149,8 +149,8 @@ let NERDTreeShowHidden=1
 "  KEY MAPPINGS  "
 """"""""""""""""""
 
-" Use space as leader
-map <space> <leader>
+" Use , as leader
+let mapleader = ","
 
 inoremap jk <esc>
 
