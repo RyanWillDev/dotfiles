@@ -182,6 +182,7 @@ nnoremap <leader>ff :Files<CR>
 nnoremap <leader>fp :GFiles<CR>
 nnoremap <leader>fg :Commits<CR>
 nnoremap <leader>fs :Rg<space>
+nnoremap <leader>fb :Buffers<CR>
 
 
 """"""""""""""""""""""
