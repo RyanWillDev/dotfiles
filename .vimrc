@@ -50,9 +50,16 @@ call plug#end()
 """"""""""""""""""
 "    VIM WIKI    "
 """"""""""""""""""
+
 let g:vimwiki_global_ext = 0
 let g:vimwiki_list = [{'path': '~/notes/',
-                       \ 'syntax': 'markdown', 'ext': '.md'},]
+                      \ 'syntax': 'markdown',
+                      \'ext': '.md',
+                      \'diary_rel_path': 'daily/'},
+                      \{'path': '~/work_notes/',
+                      \ 'syntax': 'markdown',
+                      \'ext': '.md',
+                      \'diary_rel_path': 'daily/'},]
 
 """"""""""""""""""
 "  END VIM WIKI  "
