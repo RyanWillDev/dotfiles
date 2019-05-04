@@ -10,7 +10,7 @@ ZSH_DISABLE_COMPFIX=true
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-ZSH_THEME="spaceship"
+ZSH_THEME="robbyrussell"
 SPACESHIP_EXEC_TIME_SHOW=false
 
 # Set list of themes to pick from when loading at random
@@ -105,10 +105,6 @@ alias vim="nvim"
 . $HOME/.asdf/asdf.sh
 . $HOME/.asdf/completions/asdf.bash
 
-##### NVM #####
-# export NVM_DIR="/Users/ryan/.nvm"
-# [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
-
 ###### RUST #####
 export PATH="$PATH:/Users/ryan/.cargo/bin"
 export RUST_SRC_PATH="/Users/ryan/rust/src"
@@ -116,9 +112,7 @@ export RUST_SRC_PATH="/Users/ryan/rust/src"
 ##### POSTGRES #####
 export PATH="$PATH:/Applications/Postgres.app/Contents/Versions/latest/bin"
 
-
 ##### FZF #####
-export FZF_DEFAULT_COMMAND="rg --hidden"
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 ##### GIT ALIASES #####
@@ -163,3 +157,4 @@ mkcd () { # Make Change Directory
   cd $1
 }
 
+. $HOME/work_stuff.sh
