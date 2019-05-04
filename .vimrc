@@ -193,11 +193,11 @@ nnoremap <leader>fb :Buffers<CR>
 "  AUTO COMMANDS  "
 """""""""""""""""""
 function! AutoSaveAndFormat()
-  if !pumvisible()
   " BufLeave event was not triggered by popup
-    wa
-
-    if &modifiable
+  if !pumvisible()
+    " File is both modifiable and has a name
+    if &modifiable && expand('%') != ''
+      wa " Write all buffers
       ALEFix
     endif
   endif
@@ -212,8 +212,6 @@ au FocusLost,BufLeave,WinLeave,TabLeave * call AutoSaveAndFormat()
 """"""""""""""""""
 "     CONFIG     "
 """"""""""""""""""
-" Autosave
-set autowriteall
 
 " Always keep sign column open
 set signcolumn=yes
