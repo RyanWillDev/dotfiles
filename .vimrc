@@ -4,6 +4,9 @@ set nocompatible
 " Helps force plugins to load correctly when it is turned back on below
 filetype off
 
+" Use , as leader
+let mapleader = ","
+
 """""""""""""
 "  PLUGINS  "
 """""""""""""
@@ -46,6 +49,20 @@ call plug#end()
 """""""""""""""""
 "  END PLUGINS  "
 """""""""""""""""
+
+""""""""""""""""""
+"      FZF       "
+""""""""""""""""""
+
+nnoremap <leader>ff :Files<CR>
+nnoremap <leader>fp :GFiles<CR>
+nnoremap <leader>fg :Commits<CR>
+nnoremap <leader>fs :Rg<space>
+nnoremap <leader>fb :Buffers<CR>
+
+""""""""""""""""""
+"    END FZF     "
+""""""""""""""""""
 
 """"""""""""""""""
 "    VIM WIKI    "
@@ -91,6 +108,8 @@ let g:ale_fixers = {
       \}
 let g:ale_elixir_elixir_ls_release= $HOME . '/elixir-ls/rel'
 let g:ale_linters = {'elixir': ['elixir-ls', 'credo']}
+
+nnoremap gd :ALEGoToDefinition<CR>
 
 """"""""""""""""""
 "     END ALE    "
@@ -146,6 +165,9 @@ let g:indent_guides_enable_on_vim_startup = 1
 
 let NERDTreeShowHidden=1
 
+nnoremap <leader>nt :NERDTreeToggle<CR>
+nnoremap <leader>nf :NERDTreeFind<CR>
+
 """"""""""""""""""
 "  END NERDTREE  "
 """"""""""""""""""
@@ -153,10 +175,6 @@ let NERDTreeShowHidden=1
 """"""""""""""""""
 "  KEY MAPPINGS  "
 """"""""""""""""""
-
-" Use , as leader
-let mapleader = ","
-
 inoremap jk <esc>
 
 " Buffer Management
@@ -173,21 +191,9 @@ vnoremap / /\v
 map <leader><space> :let @/=''<cr> " clear search
 
 " Ale
-nnoremap gd :ALEGoToDefinition<CR>
 
 " Formatting
 map <leader>q gqip
-
-" NerdTree
-nnoremap <leader>nt :NERDTreeToggle<CR>
-nnoremap <leader>nf :NERDTreeFind<CR>
-
-" FZF
-nnoremap <leader>ff :Files<CR>
-nnoremap <leader>fp :GFiles<CR>
-nnoremap <leader>fg :Commits<CR>
-nnoremap <leader>fs :Rg<space>
-nnoremap <leader>fb :Buffers<CR>
 
 
 """"""""""""""""""""""
