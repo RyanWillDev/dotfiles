@@ -295,6 +295,7 @@ set showmatch
 
 " Visualize tabs and newlines
 set listchars=tab:▸\ ,eol:¬
+set nolist
 map <leader>l :set list!<CR> " Toggle tabs and EOL
 
 " Color scheme (terminal)
