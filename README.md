@@ -9,6 +9,7 @@ A collection of my dotfiles
 ## Requirements
 
 1. JavaScript/TypeScript
+    * nvim-typescript ?
     * Prettier - installed globaly
     * TypeScript - installed in project or globally
 2. Elixir
