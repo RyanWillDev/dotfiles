@@ -116,19 +116,41 @@ export PATH="$PATH:/Applications/Postgres.app/Contents/Versions/latest/bin"
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 ##### GIT ALIASES #####
+
+# Commit
 alias gs='git status'
-alias gb='git branch'
 alias ga='git add'
+alias gap='git add -p'
 alias gc='git commit'
-alias gd='git diff'
-alias gf='git fetch'
-alias gco='git checkout'
 alias gcm='git commit -m'
+alias gca='git commit --amend'
+
+# Diff
+alias gd='git diff'
+alias gdc='git diff --cached'
+
+# Branch
+alias gb='git branch'
+alias gbd='git branch -D'
+
+# Rebase
+alias gr='git rebase'
+alias gri='git rebase -i'
+alias gra='git rebase --abort'
+alias grc='git rebase --continue'
+alias gco='git checkout'
+
+# Stash
 alias gstash='git stash'
 alias gstashl='git stash list'
 alias gstashp='git stash pop'
+
+# Remote Repo
 alias gpush='git push origin'
 alias gpull='git pull origin'
+alias gf='git fetch'
+
+# Log
 alias glog='git log --decorate --graph'
 alias glogs='git log --decorate --graph --stat'
 alias gsub='git subtree push --prefix'
