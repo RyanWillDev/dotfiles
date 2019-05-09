@@ -69,14 +69,22 @@ nnoremap <leader>fb :Buffers<CR>
 """"""""""""""""""
 
 let g:vimwiki_global_ext = 0
+let g:vimwiki_listsyms = ' ○◐●✓'
+let g:vimwiki_listsym_rejected = '✗'
 let g:vimwiki_list = [{'path': '~/notes/',
                       \ 'syntax': 'markdown',
                       \'ext': '.md',
-                      \'diary_rel_path': 'daily/'},
+                      \'diary_rel_path': 'daily/', 
+                      \'diary_index': 'daily',
+                      \'diary_header': 'Daily Notes',
+                      \'auto_diary_index': 1},
                       \{'path': '~/work_notes/',
                       \ 'syntax': 'markdown',
                       \'ext': '.md',
-                      \'diary_rel_path': 'daily/'},]
+                      \'diary_rel_path': 'daily/',
+                      \'diary_index': 'daily',
+                      \'diary_header': 'Daily Notes',
+                      \'auto_diary_index': 1},]
 
 augroup vimwikicmds
   autocmd! vimwikicmds
