@@ -187,9 +187,13 @@ nnoremap <leader>nf :NERDTreeFind<CR>
 """"""""""""""""""
 inoremap jk <esc>
 
-" Buffer Management
-nnoremap <leader>bv :vsp<CR><C-w>l
-nnoremap <leader>bh :sp<CR><C-w>j
+nnoremap <C-w>. 15<C-w>>
+nnoremap <C-w>, 15<C-w><
+nnoremap <C-w>= 15<C-w>+
+nnoremap <C-w>- 15<C-w>-
+nnoremap <C-w>0 <C-w>=
+nnoremap ,v <C-w>v
+nnoremap ,s <C-w>s
 
 " Move up/down editor lines
 nnoremap j gj
