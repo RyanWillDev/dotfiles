@@ -89,6 +89,8 @@ let g:vimwiki_list = [{'path': '~/notes/',
 augroup vimwikicmds
   autocmd! vimwikicmds
   autocmd Filetype vimwiki nnoremap <buffer> <leader>db <esc>gg:0put='# '.strftime('%b %d, %Y')<CR>
+  autocmd Filetype vimwiki nnoremap <buffer> <leader>dn :VimwikiMakeTomorrowDiaryNote<CR>
+  autocmd Filetype vimwiki nnoremap <buffer> <leader>dp :VimwikiMakeYesterdayDiaryNote<CR>
 augroup END
 
 """"""""""""""""""
