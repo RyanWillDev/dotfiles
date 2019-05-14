@@ -65,7 +65,7 @@ SPACESHIP_EXEC_TIME_SHOW=false
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+plugins=()
 
 source $ZSH/oh-my-zsh.sh
 
@@ -106,8 +106,8 @@ alias vim="nvim"
 . $HOME/.asdf/completions/asdf.bash
 
 ###### RUST #####
-export PATH="$PATH:/Users/ryan/.cargo/bin"
-export RUST_SRC_PATH="/Users/ryan/rust/src"
+export PATH="$PATH:/Users/${USER}/.cargo/bin"
+export RUST_SRC_PATH="/Users/${USER}/rust/src"
 
 ##### POSTGRES #####
 export PATH="$PATH:/Applications/Postgres.app/Contents/Versions/latest/bin"
@@ -117,6 +117,8 @@ export PATH="$PATH:/Applications/Postgres.app/Contents/Versions/latest/bin"
 
 ##### GIT ALIASES #####
 
+alias gco='git checkout'
+
 # Commit
 alias gs='git status'
 alias ga='git add'
@@ -124,6 +126,7 @@ alias gap='git add -p'
 alias gc='git commit'
 alias gcm='git commit -m'
 alias gca='git commit --amend'
+alias gu='git reset HEAD'
 
 # Diff
 alias gd='git diff'
@@ -138,7 +141,6 @@ alias gr='git rebase'
 alias gri='git rebase -i'
 alias gra='git rebase --abort'
 alias grc='git rebase --continue'
-alias gco='git checkout'
 
 # Stash
 alias gstash='git stash'
@@ -155,8 +157,8 @@ alias glog='git log --decorate --graph'
 alias glogs='git log --decorate --graph --stat'
 alias gsub='git subtree push --prefix'
 
-parse_git_branch() {
-  git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/[\1]/'
+grh () {
+  git reset HEAD~$1 $2
 }
 
 ##### NAVIGATION SHORTCUTS #####
