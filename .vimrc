@@ -230,6 +230,12 @@ endfunction
 
 au FocusLost,BufLeave,WinLeave,TabLeave * call AutoSaveAndFormat()
 
+" Return to last edit position when opening files
+autocmd BufReadPost *
+     \ if line("'\"") > 0 && line("'\"") <= line("$") |
+     \   exe "normal! g`\"" |
+     \ endif
+
 """""""""""""""""""""""
 "  END AUTO COMMANDS  "
 """""""""""""""""""""""
@@ -237,6 +243,9 @@ au FocusLost,BufLeave,WinLeave,TabLeave * call AutoSaveAndFormat()
 """"""""""""""""""
 "     CONFIG     "
 """"""""""""""""""
+
+" Reload file if it changes outside of vim
+set autoread
 
 " Always keep sign column open
 set signcolumn=yes
