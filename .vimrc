@@ -206,6 +206,7 @@ vnoremap / /\v
 map <leader><space> :let @/=''<cr> " clear search
 
 " Ale
+nnoremap <leader>aft :call ToggleAleFixOnSave()<CR>
 
 " Formatting
 map <leader>q gqip
