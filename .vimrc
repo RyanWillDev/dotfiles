@@ -245,17 +245,24 @@ endfunction
 "  END FUNCTIONS  "
 """""""""""""""""""
 
+
+"""""""""""""""""
+"    COMMANDS   "
+"""""""""""""""""
+
 au FocusLost,BufLeave,WinLeave,TabLeave * call AutoSaveAndFormat()
 
 " Return to last edit position when opening files
-autocmd BufReadPost *
+au BufReadPost *
      \ if line("'\"") > 0 && line("'\"") <= line("$") |
      \   exe "normal! g`\"" |
      \ endif
 
-"""""""""""""""""""""""
-"  END AUTO COMMANDS  "
-"""""""""""""""""""""""
+autocmd QuickFixCmdPost *grep* cwindow
+
+""""""""""""""""""
+"  END COMMANDS  "
+""""""""""""""""""
 
 """"""""""""""""""
 "     CONFIG     "
