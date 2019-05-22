@@ -57,6 +57,7 @@ nnoremap <leader>fp :GFiles<CR>
 nnoremap <leader>fg :Commits<CR>
 nnoremap <leader>fs :Rg<space>
 nnoremap <leader>fb :Buffers<CR>
+nnoremap <leader>ft :Rg<space>TODO\|FIXME<cr>
 
 """"""""""""""""""
 "    END FZF     "
