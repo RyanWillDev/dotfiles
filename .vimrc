@@ -203,7 +203,7 @@ nnoremap k gk
 " Searching
 nnoremap / /\v
 vnoremap / /\v
-map <leader><space> :let @/=''<cr> " clear search
+map <leader><space> :let @/=''<CR> " clear search
 
 " Ale
 nnoremap <leader>aft :call ToggleAleFixOnSave()<CR>
