@@ -153,6 +153,7 @@ set updatetime=300
 """"""""""""""""""
 nnoremap <leader>gb :Gblame<CR>
 nnoremap <leader>gd :Gdiff<CR>
+nnoremap <leader>gl :0Glog<CR><CR><C-w>j
 
 """"""""""""""""""
 "  END FUGITIVE  "
