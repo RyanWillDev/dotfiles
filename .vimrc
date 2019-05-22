@@ -187,13 +187,14 @@ nnoremap <leader>nf :NERDTreeFind<CR>
 """"""""""""""""""
 inoremap jk <esc>
 
+" Window Mangagement
 nnoremap <C-w>. 15<C-w>>
 nnoremap <C-w>, 15<C-w><
 nnoremap <C-w>= 15<C-w>+
 nnoremap <C-w>- 15<C-w>-
 nnoremap <C-w>0 <C-w>=
-nnoremap ,v <C-w>v
-nnoremap ,s <C-w>s
+nnoremap ,v <C-w>v<C-w>l
+nnoremap ,s <C-w>s<C-w>j
 
 " Move up/down editor lines
 nnoremap j gj
