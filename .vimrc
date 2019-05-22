@@ -13,8 +13,6 @@ let mapleader = ","
 
 call plug#begin('~/.local/share/nvim/site/plugged')
 " Colorschemes
-Plug 'joshdick/onedark.vim'
-Plug 'morhetz/gruvbox'
 Plug 'AlessandroYorba/Sierra'
 
 Plug 'scrooloose/nerdtree'
