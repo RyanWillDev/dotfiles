@@ -216,18 +216,33 @@ map <leader>q gqip
 """"""""""""""""""""""
 
 """""""""""""""""""
-"  AUTO COMMANDS  "
+"    FUNCTIONS    "
 """""""""""""""""""
+
 function! AutoSaveAndFormat()
   " BufLeave event was not triggered by popup
   if !pumvisible()
     " File is both modifiable and has a name
     if &modifiable && expand('%') != ''
       wa " Write all buffers
-      ALEFix
+      if g:ale_fix_on_save
+        ALEFix
+      endif
     endif
   endif
 endfunction
+
+function! ToggleAleFixOnSave()
+  if g:ale_fix_on_save
+    let g:ale_fix_on_save = 0
+  else
+    let g:ale_fix_on_save = 1
+  endif
+endfunction
+
+"""""""""""""""""""
+"  END FUNCTIONS  "
+"""""""""""""""""""
 
 au FocusLost,BufLeave,WinLeave,TabLeave * call AutoSaveAndFormat()
 
