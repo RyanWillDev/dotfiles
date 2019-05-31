@@ -246,6 +246,10 @@ function! ToggleAleFixOnSave()
   endif
 endfunction
 
+function! WindowNumber()
+    return tabpagewinnr(tabpagenr())
+endfunction
+
 """""""""""""""""""
 "  END FUNCTIONS  "
 """""""""""""""""""
@@ -292,9 +296,6 @@ set modelines=0
 set number relativenumber
 set nu rnu
 
-" Show file stats
-set ruler
-
 " Blink cursor on error instead of beeping (grr)
 set visualbell
 
@@ -324,8 +325,9 @@ runtime! macros/matchit.vim
 " Allow hidden buffers
 set hidden
 
-" Alwasys show Status bar
+" Always show Status bar
 set laststatus=2
+set statusline=\ <<\ %t\ >>\ %m\ %r\ %h\ %=\ [%{WindowNumber()}]\ %-l:%c\ %p%{'%'}\ 
 
 " Last line
 set showmode
