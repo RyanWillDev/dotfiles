@@ -90,6 +90,7 @@ augroup vimwikicmds
   autocmd Filetype vimwiki nnoremap <buffer> <leader>db <esc>gg:0put='# '.strftime('%b %d, %Y')<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dn :VimwikiMakeTomorrowDiaryNote<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dp :VimwikiMakeYesterdayDiaryNote<CR>
+  autocmd Filetype vimwiki nnoremap <buffer> <leader>dc :VimwikiMakeDiaryNote<CR>
 augroup END
 
 """"""""""""""""""
