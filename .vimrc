@@ -119,7 +119,8 @@ let g:ale_fixers = {
 let g:ale_elixir_elixir_ls_release= $HOME . '/elixir-ls/rel'
 let g:ale_linters = {'elixir': ['elixir-ls', 'credo']}
 
-nnoremap gd :ALEGoToDefinition<CR>
+nmap gd <Plug>(ale_go_to_definition)
+nmap gh <Plug>(ale_hover)
 
 """"""""""""""""""
 "     END ALE    "
