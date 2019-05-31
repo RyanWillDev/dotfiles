@@ -198,6 +198,9 @@ nnoremap <C-w>0 <C-w>=
 nnoremap ,v <C-w>v<C-w>l
 nnoremap ,s <C-w>s<C-w>j
 
+" Yank to system clipboard
+vnoremap Y "*y
+
 " Move up/down editor lines
 nnoremap j gj
 nnoremap k gk
