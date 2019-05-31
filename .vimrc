@@ -197,6 +197,11 @@ nnoremap <C-w>- 15<C-w>-
 nnoremap <C-w>0 <C-w>=
 nnoremap ,v <C-w>v<C-w>l
 nnoremap ,s <C-w>s<C-w>j
+let i = 1
+while i <= 9
+    execute 'nnoremap <Leader>' . i . ' :' . i . 'wincmd w<CR>'
+    let i = i + 1
+endwhile
 
 " Yank to system clipboard
 vnoremap Y "*y
