@@ -181,23 +181,10 @@ mkcd () { # Make Change Directory
   cd $1
 }
 
+if test -f "$HOME/work_stuff.sh"; then
 . $HOME/work_stuff.sh
-
-# Check if we're already in tmux
-if [ ! $TMUX ]
-then
-  # Make sure we have tmux installed
-  if command -v tmux > /dev/null
-  then
-    # Check for existing tmux sessions
-    if tmux ls &> /dev/null
-    then
-      tmux attach
-    else
-      tmux new -c "/Users/${USER}/Projects"
-    fi
-  else
-    echo "You don't have tmux installed : ("
-  fi
 fi
 
+if test -f "$HOME/devspace.sh"; then
+. $HOME/devspace.sh
+fi
