@@ -88,11 +88,16 @@ let g:vimwiki_list = [{'path': '~/notes/',
 augroup vimwikicmds
   autocmd! vimwikicmds
   autocmd Filetype vimwiki nnoremap <buffer> <leader>db <esc>gg:0put='# '.strftime('%b %d, %Y')<CR>
+  autocmd Filetype vimwiki nnoremap <buffer> <leader>td <esc>:put='## '.strftime('%b %d, %Y')<CR>
+  autocmd Filetype vimwiki nnoremap <buffer> <leader>tl :TicketLink 
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dn :VimwikiMakeTomorrowDiaryNote<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dp :VimwikiMakeYesterdayDiaryNote<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dc :VimwikiMakeDiaryNote<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dc :VimwikiMakeDiaryNote<CR>
+
+  command! -nargs=1 TicketLink put='## ['.toupper('<args>').'](/tickets/'.toupper('<args>').')'
 augroup END
+
 
 """"""""""""""""""
 "  END VIM WIKI  "
