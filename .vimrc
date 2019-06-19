@@ -280,6 +280,8 @@ au BufReadPost *
 
 autocmd QuickFixCmdPost *grep* cwindow
 
+autocmd FileType gitcommit,markdown setlocal spell spelllang=en_us,es complete+=kspell
+
 """"""""""""""""""
 "  END COMMANDS  "
 """"""""""""""""""
@@ -344,11 +346,15 @@ set statusline=\ <<\ %.50f\ >>\ %m\ %r\ %h\ %=\ [%{WindowNumber()}]\ %-l:%c\ %p%
 set showmode
 set showcmd
 
+" Search
 set hlsearch
 set incsearch
 set ignorecase
 set smartcase
 set showmatch
+
+" Spellcheck
+set spellfile=~/.config/nvim/tech.utf-8.add,~/.config/nvim/en.utf-8.add,~/.config/nvim/es.utf-8.add,~/.config/nvim/work.utf-8.add
 
 " Visualize tabs and newlines
 set listchars=tab:▸\ ,eol:¬
