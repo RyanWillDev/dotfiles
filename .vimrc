@@ -34,6 +34,7 @@ Plug 'vim-ruby/vim-ruby'
 
 " Elixir
 Plug 'elixir-lang/vim-elixir'
+Plug 'GrzegorzKozub/vim-elixirls', { 'do': ':ElixirLsCompileSync' }
 
 " JavaScript
 Plug 'pangloss/vim-javascript'
@@ -122,7 +123,7 @@ let g:ale_fixers = {
       \'scss': ['prettier'],
       \'typescript': ['prettier']
       \}
-let g:ale_elixir_elixir_ls_release= $HOME . '/elixir-ls/rel'
+let g:ale_elixir_elixir_ls_release= $HOME . '/.local/share/nvim/site/plugged/vim-elixirls/elixir-ls/release'
 let g:ale_linters = {'elixir': ['elixir-ls', 'credo']}
 
 nmap gd <Plug>(ale_go_to_definition)
