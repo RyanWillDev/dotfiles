@@ -94,7 +94,6 @@ augroup vimwikicmds
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dn :VimwikiMakeTomorrowDiaryNote<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dp :VimwikiMakeYesterdayDiaryNote<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dc :VimwikiMakeDiaryNote<CR>
-  autocmd Filetype vimwiki nnoremap <buffer> <leader>dc :VimwikiMakeDiaryNote<CR>
 
   command! -nargs=1 TicketLink put='## ['.toupper('<args>').'](/tickets/'.toupper('<args>').')'
 augroup END
@@ -212,6 +211,7 @@ endwhile
 
 " Yank to system clipboard
 vnoremap Y "*y
+nnoremap Y "*y
 
 " Move up/down editor lines
 nnoremap j gj
