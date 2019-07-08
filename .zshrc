@@ -107,7 +107,6 @@ alias vim="nvim"
 
 ###### RUST #####
 export PATH="$PATH:/Users/${USER}/.cargo/bin"
-export RUST_SRC_PATH="/Users/${USER}/rust/src"
 
 ##### POSTGRES #####
 export PATH="$PATH:/Applications/Postgres.app/Contents/Versions/latest/bin"
