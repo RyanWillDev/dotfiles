@@ -119,11 +119,18 @@ let g:ale_fixers = {
       \'json': ['prettier'],
       \'markdown': ['prettier'],
       \'ruby': ['rubocop'],
+      \'rust': ['rustfmt'],
       \'scss': ['prettier'],
       \'typescript': ['prettier']
       \}
+let g:ale_linters = {
+      \'elixir': ['elixir-ls', 'credo'],
+      \'rust': ['rls', 'cargo']
+      \}
+
 let g:ale_elixir_elixir_ls_release= $HOME . '/.local/share/nvim/site/plugged/vim-elixirls/elixir-ls/release'
-let g:ale_linters = {'elixir': ['elixir-ls', 'credo']}
+" let g:ale_rust_rls_toolchain = 'stable'
+let g:ale_rust_rls_executable = $HOME . '/.cargo/bin/rls'
 
 nmap gd <Plug>(ale_go_to_definition)
 nmap gh <Plug>(ale_hover)
