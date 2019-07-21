@@ -74,7 +74,7 @@ let g:vimwiki_listsym_rejected = '✗'
 let g:vimwiki_list = [{'path': '~/notes/',
                       \ 'syntax': 'markdown',
                       \'ext': '.md',
-                      \'diary_rel_path': 'daily/', 
+                      \'diary_rel_path': 'daily/',
                       \'diary_index': 'daily',
                       \'diary_header': 'Daily Notes',
                       \'auto_diary_index': 1},
@@ -90,7 +90,7 @@ augroup vimwikicmds
   autocmd! vimwikicmds
   autocmd Filetype vimwiki nnoremap <buffer> <leader>db <esc>gg:0put='# '.strftime('%b %d, %Y')<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>td <esc>:put='## '.strftime('%b %d, %Y')<CR>
-  autocmd Filetype vimwiki nnoremap <buffer> <leader>tl :TicketLink 
+  autocmd Filetype vimwiki nnoremap <buffer> <leader>tl :TicketLink
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dn :VimwikiMakeTomorrowDiaryNote<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dp :VimwikiMakeYesterdayDiaryNote<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dc :VimwikiMakeDiaryNote<CR>
@@ -193,6 +193,12 @@ let NERDTreeShowHidden=1
 nnoremap <leader>nt :NERDTreeToggle<CR>
 nnoremap <leader>nf :NERDTreeFind<CR>
 
+augroup nerdtreecmds
+  autocmd! nerdtreecmds
+  autocmd Filetype nerdtree nmap <buffer> <C-x> i
+  autocmd Filetype nerdtree nmap <buffer> <C-s> s
+augroup END
+
 """"""""""""""""""
 "  END NERDTREE  "
 """"""""""""""""""
@@ -250,6 +256,7 @@ function! AutoSaveAndFormat()
     " File is both modifiable and has a name
     if &modifiable && expand('%') != ''
       wa " Write all buffers
+      ALELint
       if g:ale_fix_on_save
         ALEFix
       endif
@@ -348,7 +355,7 @@ set hidden
 
 " Always show Status bar
 set laststatus=2
-set statusline=\ <<\ %.50f\ >>\ %m\ %r\ %h\ %=\ [%{WindowNumber()}]\ %-l:%c\ %p%{'%'}\ 
+set statusline=\ <<\ %.50f\ >>\ %m\ %r\ %h\ %=\ [%{WindowNumber()}]\ %-l:%c\ %p%{'%'}\
 
 " Last line
 set showmode
