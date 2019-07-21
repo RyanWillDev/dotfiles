@@ -14,6 +14,7 @@ let mapleader = ","
 call plug#begin('~/.local/share/nvim/site/plugged')
 " Colorschemes
 Plug 'AlessandroYorba/Sierra'
+Plug 'agreco/vim-citylights'
 
 Plug 'scrooloose/nerdtree'
 Plug 'w0rp/ale'
@@ -379,7 +380,7 @@ map <leader>l :set list!<CR> " Toggle tabs and EOL
 " Color scheme (terminal)
 set background=dark
 set termguicolors
-colorscheme sierra
+colorscheme citylights
 
 """"""""""""""""""
 "   END CONFIG   "
