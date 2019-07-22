@@ -358,7 +358,7 @@ set hidden
 
 " Always show Status bar
 set laststatus=2
-set statusline=\ <<\ %.50f\ >>\ %m\ %r\ %h\ %=\ [%{WindowNumber()}]\ %-l:%c\ %p%{'%'}\
+set statusline=\ <<\ %.50f\ >>\ %m\ %r\ %h\ %=\ [%{WindowNumber()}]\ %-l:%c\ %p%{'%'}
 
 " Last line
 set showmode
