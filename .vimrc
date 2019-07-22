@@ -214,6 +214,8 @@ nnoremap <C-w>. 15<C-w>>
 nnoremap <C-w>, 15<C-w><
 nnoremap <C-w>= 15<C-w>+
 nnoremap <C-w>- 15<C-w>-
+nnoremap <C-w>V <C-w>H
+nnoremap <C-w>S <C-w>K
 nnoremap <C-w>0 <C-w>=
 nnoremap ,v <C-w>v<C-w>l
 nnoremap ,s <C-w>s<C-w>j
