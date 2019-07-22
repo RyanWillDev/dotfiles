@@ -196,8 +196,8 @@ nnoremap <leader>nf :NERDTreeFind<CR>
 
 augroup nerdtreecmds
   autocmd! nerdtreecmds
-  autocmd Filetype nerdtree nmap <buffer> <C-x> i
-  autocmd Filetype nerdtree nmap <buffer> <C-s> s
+  autocmd Filetype nerdtree nmap <buffer> <leader>s i
+  autocmd Filetype nerdtree nmap <buffer> <leader>v s
 augroup END
 
 """"""""""""""""""
