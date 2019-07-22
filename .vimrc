@@ -14,7 +14,7 @@ let mapleader = ","
 call plug#begin('~/.local/share/nvim/site/plugged')
 " Colorschemes
 Plug 'AlessandroYorba/Sierra'
-Plug 'agreco/vim-citylights'
+Plug 'RyanWillDev/vim-citylights'
 
 Plug 'scrooloose/nerdtree'
 Plug 'w0rp/ale'
