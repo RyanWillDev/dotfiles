@@ -9,6 +9,7 @@ A collection of my dotfiles
 
 ## Requirements
 
+### Vim
 1. JavaScript/TypeScript
    - nvim-typescript ?
    - Prettier - installed globaly
