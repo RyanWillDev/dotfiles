@@ -15,7 +15,7 @@ A collection of my dotfiles
    - TypeScript - installed in project or globally
 2. Elixir
    - ElixirLS
-    - vim-elixirls
+     - vim-elixirls
    - Credo - Installed in project
 3. Ruby
    - Rubocop - installed globally
@@ -24,4 +24,4 @@ A collection of my dotfiles
    - ripgrep
    - Install zsh autocompletions for fzf
 6. Rust
-  - RLS
+   - RLS
