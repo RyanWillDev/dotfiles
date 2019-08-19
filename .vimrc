@@ -35,7 +35,8 @@ Plug 'vim-ruby/vim-ruby'
 
 " Elixir
 Plug 'elixir-lang/vim-elixir'
-Plug 'GrzegorzKozub/vim-elixirls', { 'do': ':ElixirLsCompileSync' }
+"Plug 'GrzegorzKozub/vim-elixirls', { 'do': ':ElixirLsCompileSync' }
+Plug 'RyanWillDev/vim-elixirls', { 'do': ':ElixirLsCompileSync' }
 
 " JavaScript
 Plug 'pangloss/vim-javascript'
@@ -128,8 +129,9 @@ let g:ale_linters = {
       \'rust': ['rls', 'cargo']
       \}
 
-let g:ale_elixir_elixir_ls_release= $HOME . '/.local/share/nvim/site/plugged/vim-elixirls/elixir-ls/release'
-" let g:ale_rust_rls_toolchain = 'stable'
+let g:ale_elixir_elixir_ls_release = $HOME . '/elixir-ls/release'
+let g:vim_elixir_ls_elixir_ls_dir = $HOME . '/elixir-ls'
+let g:ale_elixir_elixir_ls_config = { 'elixirLS': { 'dialyzerEnabled': v:false } }
 let g:ale_rust_rls_executable = $HOME . '/.cargo/bin/rls'
 
 nmap gd <Plug>(ale_go_to_definition)
