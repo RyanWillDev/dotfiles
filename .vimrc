@@ -36,9 +36,8 @@ Plug 'vim-ruby/vim-ruby'
 
 " Elixir
 Plug 'elixir-lang/vim-elixir'
-"Plug 'GrzegorzKozub/vim-elixirls', { 'do': ':ElixirLsCompileSync' }
-Plug 'RyanWillDev/vim-elixirls', { 'do': ':ElixirLsCompileSync' }
 Plug 'slashmili/alchemist.vim'
+Plug 'GrzegorzKozub/vim-elixirls', { 'do': ':ElixirLsCompileSync' }
 
 " JavaScript
 Plug 'pangloss/vim-javascript'
