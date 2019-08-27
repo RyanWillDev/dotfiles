@@ -26,6 +26,7 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'tpope/vim-fugitive'
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 
 " HTML
 Plug 'mattn/emmet-vim'
@@ -37,6 +38,7 @@ Plug 'vim-ruby/vim-ruby'
 Plug 'elixir-lang/vim-elixir'
 "Plug 'GrzegorzKozub/vim-elixirls', { 'do': ':ElixirLsCompileSync' }
 Plug 'RyanWillDev/vim-elixirls', { 'do': ':ElixirLsCompileSync' }
+Plug 'slashmili/alchemist.vim'
 
 " JavaScript
 Plug 'pangloss/vim-javascript'
@@ -105,10 +107,22 @@ augroup END
 """"""""""""""""""
 
 """"""""""""""""""
+"    DEOPLETE    "
+""""""""""""""""""
+
+let g:deoplete#enable_at_startup = 1
+" Close preview window when pum is closed
+autocmd CompleteDone * silent! pclose!
+
+""""""""""""""""""
+"  END DEOPLETE  "
+""""""""""""""""""
+
+""""""""""""""""""
 "      ALE       "
 """"""""""""""""""
 
-let g:ale_completion_enabled = 1
+"let g:ale_completion_enabled = 1
 let g:ale_lint_on_save = 1
 " let g:ale_fix_on_save = 1
 let g:ale_fixers = {
