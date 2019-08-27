@@ -150,6 +150,11 @@ let g:ale_rust_rls_executable = $HOME . '/.cargo/bin/rls'
 nmap gd <Plug>(ale_go_to_definition)
 nmap gh <Plug>(ale_hover)
 
+" Tab completion
+inoremap <silent><expr> <Tab>
+      \ pumvisible() ? "\<c-y>" : "\<TAB>"
+
+
 """"""""""""""""""
 "     END ALE    "
 """"""""""""""""""
