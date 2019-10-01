@@ -92,6 +92,7 @@ let g:vimwiki_list = [{'path': '~/notes/',
 augroup vimwikicmds
   autocmd! vimwikicmds
   autocmd Filetype vimwiki nnoremap <buffer> <leader>db  :call VimwikiDailyBoilerPlate()<CR>
+  autocmd Filetype vimwiki nnoremap <buffer> <leader>tb  :call VimwikiTicketBoilerPlate()<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>td <esc>:put='## '.strftime('%b %d, %Y')<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>tl :TicketLink<space>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dn :VimwikiMakeTomorrowDiaryNote<CR>
@@ -302,15 +303,20 @@ function! VimwikiDailyBoilerPlate()
   normal! gg
   0put='# '.strftime('%b %d, %Y')
 
-  put=''
-  put='*TODOs*'
+  for section in ['*TODOs*', '*Tickets*', '*Notes*'] 
+    put=''
+    put=''.section
+  endfor
+endfunction
 
-  put=''
-  put='*Tickets*'
-
-
-  put=''
-  put='*Notes*'
+function! VimwikiTicketBoilerPlate()
+  normal! gg
+  0put='# '.toupper(expand('%:t:r'))
+  
+  for section in ['*Subtasks*', '*TODOs*', '*Questions*', '*Notes*'] 
+    put=''
+    put=''.section
+  endfor
 endfunction
 
 """""""""""""""""""
