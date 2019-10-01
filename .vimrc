@@ -358,6 +358,9 @@ set signcolumn=yes
 " Turn on syntax highlighting
 syntax on
 
+" Enable Code Fencing
+let g:markdown_fenced_languages = ['elixir', 'js=javascript', 'ruby', 'bash=sh']
+
 " For plugins to load correctly
 filetype plugin indent on
 
