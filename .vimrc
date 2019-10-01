@@ -149,6 +149,8 @@ let g:ale_elixir_elixir_ls_config = { 'elixirLS': { 'dialyzerEnabled': v:false }
 let g:ale_rust_rls_executable = $HOME . '/.cargo/bin/rls'
 
 nmap gd <Plug>(ale_go_to_definition)
+nmap gvd <Plug>(ale_go_to_definition_in_vsplit)
+nmap gsd <Plug>(ale_go_to_definition_in_split)
 nmap gh <Plug>(ale_hover)
 
 " Tab completion
