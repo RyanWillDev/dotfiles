@@ -147,11 +147,16 @@ alias grc='git rebase --continue'
 alias gstash='git stash'
 alias gstashl='git stash list'
 alias gstashp='git stash pop'
+alias gstashc='git stash clear'
+
+gstasha () {
+  git stash apply stash@{$1}
+}
 
 # Remote Repo
 alias gpush='git push origin'
 alias gpull='git pull origin'
-alias gf='git fetch'
+alias gf='git fetch origin'
 
 # Log
 alias glog='git log --decorate --graph'
@@ -161,6 +166,7 @@ alias gsub='git subtree push --prefix'
 grh () {
   git reset HEAD~$1 $2
 }
+
 
 ##### NAVIGATION SHORTCUTS #####
 alias projects="cd ~/Projects"
