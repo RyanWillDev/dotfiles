@@ -119,6 +119,7 @@ export PATH="$PATH:/Applications/Postgres.app/Contents/Versions/latest/bin"
 ##### GIT ALIASES #####
 
 alias gco='git checkout'
+alias gcob='git checkout -b'
 
 # Commit
 alias gs='git status'
@@ -139,18 +140,25 @@ alias gbd='git branch -D'
 
 # Rebase
 alias gr='git rebase'
-alias gri='git rebase -i'
 alias gra='git rebase --abort'
 alias grc='git rebase --continue'
+gri () {
+  git rebase -i HEAD~$1
+}
 
 # Stash
-alias gstash='git stash'
-alias gstashl='git stash list'
-alias gstashp='git stash pop'
-alias gstashc='git stash clear'
-
-gstasha () {
+alias gsh='git stash'
+alias gsl='git stash list'
+alias gsp='git stash pop'
+alias gsc='git stash clear'
+gsa () {
   git stash apply stash@{$1}
+}
+gsd () {
+  git stash drop stash@{$1}
+}
+gss () {
+  git stash push -m $1 "${@:2}"
 }
 
 # Remote Repo
