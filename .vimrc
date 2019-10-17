@@ -41,6 +41,7 @@ Plug 'GrzegorzKozub/vim-elixirls', { 'do': ':ElixirLsCompileSync' }
 
 " JavaScript
 Plug 'pangloss/vim-javascript'
+Plug 'maxmellon/vim-jsx-pretty'
 
 " TypeScript
 Plug 'HerringtonDarkholme/yats.vim'
