@@ -170,7 +170,7 @@ let g:user_emmet_leader_key=','
 
 " Only enable Emmet for html and css
 let g:user_emmet_install_global = 0
-au FileType html,css EmmetInstall
+au FileType html,css,eelixir EmmetInstall
 
 """"""""""""""""
 "   END EMMET  "
@@ -315,7 +315,7 @@ function! VimwikiTicketBoilerPlate()
   normal! gg
   0put='# '.toupper(expand('%:t:r'))
   
-  for section in ['*Subtasks*', '*TODOs*', '*Questions*', '*Notes*'] 
+  for section in ['*Subtasks*', '*TODOs*', '*Questions*', '*Notes*', '*Work Log*'] 
     put=''
     put=''.section
   endfor
