@@ -15,7 +15,6 @@ A collection of my dotfiles
 
 ### Vim
 1. JavaScript/TypeScript
-   - nvim-typescript ?
    - Prettier - installed globaly
    - TypeScript - installed in project or globally
 2. Elixir
@@ -40,6 +39,16 @@ A collection of my dotfiles
   - solargraph gem
 - Elixir
   - elixirls cloned and compiled
+  ```
+    {
+      "languageserver": {
+        "elixirLS": {
+          "command": "~/elixir-ls/release/language_server.sh",
+          "filetypes": ["elixir", "eelixir"]
+        }
+      }
+    }
+  ```
 - JavaScript
   prettier
   coc-tsserver
