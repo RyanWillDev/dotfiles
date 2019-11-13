@@ -100,7 +100,7 @@ augroup vimwikicmds
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dp :VimwikiMakeYesterdayDiaryNote<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dc :VimwikiMakeDiaryNote<CR>
 
-  command! -nargs=1 TicketLink put='## ['.toupper('<args>').'](/tickets/'.toupper('<args>').')'
+  command! -nargs=+ TicketLink :call MakeTicketLink(<f-args>) 
 augroup END
 
 """"""""""""""""""
@@ -319,6 +319,18 @@ function! VimwikiTicketBoilerPlate()
     put=''
     put=''.section
   endfor
+endfunction
+
+function! MakeTicketLink(...)
+  let s:link = '[' . toupper(a:1) .'](/tickets/' . toupper(a:1) . ')'
+
+  if a:0 > 1 && a:2
+    " Add the link on the next line
+    put='## ' . s:link
+  else
+    " Add the link in line
+    execute 'normal! i ' . s:link
+  endif
 endfunction
 
 """""""""""""""""""
