@@ -314,6 +314,8 @@ endfunction
 function! VimwikiTicketBoilerPlate()
   normal! gg
   0put='# '.toupper(expand('%:t:r'))
+  put=''
+  put='[TICKET]('. $JIRA_URL .toupper(expand('%:t:r')).')'
   
   for section in ['*Subtasks*', '*TODOs*', '*Questions*', '*Notes*', '*Work Log*'] 
     put=''
