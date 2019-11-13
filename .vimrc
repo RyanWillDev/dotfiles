@@ -26,7 +26,8 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'tpope/vim-fugitive'
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " HTML
 Plug 'mattn/emmet-vim'
@@ -36,7 +37,6 @@ Plug 'vim-ruby/vim-ruby'
 
 " Elixir
 Plug 'elixir-lang/vim-elixir'
-Plug 'slashmili/alchemist.vim'
 Plug 'GrzegorzKozub/vim-elixirls', { 'do': ':ElixirLsCompileSync' }
 
 " JavaScript
@@ -45,7 +45,6 @@ Plug 'maxmellon/vim-jsx-pretty'
 
 " TypeScript
 Plug 'HerringtonDarkholme/yats.vim'
-Plug 'mhartington/nvim-typescript', {'do': './install.sh'}
 
 call plug#end()
 
@@ -100,7 +99,7 @@ augroup vimwikicmds
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dp :VimwikiMakeYesterdayDiaryNote<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dc :VimwikiMakeDiaryNote<CR>
 
-  command! -nargs=+ TicketLink :call MakeTicketLink(<f-args>) 
+  command! -nargs=+ TicketLink :call MakeTicketLink(<f-args>)
 augroup END
 
 """"""""""""""""""
@@ -108,22 +107,9 @@ augroup END
 """"""""""""""""""
 
 """"""""""""""""""
-"    DEOPLETE    "
-""""""""""""""""""
-
-let g:deoplete#enable_at_startup = 1
-" Close preview window when pum is closed
-autocmd CompleteDone * silent! pclose!
-
-""""""""""""""""""
-"  END DEOPLETE  "
-""""""""""""""""""
-
-""""""""""""""""""
 "      ALE       "
 """"""""""""""""""
 
-"let g:ale_completion_enabled = 1
 let g:ale_lint_on_save = 1
 let g:ale_fixers = {
       \'*': ['trim_whitespace'],
@@ -143,20 +129,25 @@ let g:ale_linters = {
       \'rust': ['rls', 'cargo']
       \}
 
-let g:ale_elixir_elixir_ls_release = $HOME . '/elixir-ls/release'
 let g:vim_elixir_ls_elixir_ls_dir = $HOME . '/elixir-ls'
-let g:ale_elixir_elixir_ls_config = { 'elixirLS': { 'dialyzerEnabled': v:false } }
 let g:ale_rust_rls_executable = $HOME . '/.cargo/bin/rls'
 
-nmap gd <Plug>(ale_go_to_definition)
-nmap gvd <Plug>(ale_go_to_definition_in_vsplit)
-nmap gsd <Plug>(ale_go_to_definition_in_split)
-nmap gh <Plug>(ale_hover)
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gvd ,v<Plug>(coc-definition)
+nmap <silent> gsd ,s<Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+nnoremap <silent> gh :call CocAction('doHover')<CR>
 
-" Tab completion
-inoremap <silent><expr> <Tab>
-      \ pumvisible() ? "\<c-y>" : "\<TAB>"
+let g:coc_snippet_next = '<C-n>'
+let g:coc_snippet_prev = '<C-p>'
 
+" Enter for completion
+" Endwise is overwriting <CR> map
+" If -1 means no complete option is selected
+" Using >= 0 would cause the completion to not be selected in some cases
+imap <CR> <c-r>=pumvisible() && complete_info()['selected'] != -1 ? coc#_select_confirm() : "\n"<CR>
 
 """"""""""""""""""
 "     END ALE    "
@@ -305,7 +296,7 @@ function! VimwikiDailyBoilerPlate()
   normal! gg
   0put='# '.strftime('%b %d, %Y')
 
-  for section in ['*TODOs*', '*Tickets*', '*Notes*'] 
+  for section in ['*TODOs*', '*Tickets*', '*Notes*']
     put=''
     put=''.section
   endfor
@@ -316,8 +307,8 @@ function! VimwikiTicketBoilerPlate()
   0put='# '.toupper(expand('%:t:r'))
   put=''
   put='[TICKET]('. $JIRA_URL .toupper(expand('%:t:r')).')'
-  
-  for section in ['*Subtasks*', '*TODOs*', '*Questions*', '*Notes*', '*Work Log*'] 
+
+  for section in ['*Subtasks*', '*TODOs*', '*Questions*', '*Notes*', '*Work Log*']
     put=''
     put=''.section
   endfor
