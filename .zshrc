@@ -137,6 +137,7 @@ alias gdc='git diff --cached'
 # Branch
 alias gb='git branch'
 alias gbd='git branch -D'
+alias gbdl='git branch | grep -vE "(master|develop)" | xargs git branch -D'
 
 # Rebase
 alias gr='git rebase'
@@ -174,6 +175,7 @@ alias gsub='git subtree push --prefix'
 grh () {
   git reset HEAD~$1 $2
 }
+
 
 
 ##### NAVIGATION SHORTCUTS #####
