@@ -299,9 +299,9 @@ function! VimwikiDailyBoilerPlate()
   normal! gg
   0put='# '.strftime('%b %d, %Y')
 
-  for section in ['*TODOs*', '*Tickets*', '*Notes*']
+  for section in ['TODOs', 'Tickets', 'Meetings', 'Notes']
     put=''
-    put=''.section
+    put='## '.section
   endfor
 endfunction
 
@@ -311,9 +311,9 @@ function! VimwikiTicketBoilerPlate()
   put=''
   put='[TICKET]('. $JIRA_URL .toupper(expand('%:t:r')).')'
 
-  for section in ['*Subtasks*', '*TODOs*', '*Questions*', '*Notes*', '*Work Log*']
+  for section in ['Subtasks', 'TODOs', 'Questions', 'Notes', 'Work Log']
     put=''
-    put=''.section
+    put='## '.section
   endfor
 endfunction
 
@@ -321,9 +321,9 @@ function! VimwikiMeetingBoilerPlate()
   normal! gg
   0put='# '.toupper(expand('%:t:r'))
 
-  for section in ['*TODOs*', '*Considerations*', '*Questions*', '*Notes*']
+  for section in ['TODOs', 'Considerations', 'Questions', 'Notes']
     put=''
-    put=''.section
+    put='## '.section
   endfor
 endfunction
 
