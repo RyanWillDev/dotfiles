@@ -457,8 +457,9 @@ set showmatch
 set spellfile=~/.config/nvim/tech.utf-8.add,~/.config/nvim/en.utf-8.add,~/.config/nvim/es.utf-8.add,~/.config/nvim/work.utf-8.add
 
 " Visualize tabs and newlines
-set listchars=tab:▸\ ,eol:¬
-set nolist
+"set listchars=tab:▸\ ,eol:¬,trail:•
+set listchars=trail:•
+set list
 map <leader>l :set list!<CR> " Toggle tabs and EOL
 
 " Color scheme (terminal)
