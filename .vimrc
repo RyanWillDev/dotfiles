@@ -13,38 +13,44 @@ let mapleader = ","
 
 call plug#begin('~/.local/share/nvim/site/plugged')
 " Colorschemes
-Plug 'AlessandroYorba/Sierra'
 Plug 'RyanWillDev/vim-citylights'
 
-Plug 'scrooloose/nerdtree'
-Plug 'w0rp/ale'
 Plug 'vimwiki/vimwiki'
-Plug 'jiangmiao/auto-pairs'
-Plug 'tpope/vim-endwise'
+Plug 'scrooloose/nerdtree'
 Plug 'airblade/vim-gitgutter'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
-Plug 'nathanaelkane/vim-indent-guides'
 Plug 'tpope/vim-fugitive'
+Plug 'nathanaelkane/vim-indent-guides'
 
+" Auto add matching praens and brackets
+Plug 'jiangmiao/auto-pairs'
+
+" Auto add end to languages that use do/end sytax EG: ruby and elixir
+Plug 'tpope/vim-endwise'
+
+" Linting and Autocompletion
+Plug 'w0rp/ale'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
+" Fuzzy searching files, commits, colorschemes, etc
+Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --all'}
+Plug 'junegunn/fzf.vim'
+
 " HTML
-Plug 'mattn/emmet-vim'
+Plug 'mattn/emmet-vim', {'for': ['html', 'css']}
 
 " Ruby
-Plug 'vim-ruby/vim-ruby'
+Plug 'vim-ruby/vim-ruby', {'for': ['ruby', 'eruby' ]}
 
 " Elixir
-Plug 'elixir-lang/vim-elixir'
-Plug 'GrzegorzKozub/vim-elixirls', { 'do': ':ElixirLsCompileSync' }
+Plug 'elixir-lang/vim-elixir', {'for': ['elixir', 'eelixir']}
+Plug 'GrzegorzKozub/vim-elixirls', {'for': ['elixir', 'eelixir'], 'do': ':ElixirLsCompileSync'}
 
 " JavaScript
-Plug 'pangloss/vim-javascript'
-Plug 'maxmellon/vim-jsx-pretty'
+Plug 'pangloss/vim-javascript', {'for': 'javascript'}
+Plug 'maxmellon/vim-jsx-pretty', {'for': 'javascript'}
 
 " TypeScript
-Plug 'HerringtonDarkholme/yats.vim'
+Plug 'HerringtonDarkholme/yats.vim', {'for': 'typescript'}
 
 call plug#end()
 
