@@ -332,7 +332,7 @@ function! MakeTicketLink(...)
 
   if a:0 > 1 && a:2
     " Add the link on the next line
-    put='## ' . s:link
+    put='- ' . s:link
   else
     " Add the link in line
     execute 'normal! i ' . s:link
@@ -351,7 +351,7 @@ function! MakeMeetingLink(...)
 
   if a:0 > 1 && a:2
     " Add the link on the next line
-    put='## ' . s:link
+    put='- ' . s:link
   else
     " Add the link in line
     execute 'normal! i ' . s:link
