@@ -13,38 +13,44 @@ let mapleader = ","
 
 call plug#begin('~/.local/share/nvim/site/plugged')
 " Colorschemes
-Plug 'AlessandroYorba/Sierra'
 Plug 'RyanWillDev/vim-citylights'
 
-Plug 'scrooloose/nerdtree'
-Plug 'w0rp/ale'
 Plug 'vimwiki/vimwiki'
-Plug 'jiangmiao/auto-pairs'
-Plug 'tpope/vim-endwise'
+Plug 'scrooloose/nerdtree'
 Plug 'airblade/vim-gitgutter'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
-Plug 'nathanaelkane/vim-indent-guides'
 Plug 'tpope/vim-fugitive'
+Plug 'nathanaelkane/vim-indent-guides'
 
+" Auto add matching praens and brackets
+Plug 'jiangmiao/auto-pairs'
+
+" Auto add end to languages that use do/end sytax EG: ruby and elixir
+Plug 'tpope/vim-endwise'
+
+" Linting and Autocompletion
+Plug 'w0rp/ale'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
+" Fuzzy searching files, commits, colorschemes, etc
+Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --all'}
+Plug 'junegunn/fzf.vim'
+
 " HTML
-Plug 'mattn/emmet-vim'
+Plug 'mattn/emmet-vim', {'for': ['html', 'css']}
 
 " Ruby
-Plug 'vim-ruby/vim-ruby'
+Plug 'vim-ruby/vim-ruby', {'for': ['ruby', 'eruby' ]}
 
 " Elixir
-Plug 'elixir-lang/vim-elixir'
-Plug 'GrzegorzKozub/vim-elixirls', { 'do': ':ElixirLsCompileSync' }
+Plug 'elixir-lang/vim-elixir', {'for': ['elixir', 'eelixir']}
+Plug 'GrzegorzKozub/vim-elixirls', {'for': ['elixir', 'eelixir'], 'do': ':ElixirLsCompileSync'}
 
 " JavaScript
-Plug 'pangloss/vim-javascript'
-Plug 'maxmellon/vim-jsx-pretty'
+Plug 'pangloss/vim-javascript', {'for': 'javascript'}
+Plug 'maxmellon/vim-jsx-pretty', {'for': 'javascript'}
 
 " TypeScript
-Plug 'HerringtonDarkholme/yats.vim'
+Plug 'HerringtonDarkholme/yats.vim', {'for': 'typescript'}
 
 call plug#end()
 
@@ -93,13 +99,16 @@ augroup vimwikicmds
   autocmd! vimwikicmds
   autocmd Filetype vimwiki nnoremap <buffer> <leader>db  :call VimwikiDailyBoilerPlate()<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>tb  :call VimwikiTicketBoilerPlate()<CR>
+  autocmd Filetype vimwiki nnoremap <buffer> <leader>mb  :call VimwikiMeetingBoilerPlate()<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>td <esc>:put='## '.strftime('%b %d, %Y')<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>tl :TicketLink<space>
+  autocmd Filetype vimwiki nnoremap <buffer> <leader>ml :MeetingLink<space>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dn :VimwikiMakeTomorrowDiaryNote<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dp :VimwikiMakeYesterdayDiaryNote<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dc :VimwikiMakeDiaryNote<CR>
 
   command! -nargs=+ TicketLink :call MakeTicketLink(<f-args>)
+  command! -nargs=+ MeetingLink :call MakeMeetingLink(<f-args>)
 augroup END
 
 """"""""""""""""""
@@ -296,9 +305,9 @@ function! VimwikiDailyBoilerPlate()
   normal! gg
   0put='# '.strftime('%b %d, %Y')
 
-  for section in ['*TODOs*', '*Tickets*', '*Notes*']
+  for section in ['TODOs', 'Tickets', 'Meetings', 'Notes']
     put=''
-    put=''.section
+    put='## '.section
   endfor
 endfunction
 
@@ -308,9 +317,19 @@ function! VimwikiTicketBoilerPlate()
   put=''
   put='[TICKET]('. $JIRA_URL .toupper(expand('%:t:r')).')'
 
-  for section in ['*Subtasks*', '*TODOs*', '*Questions*', '*Notes*', '*Work Log*']
+  for section in ['Subtasks', 'TODOs', 'Questions', 'Notes', 'Work Log']
     put=''
-    put=''.section
+    put='## '.section
+  endfor
+endfunction
+
+function! VimwikiMeetingBoilerPlate()
+  normal! gg
+  0put='# '.toupper(expand('%:t:r'))
+
+  for section in ['TODOs', 'Considerations', 'Questions', 'Notes']
+    put=''
+    put='## '.section
   endfor
 endfunction
 
@@ -319,7 +338,26 @@ function! MakeTicketLink(...)
 
   if a:0 > 1 && a:2
     " Add the link on the next line
-    put='## ' . s:link
+    put='- ' . s:link
+  else
+    " Add the link in line
+    execute 'normal! i ' . s:link
+  endif
+endfunction
+
+function! MakeMeetingLink(...)
+  let s:split_title = split(a:1, '-')
+  let s:proper_title = []
+
+  for word in s:split_title
+    call add(s:proper_title, toupper(word))
+  endfor
+
+  let s:link = '[' . join(s:proper_title, ' ') .'](/meetings/' . strftime("%Y-%m-%d") . '/' . a:1 .  ')'
+
+  if a:0 > 1 && a:2
+    " Add the link on the next line
+    put='- ' . s:link
   else
     " Add the link in line
     execute 'normal! i ' . s:link
@@ -425,8 +463,9 @@ set showmatch
 set spellfile=~/.config/nvim/tech.utf-8.add,~/.config/nvim/en.utf-8.add,~/.config/nvim/es.utf-8.add,~/.config/nvim/work.utf-8.add
 
 " Visualize tabs and newlines
-set listchars=tab:▸\ ,eol:¬
-set nolist
+"set listchars=tab:▸\ ,eol:¬,trail:•
+set listchars=trail:•
+set list
 map <leader>l :set list!<CR> " Toggle tabs and EOL
 
 " Color scheme (terminal)
