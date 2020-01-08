@@ -108,10 +108,15 @@ alias v.="vim ."
 . $HOME/.asdf/completions/asdf.bash
 
 ###### RUST #####
-export PATH="$PATH:/Users/${USER}/.cargo/bin"
+if [[ ! "$PATH" == */Users/${USER}/.cargo/bin* ]]; then
+  export PATH="$PATH:/Users/${USER}/.cargo/bin"
+fi
 
 ##### POSTGRES #####
-export PATH="$PATH:/Applications/Postgres.app/Contents/Versions/latest/bin"
+if [[ ! "$PATH" == */Applications/Postgres.app/Contents/Versions/latest/bin* ]]; then
+  export PATH="$PATH:/Applications/Postgres.app/Contents/Versions/latest/bin"
+fi
+
 
 ##### FZF #####
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
