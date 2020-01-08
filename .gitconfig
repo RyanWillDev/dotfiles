@@ -1,5 +1,5 @@
 [user]
-	name = Ryan Will
-	email = ryanwilldev@gmail.com
+  name = Ryan Will
+  email = ryanwilldev@gmail.com
 [core]
-	editor = nvim
+  editor = nvim

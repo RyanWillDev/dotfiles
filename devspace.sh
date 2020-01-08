@@ -13,7 +13,7 @@ then
     else
       sleep 1
       tmux new -c "/Users/${USER}/notes" -n "notes" nvim \;\
-        send-keys -t 0 ",w,w" \;\
+        send-keys -t 0 ",ww" \;\
         new-window -c "/Users/${USER}/Projects" \;\
         select-window -l
     fi

@@ -148,6 +148,7 @@ nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 nnoremap <silent> gh :call CocAction('doHover')<CR>
+nnoremap <leader>aft :call ToggleAleFixOnSave()<CR>
 
 let g:coc_snippet_next = '<C-n>'
 let g:coc_snippet_prev = '<C-p>'
@@ -260,8 +261,9 @@ nnoremap / /\v
 vnoremap / /\v
 map <leader><space> :let @/=''<CR> " clear search
 
-" Ale
-nnoremap <leader>aft :call ToggleAleFixOnSave()<CR>
+" Since , is the leader key use ,; to replace , for going
+" back to last result of f or t
+nnoremap <leader>; ,
 
 " Formatting
 map <leader>q gqip

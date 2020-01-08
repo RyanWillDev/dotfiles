@@ -119,7 +119,6 @@ GDPR
 repo
 fn
 ConsumerProducer
-n
 refactored
 api
 YouTube
@@ -154,6 +153,9 @@ dev
 webpack
 config
 Rebased
+Coc
+frontmatter
+Vimwiki
 Rollbar
 mrss
 uuid
