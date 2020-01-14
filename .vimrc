@@ -100,7 +100,7 @@ augroup vimwikicmds
   autocmd Filetype vimwiki nnoremap <buffer> <leader>db  :call VimwikiDailyBoilerPlate()<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>tb  :call VimwikiTicketBoilerPlate()<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>mb  :call VimwikiMeetingBoilerPlate()<CR>
-  autocmd Filetype vimwiki nnoremap <buffer> <leader>td <esc>:put='## '.strftime('%b %d, %Y')<CR>
+  autocmd Filetype vimwiki nnoremap <buffer> <leader>td <esc>:put='### '.strftime('%b %d, %Y')<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>tl :TicketLink<space>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>ml :MeetingLink<space>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dn :VimwikiMakeTomorrowDiaryNote<CR>
