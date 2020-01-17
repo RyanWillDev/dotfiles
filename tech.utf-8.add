@@ -175,3 +175,9 @@ attrs
 ECS
 namespace
 ssh'd
+kafkacat
+brod-cli
+diffing
+circleci
+CircleCi
+serializer
