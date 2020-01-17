@@ -14,6 +14,7 @@ then
       sleep 1
       tmux new -c "/Users/${USER}/notes" -n "notes" nvim \;\
         send-keys -t 0 ",ww" \;\
+        send-keys -t 0 ",aft" \;\
         new-window -c "/Users/${USER}/Projects" \;\
         select-window -l
     fi
