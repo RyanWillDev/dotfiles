@@ -207,3 +207,22 @@ fi
 if test -f "$HOME/devspace.sh"; then
 . $HOME/devspace.sh
 fi
+
+gifify () {
+  if [ ! command -v ffmpeg &>/dev/null ] || [ ! command -v gifsicle &>/dev/null ]
+  then
+    echo "Required programs ffmpeg and/or gifsicle not installed. Both can be installed with homebrew."
+    return 1
+  fi
+
+  if [ "${1}" = "help" ] || [ $# -lt 1 ]
+  then
+    echo "Argument order is input file, output file, frame rate."
+    return 0
+  fi
+
+  local output_filename=${2:-"out"}
+  local frame_rate=${3:-15}
+
+  ffmpeg -i $1 -s 1080x720 -pix_fmt rgb24 -r $frame_rate -f gif - | gifsicle --optimize=3 --delay=3 > "${output_filename}.gif"
+}
