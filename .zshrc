@@ -192,6 +192,7 @@ alias la='ls -aCF'
 alias ll='ls -laCF'
 alias ls='ls -CF'
 alias mkdir="mkdir -pv"
+alias rmf="rm -rf"
 
 
 ##### FUNCTIONS #####
