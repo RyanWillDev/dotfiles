@@ -157,9 +157,16 @@ alias gsc='git stash clear'
 gsa () {
   git stash apply stash@{$1}
 }
+
 gsd () {
-  git stash drop stash@{$1}
+  if [ $# -gt 1 ]
+  then
+    for i in {$1..$2}; gsd $i;
+  else
+    git stash drop stash@{$1}
+  fi
 }
+
 gss () {
   git stash push -m $1 "${@:2}"
 }
