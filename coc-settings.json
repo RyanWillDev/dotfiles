@@ -1,0 +1,20 @@
+{
+  "languageserver": {
+    "elixirLS": {
+      "command": "~/elixir-ls/release/language_server.sh",
+      "filetypes": ["elixir", "eelixir"]
+    },
+    "solargraph": {
+      "command": "solargraph",
+      "args": ["stdio"],
+      "filetypes": ["ruby", "eruby"]
+    },
+    "typescript": {
+      "command": "javascript-typescript-stdio",
+      "filetypes": ["javascript", "typescript"]
+    }
+  },
+  "settings": {
+    "elixirLS.dialyzerEnabled": false
+  }
+}
