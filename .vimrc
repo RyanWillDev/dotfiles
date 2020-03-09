@@ -6,6 +6,7 @@ filetype off
 
 " Use , as leader
 let mapleader = ","
+let g:auto_format_enabled = 0
 
 """""""""""""
 "  PLUGINS  "
@@ -100,7 +101,7 @@ augroup vimwikicmds
   autocmd Filetype vimwiki nnoremap <buffer> <leader>db  :call VimwikiDailyBoilerPlate()<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>tb  :call VimwikiTicketBoilerPlate()<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>mb  :call VimwikiMeetingBoilerPlate()<CR>
-  autocmd Filetype vimwiki nnoremap <buffer> <leader>td <esc>:put='### '.strftime('%b %d, %Y')<CR>
+  autocmd Filetype vimwiki nnoremap <buffer> <leader>td <esc>:execute 'normal! i### '.strftime('%b %d, %Y')<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>tl :TicketLink<space>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>ml :MeetingLink<space>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dn :VimwikiMakeTomorrowDiaryNote<CR>
@@ -123,24 +124,29 @@ let g:ale_lint_on_save = 1
 let g:ale_fixers = {
       \'*': ['trim_whitespace'],
       \'css': ['prettier'],
-      \'elixir': ['mix_format'],
       \'html': ['prettier'],
       \'javascript': ['prettier'],
       \'json': ['prettier'],
       \'markdown': ['prettier'],
-      \'ruby': ['rubocop'],
-      \'rust': ['rustfmt'],
       \'scss': ['prettier'],
       \'typescript': ['prettier']
       \}
+
 let g:ale_linters = {
-      \'elixir': ['elixir-ls', 'credo'],
+      \'elixir': ['credo'],
       \'rust': ['rls', 'cargo']
       \}
 
-let g:vim_elixir_ls_elixir_ls_dir = $HOME . '/elixir-ls'
 let g:ale_rust_rls_executable = $HOME . '/.cargo/bin/rls'
 
+""""""""""""""""""
+"     END ALE    "
+""""""""""""""""""
+
+
+""""""""""""""""""
+"      COC       "
+""""""""""""""""""
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gvd ,v<Plug>(coc-definition)
 nmap <silent> gsd ,s<Plug>(coc-definition)
@@ -148,10 +154,10 @@ nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 nnoremap <silent> gh :call CocAction('doHover')<CR>
-nnoremap <leader>aft :call ToggleAleFixOnSave()<CR>
 
 let g:coc_snippet_next = '<C-n>'
 let g:coc_snippet_prev = '<C-p>'
+let g:vim_elixir_ls_elixir_ls_dir = $HOME . '/elixir-ls'
 
 " Enter for completion
 " Endwise is overwriting <CR> map
@@ -160,7 +166,7 @@ let g:coc_snippet_prev = '<C-p>'
 imap <CR> <c-r>=pumvisible() && complete_info()['selected'] != -1 ? coc#_select_confirm() : "\n"<CR>
 
 """"""""""""""""""
-"     END ALE    "
+"     END COC    "
 """"""""""""""""""
 
 """""""""""""
@@ -268,6 +274,7 @@ nnoremap <leader>; ,
 " Formatting
 map <leader>q gqip
 
+nnoremap <leader>aft :call ToggleFormatOnSave()<CR>
 
 """"""""""""""""""""""
 "  END KEY MAPPINGS  "
@@ -277,25 +284,52 @@ map <leader>q gqip
 "    FUNCTIONS    "
 """""""""""""""""""
 
-function! AutoSaveAndFormat()
-  " BufLeave event was not triggered by popup
-  if !pumvisible()
-    " File is both modifiable and has a name
-    if &modifiable && expand('%') != ''
-      wa " Write all buffers
-      ALELint
-      if g:ale_fix_on_save
-        ALEFix
-      endif
-    endif
+function! CanModifyFile()
+  let l:value = 0
+
+  " File is both modifiable and has a name
+  if &modifiable && expand('%') != ''
+    let l:value = 1
+  endif
+
+  return l:value
+endfunction
+
+function! AutoSave()
+  " Event was not triggered by popup
+  if CanModifyFile() && !pumvisible() && &modified
+    "echom 'Calling AutoSave'
+    wa " Write all buffers
   endif
 endfunction
 
-function! ToggleAleFixOnSave()
-  if g:ale_fix_on_save
-    let g:ale_fix_on_save = 0
+function! FormatFile()
+  if CanModifyFile() && g:auto_format_enabled 
+    " Format file asynchronously and save file when complete
+    call CocActionAsync('format', { err, res -> execute('call AutoSave()') })
+    "echom 'Calling FormatFile'
+    "call CocActionAsync('format', function('Testing'))
+    " Used for removing whitepsace & prettier formatter
+    ALEFix
+  endif
+endfunction
+
+function! Testing(err, res)
+echom 'Testing called'
+  call AutoSave()
+endfunction
+
+function! AutoSaveAndFormat()
+  "echom 'Calling AutoSaveAndFormat'
+  call FormatFile()
+  call AutoSave()
+endfunction
+
+function! ToggleFormatOnSave()
+  if g:auto_format_enabled
+    let g:auto_format_enabled = 0
   else
-    let g:ale_fix_on_save = 1
+    let g:auto_format_enabled = 1
   endif
 endfunction
 
@@ -374,8 +408,11 @@ endfunction
 """""""""""""""""
 "    COMMANDS   "
 """""""""""""""""
-
-au FocusLost,BufLeave,WinLeave,TabLeave * call AutoSaveAndFormat()
+augroup AutoSaveAndFormatting
+  autocmd! AutoSaveAndFormatting
+  au FocusLost,BufLeave,WinLeave,TabLeave * call AutoSaveAndFormat()
+  au BufWritePost * call FormatFile()
+augroup END
 
 " Return to last edit position when opening files
 au BufReadPost *
