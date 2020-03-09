@@ -182,6 +182,10 @@ circleci
 CircleCi
 serializer
 VM
+Apps
+apps
+PLEX
+JS
 CSPs
 Fastly
 fastly
