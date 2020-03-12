@@ -353,7 +353,7 @@ function! VimwikiTicketBoilerPlate()
   put=''
   put='[TICKET]('. $JIRA_URL .toupper(expand('%:t:r')).')'
 
-  for section in ['Subtasks', 'TODOs', 'Questions', 'Notes', 'Work Log']
+  for section in ['TODOs', 'Questions', 'Notes', 'Ideal Implementation', 'Tradeoffs', 'Log']
     put=''
     put='## '.section
   endfor
