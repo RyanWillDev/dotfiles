@@ -328,8 +328,10 @@ endfunction
 function! ToggleFormatOnSave()
   if g:auto_format_enabled
     let g:auto_format_enabled = 0
+    echo "Auto format disabled"
   else
     let g:auto_format_enabled = 1
+    echo "Auto format enabled"
   endif
 endfunction
 
