@@ -17,6 +17,8 @@ call plug#begin('~/.local/share/nvim/site/plugged')
 Plug 'RyanWillDev/vim-citylights'
 
 Plug 'vimwiki/vimwiki'
+Plug 'RyanWillDev/vim-zettel'
+"Plug 'michal-h21/vim-zettel'
 Plug 'scrooloose/nerdtree'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
@@ -78,6 +80,8 @@ nnoremap <leader>ft :Rg<space>TODO\|FIXME<cr>
 "    VIM WIKI    "
 """"""""""""""""""
 
+let g:zettel_fzf_command = "rg --column --line-number --ignore-case --no-heading --color=always"
+let g:zettel_format = "%y%m%d-%H%M-%raw_title"
 let g:vimwiki_global_ext = 0
 let g:vimwiki_listsyms = ' ○◐●✓'
 let g:vimwiki_listsym_rejected = '✗'
@@ -94,7 +98,11 @@ let g:vimwiki_list = [{'path': '~/notes/',
                       \'diary_rel_path': 'daily/',
                       \'diary_index': 'daily',
                       \'diary_header': 'Daily Notes',
-                      \'auto_diary_index': 1},]
+                      \'auto_diary_index': 1},
+                      \{'path': '~/the_zett/',
+                      \ 'syntax': 'markdown',
+                      \'ext': '.md',
+                      \'auto_diary_index': 1}]
 
 augroup vimwikicmds
   autocmd! vimwikicmds
