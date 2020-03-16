@@ -80,8 +80,6 @@ nnoremap <leader>ft :Rg<space>TODO\|FIXME<cr>
 "    VIM WIKI    "
 """"""""""""""""""
 
-let g:zettel_fzf_command = "rg --column --line-number --ignore-case --no-heading --color=always"
-let g:zettel_format = "%y%m%d-%H%M-%raw_title"
 let g:vimwiki_global_ext = 0
 let g:vimwiki_listsyms = ' ○◐●✓'
 let g:vimwiki_listsym_rejected = '✗'
@@ -104,6 +102,14 @@ let g:vimwiki_list = [{'path': '~/notes/',
                       \'ext': '.md',
                       \'auto_diary_index': 1}]
 
+let g:zettel_fzf_command = "rg --column --line-number --ignore-case --no-heading --color=always"
+let g:zettel_format = "%y%m%d%H%M-%title"
+let g:zettel_options = [{}, {}, {
+      \'front_matter': {
+      \'type': '',
+      \'source': '',
+      \'tags': ''}}]
+
 augroup vimwikicmds
   autocmd! vimwikicmds
   autocmd Filetype vimwiki nnoremap <buffer> <leader>db  :call VimwikiDailyBoilerPlate()<CR>
@@ -116,8 +122,11 @@ augroup vimwikicmds
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dp :VimwikiMakeYesterdayDiaryNote<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dc :VimwikiMakeDiaryNote<CR>
 
+  autocmd Filetype vimwiki nnoremap <buffer> <leader>zn :ZettelNew<space>
+
   command! -nargs=+ TicketLink :call MakeTicketLink(<f-args>)
   command! -nargs=+ MeetingLink :call MakeMeetingLink(<f-args>)
+  command! -nargs=+ ZettleNew :call ZettleNew(<f-args>)
 augroup END
 
 """"""""""""""""""
@@ -312,7 +321,7 @@ function! AutoSave()
 endfunction
 
 function! FormatFile()
-  if CanModifyFile() && g:auto_format_enabled 
+  if CanModifyFile() && g:auto_format_enabled
     " Format file asynchronously and save file when complete
     call CocActionAsync('format', { err, res -> execute('call AutoSave()') })
     "echom 'Calling FormatFile'
