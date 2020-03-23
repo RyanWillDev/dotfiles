@@ -39,7 +39,7 @@ Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --all'}
 Plug 'junegunn/fzf.vim'
 
 " HTML
-Plug 'mattn/emmet-vim', {'for': ['html', 'css']}
+Plug 'mattn/emmet-vim', {'for': ['html', 'css', 'eruby', 'eelixir']}
 
 " Ruby
 Plug 'vim-ruby/vim-ruby', {'for': ['ruby', 'eruby' ]}
