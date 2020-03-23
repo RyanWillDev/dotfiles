@@ -126,7 +126,6 @@ augroup vimwikicmds
 
   command! -nargs=+ TicketLink :call MakeTicketLink(<f-args>)
   command! -nargs=+ MeetingLink :call MakeMeetingLink(<f-args>)
-  command! -nargs=+ ZettleNew :call ZettleNew(<f-args>)
 augroup END
 
 """"""""""""""""""
