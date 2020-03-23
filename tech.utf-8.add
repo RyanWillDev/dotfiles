@@ -224,3 +224,5 @@ postgres
 PR's
 configs
 COPL
+CloudSearch
+genserver
