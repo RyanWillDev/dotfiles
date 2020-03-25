@@ -108,6 +108,7 @@ let g:zettel_options = [{}, {}, {
       \'front_matter': {
       \'type': '',
       \'source': '',
+      \'inspiration': '',
       \'tags': ''}}]
 
 augroup vimwikicmds
@@ -322,7 +323,9 @@ endfunction
 function! FormatFile()
   if CanModifyFile() && g:auto_format_enabled
     " Format file asynchronously and save file when complete
-    call CocActionAsync('format', { err, res -> execute('call AutoSave()') })
+    "call CocActionAsync('format', { err, res -> execute('call AutoSave()') })
+    "Calling asynchronously seems to break elixir lsp
+    call CocAction('format')
     "echom 'Calling FormatFile'
     "call CocActionAsync('format', function('Testing'))
     " Used for removing whitepsace & prettier formatter
@@ -371,7 +374,7 @@ function! VimwikiTicketBoilerPlate()
   put=''
   put='[TICKET]('. $JIRA_URL .toupper(expand('%:t:r')).')'
 
-  for section in ['TODOs', 'Questions', 'Notes', 'Ideal Implementation', 'Tradeoffs', 'Log']
+  for section in ['TODOs', 'Notes', 'Ideal Implementation', 'Tradeoffs', 'Log']
     put=''
     put='## '.section
   endfor
@@ -429,7 +432,7 @@ endfunction
 augroup AutoSaveAndFormatting
   autocmd! AutoSaveAndFormatting
   au FocusLost,BufLeave,WinLeave,TabLeave * call AutoSaveAndFormat()
-  au BufWritePost * call FormatFile()
+  au BufWritePost * call AutoSaveAndFormat()
 augroup END
 
 " Return to last edit position when opening files
