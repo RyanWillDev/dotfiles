@@ -372,9 +372,9 @@ function! VimwikiTicketBoilerPlate()
   normal! gg
   0put='# '.toupper(expand('%:t:r'))
   put=''
-  put='[TICKET]('. $JIRA_URL .toupper(expand('%:t:r')).')'
+  put='[TICKET]('. $TICKET_TRACKER_URL .toupper(expand('%:t:r')).')'
 
-  for section in ['TODOs', 'Notes', 'Ideal Implementation', 'Tradeoffs', 'Log']
+  for section in ['TODOs', 'Notes', 'Work Log']
     put=''
     put='## '.section
   endfor
@@ -384,16 +384,22 @@ function! VimwikiMeetingBoilerPlate()
   normal! gg
   0put='# '.toupper(expand('%:t:r'))
 
-  for section in ['TODOs', 'Considerations', 'Questions', 'Notes']
+  for section in ['Action Items', 'Purpose', 'Questions', 'Notes']
     put=''
     put='## '.section
   endfor
 endfunction
 
-function! MakeTicketLink(...)
-  let s:link = '[' . toupper(a:1) .'](/tickets/' . toupper(a:1) . ')'
+function! MakeTicketLink(newline, ...)
+  let s:ticket_name = []
 
-  if a:0 > 1 && a:2
+  for word in a:000
+    call add(s:ticket_name, toupper(word))
+  endfor
+
+  let s:link = '[' . join(s:ticket_name, '-') .'](/tickets/' . join(s:ticket_name, '-') . ')'
+
+  if a:newline
     " Add the link on the next line
     put='- ' . s:link
   else
@@ -402,17 +408,18 @@ function! MakeTicketLink(...)
   endif
 endfunction
 
-function! MakeMeetingLink(...)
-  let s:split_title = split(a:1, '-')
+function! MakeMeetingLink(newline, ...)
   let s:proper_title = []
+  let s:link_title = join(a:000, '-')
+  let s:today = strftime("%Y-%m-%d")
 
-  for word in s:split_title
+  for word in a:000
     call add(s:proper_title, toupper(word))
   endfor
 
-  let s:link = '[' . join(s:proper_title, ' ') .'](/meetings/' . strftime("%Y-%m-%d") . '/' . a:1 .  ')'
+  let s:link = '[' . join(s:proper_title, ' ') .'](/meetings/' . s:today . '-' . s:link_title . ')'
 
-  if a:0 > 1 && a:2
+  if a:newline
     " Add the link on the next line
     put='- ' . s:link
   else
