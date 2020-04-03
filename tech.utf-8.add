@@ -226,3 +226,4 @@ configs
 COPL
 CloudSearch
 genserver
+jbuilder
