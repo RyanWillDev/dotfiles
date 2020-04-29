@@ -139,6 +139,8 @@ alias gdc='git diff --cached'
 # Branch
 alias gb='git branch'
 alias gbd='git branch -D'
+
+# Removes all local branches except master and develop
 alias gbc='git branch | grep -vE "(master|develop)" | xargs git branch -D'
 
 # Rebase
@@ -154,6 +156,7 @@ alias gsh='git stash'
 alias gsl='git stash list'
 alias gsp='git stash pop'
 alias gsc='git stash clear'
+
 gsa () {
   git stash apply stash@{$1}
 }
@@ -161,6 +164,9 @@ gsa () {
 gsd () {
   if [ $# -gt 1 ]
   then
+    # If the number of arguments is more than one
+    # treat it as a range of indexes in the stash.
+    # The ranges can be ascending or descending.
     for i in {$1..$2}; gsd $i;
   else
     git stash drop stash@{$1}
@@ -168,7 +174,8 @@ gsd () {
 }
 
 gss () {
-  git stash push -m $1 "${@:2}"
+  # Takes a message and then a space separated path spec
+  git stash push -m $1 "{@:2}"
 }
 
 # Remote Repo
@@ -227,8 +234,8 @@ gifify () {
     return 0
   fi
 
-  local output_filename=${2:-"out"}
-  local frame_rate=${3:-15}
+  local output_filename=${2:-"out"} # Sets output filename to second argument or "out"
+  local frame_rate=${3:-15} # Sets frame rate to third argument or 15
 
   ffmpeg -i $1 -s 1080x720 -pix_fmt rgb24 -r $frame_rate -f gif - | gifsicle --optimize=3 --delay=3 > "${output_filename}.gif"
 }
