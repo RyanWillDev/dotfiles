@@ -374,7 +374,7 @@ function! VimwikiTicketBoilerPlate()
   put=''
   put='[TICKET]('. $TICKET_TRACKER_URL .toupper(expand('%:t:r')).')'
 
-  for section in ['TODOs', 'Notes', 'Work Log']
+  for section in ['TODOs', 'Notes', 'Log']
     put=''
     put='## '.section
   endfor
