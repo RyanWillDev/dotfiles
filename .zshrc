@@ -175,7 +175,7 @@ gsd () {
 
 gss () {
   # Takes a message and then a space separated path spec
-  git stash push -m $1 "{@:2}"
+  git stash push -m $1 "${@:2}"
 }
 
 # Remote Repo
