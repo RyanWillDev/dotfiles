@@ -315,31 +315,26 @@ endfunction
 function! AutoSave()
   " Event was not triggered by popup
   if CanModifyFile() && !pumvisible() && &modified
-    "echom 'Calling AutoSave'
     wa " Write all buffers
   endif
 endfunction
 
 function! FormatFile()
-  if CanModifyFile() && g:auto_format_enabled
+  if CanModifyFile() && g:auto_format_enabled && &modified
+    "Calling asynchronously seems to break elixir lsp
+    "It also formats the file your entering not leaving
+    "Not ideal to do sync format, but will have to do for now
     " Format file asynchronously and save file when complete
     "call CocActionAsync('format', { err, res -> execute('call AutoSave()') })
-    "Calling asynchronously seems to break elixir lsp
+
     call CocAction('format')
-    "echom 'Calling FormatFile'
-    "call CocActionAsync('format', function('Testing'))
+
     " Used for removing whitepsace & prettier formatter
     ALEFix
   endif
 endfunction
 
-function! Testing(err, res)
-echom 'Testing called'
-  call AutoSave()
-endfunction
-
 function! AutoSaveAndFormat()
-  "echom 'Calling AutoSaveAndFormat'
   call FormatFile()
   call AutoSave()
 endfunction
@@ -439,7 +434,7 @@ endfunction
 augroup AutoSaveAndFormatting
   autocmd! AutoSaveAndFormatting
   au FocusLost,BufLeave,WinLeave,TabLeave * call AutoSaveAndFormat()
-  au BufWritePost * call AutoSaveAndFormat()
+  au BufWriteCmd * call AutoSaveAndFormat()
 augroup END
 
 " Return to last edit position when opening files
