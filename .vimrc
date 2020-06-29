@@ -17,8 +17,8 @@ call plug#begin('~/.local/share/nvim/site/plugged')
 Plug 'RyanWillDev/vim-citylights'
 
 Plug 'vimwiki/vimwiki'
-Plug 'RyanWillDev/vim-zettel'
-"Plug 'michal-h21/vim-zettel'
+"Plug 'RyanWillDev/vim-zettel'
+Plug 'michal-h21/vim-zettel', {'for': ['vimwiki']}
 Plug 'scrooloose/nerdtree'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
@@ -90,13 +90,6 @@ let g:vimwiki_list = [{'path': '~/notes/',
                       \'diary_index': 'daily',
                       \'diary_header': 'Daily Notes',
                       \'auto_diary_index': 1},
-                      \{'path': '~/work_notes/',
-                      \ 'syntax': 'markdown',
-                      \'ext': '.md',
-                      \'diary_rel_path': 'daily/',
-                      \'diary_index': 'daily',
-                      \'diary_header': 'Daily Notes',
-                      \'auto_diary_index': 1},
                       \{'path': '~/the_zett/',
                       \ 'syntax': 'markdown',
                       \'ext': '.md',
@@ -104,11 +97,10 @@ let g:vimwiki_list = [{'path': '~/notes/',
 
 let g:zettel_fzf_command = "rg --column --line-number --ignore-case --no-heading --color=always"
 let g:zettel_format = "%y%m%d%H%M-%title"
-let g:zettel_options = [{}, {}, {
+let g:zettel_options = [{}, {
       \'front_matter': {
       \'type': '',
       \'source': '',
-      \'inspiration': '',
       \'tags': ''}}]
 
 augroup vimwikicmds
@@ -292,6 +284,8 @@ nnoremap <leader>; ,
 map <leader>q gqip
 
 nnoremap <leader>aft :call ToggleFormatOnSave()<CR>
+nnoremap <leader>bu :call Backup()<CR>
+
 
 """"""""""""""""""""""
 "  END KEY MAPPINGS  "
@@ -300,6 +294,22 @@ nnoremap <leader>aft :call ToggleFormatOnSave()<CR>
 """""""""""""""""""
 "    FUNCTIONS    "
 """""""""""""""""""
+
+function! Backup()
+  wa
+
+  let output = system('git add . && git commit -m "daily wrap up"')
+  if v:shell_error != 0
+    echo output
+  else
+    let output = system('git push origin')
+    if v:shell_error != 0
+      echo output
+    else
+      echo "Backup complete"
+    endif
+  endif
+endfunction
 
 function! CanModifyFile()
   let l:value = 0
@@ -321,8 +331,7 @@ endfunction
 
 function! FormatFile()
   if CanModifyFile() && g:auto_format_enabled && &modified
-    "Calling asynchronously seems to break elixir lsp
-    "It also formats the file your entering not leaving
+    "Calling asynchronously formats the file your entering not leaving
     "Not ideal to do sync format, but will have to do for now
     " Format file asynchronously and save file when complete
     "call CocActionAsync('format', { err, res -> execute('call AutoSave()') })
