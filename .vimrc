@@ -298,7 +298,7 @@ nnoremap <leader>bu :call Backup()<CR>
 function! Backup()
   wa
 
-  let output = system('git add . && git commit -m "daily wrap up"')
+  let output = system('git add . && git commit -m "backup"')
   if v:shell_error != 0
     echo output
   else
