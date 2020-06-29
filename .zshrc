@@ -180,7 +180,7 @@ gss () {
 
 # Remote Repo
 alias gpush='git push origin'
-alias gpull='git pull origin'
+alias gpull='git pull origin --no-rebase'
 alias gf='git fetch origin'
 
 # Log
