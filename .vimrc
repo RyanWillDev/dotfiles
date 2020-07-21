@@ -531,7 +531,7 @@ set smartcase
 set showmatch
 
 " Spellcheck
-set spellfile=~/.config/nvim/tech.utf-8.add,~/.config/nvim/en.utf-8.add,~/.config/nvim/es.utf-8.add,~/.config/nvim/work.utf-8.add
+set spellfile=~/.config/nvim/en.utf-8.add,~/.config/nvim/work.utf-8.add
 
 " Visualize tabs and newlines
 "set listchars=tab:▸\ ,eol:¬,trail:•
