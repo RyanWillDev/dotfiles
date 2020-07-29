@@ -10,9 +10,19 @@ A collection of my dotfiles
 
 ## Setup new project
 
+### Setting up shell
+1. Install tmux
+2. Install ohmyzsh
+3. symlink .zshrc && .prettierrc && .tmux.conf && devspace.sh to home directory
+4. Install asdf
+
+### Installing Neovim
 1. Create .config/nvim/ dir and symlink .vimrc -> .config/init.vim
-2. symlink .zshrc && .prettierrc && .tmux.conf to home directory
+2. Download [Plug](https://github.com/junegunn/vim-plug)
 3. Regenerate spell check files [this](https://thoughtbot.com/blog/vim-spell-checking) will help
+4. Install node for COC **Requires asdf**
+4. Install elixir
+5. Install elixir-ls
 
 ## Requirements
 
@@ -58,3 +68,7 @@ Node must be installed globally
 
 [elixir-ls](https://github.com/elixir-lsp/elixir-ls) installed, compiled,
 and release created inside `release` directory
+Run the following after cloning
+ `asdf install`
+`mix deps.get && mix compile`
+
