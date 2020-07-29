@@ -101,8 +101,9 @@ alias v.="vim ."
 
 
 ##### ASDF #####
-. $HOME/.asdf/asdf.sh
-. $HOME/.asdf/completions/asdf.bash
+# The recommendation of using brew to get the prefix is slow
+. /usr/local/opt/asdf/asdf.sh
+#. $HOME/.asdf/completions/asdf.bash
 
 ###### RUST #####
 if [[ ! "$PATH" == */Users/${USER}/.cargo/bin* ]]; then
@@ -179,8 +180,11 @@ gss () {
 }
 
 # Remote Repo
-alias gpush='git push origin'
+alias gpush='git push -u origin HEAD'
+alias gp='gpush'
+alias gpf='gpush --force'
 alias gpull='git pull origin --no-rebase'
+alias gpu='gpull'
 alias gf='git fetch origin'
 
 # Log
