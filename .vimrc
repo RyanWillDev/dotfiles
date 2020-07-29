@@ -17,8 +17,6 @@ call plug#begin('~/.local/share/nvim/site/plugged')
 Plug 'RyanWillDev/vim-citylights'
 
 Plug 'vimwiki/vimwiki'
-"Plug 'RyanWillDev/vim-zettel'
-Plug 'michal-h21/vim-zettel', {'for': ['vimwiki']}
 Plug 'scrooloose/nerdtree'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
@@ -114,11 +112,11 @@ augroup vimwikicmds
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dn :VimwikiMakeTomorrowDiaryNote<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dp :VimwikiMakeYesterdayDiaryNote<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dc :VimwikiMakeDiaryNote<CR>
-
   autocmd Filetype vimwiki nnoremap <buffer> <leader>zn :ZettelNew<space>
 
   command! -nargs=+ TicketLink :call MakeTicketLink(<f-args>)
   command! -nargs=+ MeetingLink :call MakeMeetingLink(<f-args>)
+  command! -nargs=+ ZettelNew :call MakeZettel(<f-args>)
 augroup END
 
 """"""""""""""""""
@@ -430,6 +428,13 @@ function! MakeMeetingLink(newline, ...)
     " Add the link in line
     execute 'normal! i ' . s:link
   endif
+endfunction
+
+function! MakeZettel(...)
+  let s:sanitized_name = join(a:000, '-') . '.md'
+  let s:time = strftime("%Y%m%d%H%M%S")
+
+  execute 'e ' . fnameescape($HOME . '/notes/the-zett/' . s:time. '-' . s:sanitized_name)
 endfunction
 
 """""""""""""""""""
