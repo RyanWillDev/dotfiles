@@ -87,19 +87,7 @@ let g:vimwiki_list = [{'path': '~/notes/',
                       \'diary_rel_path': 'daily/',
                       \'diary_index': 'daily',
                       \'diary_header': 'Daily Notes',
-                      \'auto_diary_index': 1},
-                      \{'path': '~/the_zett/',
-                      \ 'syntax': 'markdown',
-                      \'ext': '.md',
-                      \'auto_diary_index': 1}]
-
-let g:zettel_fzf_command = "rg --column --line-number --ignore-case --no-heading --color=always"
-let g:zettel_format = "%y%m%d%H%M-%title"
-let g:zettel_options = [{}, {
-      \'front_matter': {
-      \'type': '',
-      \'source': '',
-      \'tags': ''}}]
+                      \'auto_diary_index': 1},]
 
 augroup vimwikicmds
   autocmd! vimwikicmds
