@@ -20,6 +20,8 @@ A collection of my dotfiles
 1. Create .config/nvim/ dir symlink 2. Add symlinks
   - .vimrc -> .config/nvim/init.vim
   - .en.utf-8.add -> .config/nvim/.en.utf-8.add
+2. Create spell files
+  - `mkspell! ~/.config/nvim/en.utf-8.add`
 3. Download [Plug](https://github.com/junegunn/vim-plug)
 4. Regenerate spell check files [this](https://thoughtbot.com/blog/vim-spell-checking) will help
 5. Install node for COC **Requires asdf**
