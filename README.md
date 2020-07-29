@@ -17,12 +17,14 @@ A collection of my dotfiles
 4. Install asdf
 
 ### Installing Neovim
-1. Create .config/nvim/ dir and symlink .vimrc -> .config/init.vim
-2. Download [Plug](https://github.com/junegunn/vim-plug)
-3. Regenerate spell check files [this](https://thoughtbot.com/blog/vim-spell-checking) will help
-4. Install node for COC **Requires asdf**
-4. Install elixir
-5. Install elixir-ls
+1. Create .config/nvim/ dir symlink 2. Add symlinks
+  - .vimrc -> .config/nvim/init.vim
+  - .en.utf-8.add -> .config/nvim/.en.utf-8.add
+3. Download [Plug](https://github.com/junegunn/vim-plug)
+4. Regenerate spell check files [this](https://thoughtbot.com/blog/vim-spell-checking) will help
+5. Install node for COC **Requires asdf**
+6. Install elixir
+7. Install elixir-ls
 
 ## Requirements
 
