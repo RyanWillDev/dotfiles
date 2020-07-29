@@ -101,10 +101,16 @@ augroup vimwikicmds
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dp :VimwikiMakeYesterdayDiaryNote<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dc :VimwikiMakeDiaryNote<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>zn :ZettelNew<space>
+  autocmd Filetype vimwiki nnoremap <leader>zs :ZettelSearch<CR>
+
 
   command! -nargs=+ TicketLink :call MakeTicketLink(<f-args>)
   command! -nargs=+ MeetingLink :call MakeMeetingLink(<f-args>)
   command! -nargs=+ ZettelNew :call MakeZettel(<f-args>)
+  command! -bang -nargs=? ZettelSearch
+        \ call fzf#vim#grep(
+        \'rg --line-number --column --color=always --smart-case -- '.shellescape(<q-args>), 1,
+        \fzf#vim#with_preview({'dir': $HOME . '/notes/the-zett', 'options': '--tiebreak=end'}), <bang>0)
 augroup END
 
 """"""""""""""""""
