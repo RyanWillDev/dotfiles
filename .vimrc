@@ -259,6 +259,9 @@ endwhile
 vnoremap Y "*y
 nnoremap Y "*y
 
+" Yank filename
+nnoremap <leader>yf :let @" = expand('%')<CR>
+
 " Move up/down editor lines
 nnoremap j gj
 nnoremap k gk
