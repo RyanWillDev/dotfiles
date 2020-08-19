@@ -383,7 +383,7 @@ function! VimwikiMeetingBoilerPlate()
   normal! gg
   0put='# '.toupper(expand('%:t:r'))
 
-  for section in ['Action Items', 'Purpose', 'Questions', 'Notes']
+  for section in ['Purpose', 'Action Items', 'Questions', 'Notes']
     put=''
     put='## '.section
   endfor
