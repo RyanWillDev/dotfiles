@@ -135,7 +135,7 @@ let g:ale_fixers = {
 
 let g:ale_linters = {
       \'elixir': ['credo'],
-      \'rust': ['rls', 'cargo']
+      \'rust': ['rls', 'cargo'],
       \}
 
 let g:ale_rust_rls_executable = $HOME . '/.cargo/bin/rls'
