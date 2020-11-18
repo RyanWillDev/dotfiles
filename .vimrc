@@ -489,6 +489,9 @@ syntax on
 " Enable Code Fencing
 let g:markdown_fenced_languages = ['elixir', 'js=javascript', 'ruby', 'bash=sh']
 
+" Opens Image files using the open command
+let g:netrw_browsex_viewer="xdg-open"
+
 " For plugins to load correctly
 filetype plugin indent on
 
