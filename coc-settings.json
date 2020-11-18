@@ -11,7 +11,7 @@
     },
     "typescript": {
       "command": "javascript-typescript-stdio",
-      "filetypes": ["javascript", "typescript"]
+      "filetypes": ["javascript", "javascriptreact", "typescript"]
     }
   },
   "settings": {
