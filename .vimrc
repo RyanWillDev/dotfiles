@@ -90,7 +90,12 @@ let g:vimwiki_list = [{'path': '~/notes/',
                       \'diary_rel_path': 'daily/',
                       \'diary_index': 'daily',
                       \'diary_header': 'Daily Notes',
-                      \'auto_diary_index': 1},]
+                      \'auto_diary_index': 1},
+                      \{'path': '~/notes/the-zett',
+                      \ 'syntax': 'markdown',
+                      \'ext': '.md',
+                      \'diary_rel_path': '../daily/'
+                      \}]
 
 augroup vimwikicmds
   autocmd! vimwikicmds
