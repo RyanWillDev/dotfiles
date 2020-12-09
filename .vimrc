@@ -136,6 +136,7 @@ let g:ale_fixers = {
       \'css': ['prettier'],
       \'html': ['prettier'],
       \'javascript': ['prettier'],
+      \'javascriptreact': ['prettier'],
       \'json': ['prettier'],
       \'markdown': ['prettier'],
       \'scss': ['prettier'],
