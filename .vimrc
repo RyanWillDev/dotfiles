@@ -111,6 +111,7 @@ augroup vimwikicmds
   autocmd Filetype vimwiki nnoremap <buffer> <leader>zn :ZettelNew<space>
   autocmd Filetype vimwiki nnoremap <leader>zs :ZettelSearch<CR>
 
+  autocmd Filetype vimwiki nnoremap <leader>bu :call Backup()<CR>
 
   command! -nargs=+ TicketLink :call MakeTicketLink(<f-args>)
   command! -nargs=+ MeetingLink :call MakeMeetingLink(<f-args>)
@@ -290,7 +291,6 @@ nnoremap <leader>; ,
 map <leader>q gqip
 
 nnoremap <leader>aft :call ToggleFormatOnSave()<CR>
-nnoremap <leader>bu :call Backup()<CR>
 
 
 """"""""""""""""""""""
