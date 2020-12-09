@@ -91,7 +91,6 @@ source $ZSH/oh-my-zsh.sh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
 
-
 # Aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
@@ -114,7 +113,6 @@ fi
 if [[ ! "$PATH" == */Applications/Postgres.app/Contents/Versions/latest/bin* ]]; then
   export PATH="$PATH:/Applications/Postgres.app/Contents/Versions/latest/bin"
 fi
-
 
 ##### FZF #####
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
