@@ -30,7 +30,9 @@ Plug 'tpope/vim-endwise'
 
 " Linting and Autocompletion
 Plug 'w0rp/ale'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+"Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'neovim/nvim-lspconfig'
+Plug 'nvim-lua/completion-nvim'
 
 " Fuzzy searching files, commits, colorschemes, etc
 Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --all'}
@@ -156,28 +158,59 @@ let g:ale_rust_rls_executable = $HOME . '/.cargo/bin/rls'
 
 
 """"""""""""""""""
-"      COC       "
+"      LSP       "
 """"""""""""""""""
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gvd ,v<Plug>(coc-definition)
-nmap <silent> gsd ,s<Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-nnoremap <silent> gh :call CocAction('doHover')<CR>
+lua << EOF
+
+  require'lspconfig'.elixirls.setup{
+    cmd = { vim.env.HOME .. "/elixir-ls/release/language_server.sh" },
+    on_attach=require'completion'.on_attach,
+    settings = {
+      elixirLS = {
+        -- The default env is test
+        mixEnv = "dev"
+      }
+    }
+  }
+
+  require'lspconfig'.solargraph.setup{
+    on_attach = require'completion'.on_attach,
+    settings = {
+      solargraph = {
+        diagnostics = true
+
+      }
+    }
+  }
+
+  require'lspconfig'.tsserver.setup{
+    on_attach = require'completion'.on_attach
+  }
+
+  vim.lsp.set_log_level(0)
+
+EOF
+
+ nmap <silent> gd <cmd>lua vim.lsp.buf.definition()<CR>
+ nmap <silent> gvd ,v<cmd>lua vim.lsp.buf.definition()<CR>
+ nmap <silent> gh <cmd>lua vim.lsp.buf.hover()<CR>
+ nmap <silent> gs <cmd>lua vim.lsp.buf.signature_help()<CR>
+ nmap <silent> gr <cmd>lua vim.lsp.buf.references()<CR>
+ nmap <silent> ,e <cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
 
 let g:coc_snippet_next = '<C-n>'
 let g:coc_snippet_prev = '<C-p>'
 let g:vim_elixir_ls_elixir_ls_dir = $HOME . '/elixir-ls'
 
-" Enter for completion
-" Endwise is overwriting <CR> map
-" If -1 means no complete option is selected
-" Using >= 0 would cause the completion to not be selected in some cases
-imap <CR> <c-r>=pumvisible() && complete_info()['selected'] != -1 ? coc#_select_confirm() : "\n"<CR>
+" Configure completion
+let g:completion_enable_auto_hover = 0
+" Doesn't auto select/insert from completion menu
+set completeopt=menuone,noinsert,noselect
+" Turns off additonal message
+set shortmess+=c
 
 """"""""""""""""""
-"     END COC    "
+"     END LSP    "
 """"""""""""""""""
 
 """""""""""""
@@ -342,8 +375,9 @@ function! FormatFile()
     "Not ideal to do sync format, but will have to do for now
     " Format file asynchronously and save file when complete
     "call CocActionAsync('format', { err, res -> execute('call AutoSave()') })
+    "call CocAction('format')
 
-    call CocAction('format')
+    lua vim.lsp.buf.formatting_sync()
 
     " Used for removing whitepsace & prettier formatter
     ALEFix
@@ -468,7 +502,7 @@ au BufReadPost *
 
 autocmd QuickFixCmdPost *grep* cwindow
 
-autocmd FileType gitcommit,markdown setlocal spell spelllang=en_us,es complete+=kspell
+autocmd FileType gitcommit,markdown setlocal spell spelllang=en_us complete+=kspell
 
 """"""""""""""""""
 "  END COMMANDS  "

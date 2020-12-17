@@ -17,6 +17,8 @@ A collection of my dotfiles
 4. Install asdf
 
 ### Installing Neovim
+Use asdf plugin to install neovim nightly
+
 1. Create .config/nvim/ dir symlink 2. Add symlinks
   - .vimrc -> .config/nvim/init.vim
   - .en.utf-8.add -> .config/nvim/.en.utf-8.add
@@ -24,9 +26,6 @@ A collection of my dotfiles
   - `mkspell! ~/.config/nvim/en.utf-8.add`
 3. Download [Plug](https://github.com/junegunn/vim-plug)
 4. Regenerate spell check files [this](https://thoughtbot.com/blog/vim-spell-checking) will help
-5. Install node for COC **Requires asdf**
-6. Install elixir
-7. Install elixir-ls
 
 ## Requirements
 
@@ -48,21 +47,12 @@ Prettier installed globally
 
 Credo installed in project
 
-## Coc.nvim
-
-I opted to install the language servers independent without using Coc
-extensions. I'm not a fan of having to manage plugins within a plugin, but Coc
-has the best UX of the lsps so far.
-
-If you're using a version manager for your language,
-packages must be installed for every version of you have installed
-
 ### TypeScript and JavaScript
 
 Node must be installed globally
 
 `npm i -g typescript`
-`npm i javascript-typescript-langserver -g`
+`npm i typescript-langserver -g`
 
 ### Ruby
 
@@ -70,9 +60,13 @@ Node must be installed globally
 
 ### Elixir
 
-[elixir-ls](https://github.com/elixir-lsp/elixir-ls) installed, compiled,
-and release created inside `release` directory
+Install elixirls
+
 Run the following after cloning
  `asdf install`
 `mix deps.get && mix compile`
 
+compile, and create release inside `release` directory
+
+The previous steps can be done by opening an elixir file and running
+`:ElixirLSCompile`
