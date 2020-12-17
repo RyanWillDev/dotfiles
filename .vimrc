@@ -200,23 +200,9 @@ EOF
  nmap <silent> gr <cmd>lua vim.lsp.buf.references()<CR>
  nmap <silent> ,e <cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
 
-"nmap <silent> gd <Plug>(coc-definition)
-"nmap <silent> gvd ,v<Plug>(coc-definition)
-"nmap <silent> gsd ,s<Plug>(coc-definition)
-"nmap <silent> gy <Plug>(coc-type-definition)
-"nmap <silent> gi <Plug>(coc-implementation)
-"nmap <silent> gr <Plug>(coc-references)
-"nnoremap <silent> gh :call CocAction('doHover')<CR>
-
 let g:coc_snippet_next = '<C-n>'
 let g:coc_snippet_prev = '<C-p>'
 let g:vim_elixir_ls_elixir_ls_dir = $HOME . '/elixir-ls'
-
-" Enter for completion
-" Endwise is overwriting <CR> map
-" If -1 means no complete option is selected
-" Using >= 0 would cause the completion to not be selected in some cases
-""imap <CR> <c-r>=pumvisible() && complete_info()['selected'] != -1 ? coc#_select_confirm() : "\n"<CR>
 
 " Configure completion
 let g:completion_enable_auto_hover = 0
