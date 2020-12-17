@@ -208,13 +208,6 @@ alias ls='ls -CF'
 alias mkdir="mkdir -pv"
 alias rmf="rm -rf"
 
-
-##### FUNCTIONS #####
-mkcd () { # Make Change Directory
-  mkdir -p $1
-  cd $1
-}
-
 if test -f "$HOME/work_stuff.sh"; then
 . $HOME/work_stuff.sh
 fi
@@ -222,6 +215,12 @@ fi
 if test -f "$HOME/devspace.sh"; then
 . $HOME/devspace.sh
 fi
+
+##### FUNCTIONS #####
+mkcd () { # Make Change Directory
+  mkdir -p $1
+  cd $1
+}
 
 gifify () {
   if [ ! command -v ffmpeg &>/dev/null ] || [ ! command -v gifsicle &>/dev/null ]
