@@ -189,6 +189,8 @@ lua << EOF
     on_attach = require'completion'.on_attach
   }
 
+  vim.lsp.set_log_level(0)
+
 EOF
 
  nmap <silent> gd <cmd>lua vim.lsp.buf.definition()<CR>
