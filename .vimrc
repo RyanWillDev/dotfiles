@@ -167,10 +167,8 @@ lua << EOF
     on_attach=require'completion'.on_attach,
     settings = {
       elixirLS = {
-        mixEnv = "dev",
-        -- Dialyzer breaks references in current elixirlsp
-        -- Plus, it is not updating on file write
-        dialyzerEnabled = false
+        -- The default env is test
+        mixEnv = "dev"
       }
     }
   }
