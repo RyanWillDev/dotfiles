@@ -30,7 +30,6 @@ Plug 'tpope/vim-endwise'
 
 " Linting and Autocompletion
 Plug 'w0rp/ale'
-"Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/completion-nvim'
 
