@@ -504,7 +504,7 @@ au BufReadPost *
 
 autocmd QuickFixCmdPost *grep* cwindow
 
-autocmd FileType gitcommit,markdown setlocal spell spelllang=en_us,es complete+=kspell
+autocmd FileType gitcommit,markdown setlocal spell spelllang=en_us complete+=kspell
 
 """"""""""""""""""
 "  END COMMANDS  "
