@@ -175,9 +175,15 @@ lua << EOF
     }
   }
 
-    require'lspconfig'.solargraph.setup{}
+  require'lspconfig'.solargraph.setup{
+    on_attach = require'completion'.on_attach,
+    settings = {
+      solargraph = {
+        diagnostics = true
 
- vim.lsp.set_log_level(0)
+      }
+    }
+  }
 
 EOF
 
