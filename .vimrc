@@ -192,8 +192,8 @@ EOF
 
  nmap <silent> gd <cmd>lua vim.lsp.buf.definition()<CR>
  nmap <silent> gvd ,v<cmd>lua vim.lsp.buf.definition()<CR>
+ nmap <silent> gsd ,s<cmd>lua vim.lsp.buf.definition()<CR>
  nmap <silent> gh <cmd>lua vim.lsp.buf.hover()<CR>
- nmap <silent> gs <cmd>lua vim.lsp.buf.signature_help()<CR>
  nmap <silent> gr <cmd>lua vim.lsp.buf.references()<CR>
  nmap <silent> ,e <cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
 
