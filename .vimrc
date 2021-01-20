@@ -177,7 +177,6 @@ lua << EOF
     settings = {
       solargraph = {
         diagnostics = true
-
       }
     }
   }
@@ -190,15 +189,17 @@ lua << EOF
 
 EOF
 
- nmap <silent> gd <cmd>lua vim.lsp.buf.definition()<CR>
- nmap <silent> gvd ,v<cmd>lua vim.lsp.buf.definition()<CR>
- nmap <silent> gsd ,s<cmd>lua vim.lsp.buf.definition()<CR>
- nmap <silent> gh <cmd>lua vim.lsp.buf.hover()<CR>
- nmap <silent> gr <cmd>lua vim.lsp.buf.references()<CR>
- nmap <silent> ,e <cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
+nmap <silent> gd <cmd>lua vim.lsp.buf.definition()<CR>
+nmap <silent> gvd ,v<cmd>lua vim.lsp.buf.definition()<CR>
+nmap <silent> gsd ,s<cmd>lua vim.lsp.buf.definition()<CR>
+nmap <silent> gh <cmd>lua vim.lsp.buf.hover()<CR>
+nmap <silent> gr <cmd>lua vim.lsp.buf.references()<CR>
+nmap <silent> ,e <cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
 
-let g:coc_snippet_next = '<C-n>'
-let g:coc_snippet_prev = '<C-p>'
+let g:completion_confirm_key = "\<CR>"
+inoremap <exp><CR> <c-r>=pumvisible() && complete_info()['selected'] != -1 ? "<CR>" : "\n"<CR>
+
+let g:completion_enable_auto_paren = 1
 let g:vim_elixir_ls_elixir_ls_dir = $HOME . '/elixir-ls'
 
 " Configure completion
