@@ -85,18 +85,14 @@ command! W w
 let g:vimwiki_global_ext = 0
 let g:vimwiki_listsyms = ' ○◐●✓'
 let g:vimwiki_listsym_rejected = '✗'
-let g:vimwiki_list = [{'path': '~/notes/',
+let g:vimwiki_list = [{'path': '~/notes/main',
                       \ 'syntax': 'markdown',
                       \'ext': '.md',
                       \'diary_rel_path': 'daily/',
                       \'diary_index': 'daily',
                       \'diary_header': 'Daily Notes',
                       \'auto_diary_index': 1},
-                      \{'path': '~/notes/the-zett',
-                      \ 'syntax': 'markdown',
-                      \'ext': '.md',
-                      \'diary_rel_path': '../daily/'
-                      \}]
+                    \]
 
 augroup vimwikicmds
   autocmd! vimwikicmds
@@ -109,22 +105,40 @@ augroup vimwikicmds
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dn :VimwikiMakeTomorrowDiaryNote<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dp :VimwikiMakeYesterdayDiaryNote<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dc :VimwikiMakeDiaryNote<CR>
-  autocmd Filetype vimwiki nnoremap <buffer> <leader>zn :ZettelNew<space>
-  autocmd Filetype vimwiki nnoremap <leader>zs :ZettelSearch<CR>
 
   autocmd Filetype vimwiki nnoremap <leader>bu :call Backup()<CR>
 
   command! -nargs=+ TicketLink :call MakeTicketLink(<f-args>)
   command! -nargs=+ MeetingLink :call MakeMeetingLink(<f-args>)
-  command! -nargs=+ ZettelNew :call MakeZettel(<f-args>)
-  command! -bang -nargs=? ZettelSearch
-        \ call fzf#vim#grep(
-        \'rg --line-number --column --color=always --smart-case -- '.shellescape(<q-args>), 1,
-        \fzf#vim#with_preview({'dir': $HOME . '/notes/the-zett', 'options': '--tiebreak=end'}), <bang>0)
 augroup END
 
 """"""""""""""""""
 "  END VIM WIKI  "
+""""""""""""""""""
+
+""""""""""""""""""
+"       ZK       "
+""""""""""""""""""
+nnoremap <leader>nn :NewNote<space>
+nnoremap <leader>no :call OpenNote()<CR>
+nnoremap  :NewNote<space>
+command! -nargs=+ NewNote :call MakeNote(<f-args>)
+
+function! MakeNote(...)
+  let s:file_name = join(a:000, ' ') . '.md'
+  let s:time = strftime("%Y%m%d%H%M%S")
+
+  execute 'e ' . fnameescape($HOME . '/notes/the-zett/' . s:time . ' ' . s:file_name)
+endfunction
+
+function! OpenNote()
+  " Uses the id of the note and a wild card to " open the file by id.
+  " Since the ids should always be unique we can rely on this.
+  e <cword>*
+endfunction
+
+""""""""""""""""""
+"     END ZK     "
 """"""""""""""""""
 
 """"""""""""""""""
@@ -471,13 +485,6 @@ function! MakeMeetingLink(newline, ...)
     " Add the link in line
     execute 'normal! i ' . s:link
   endif
-endfunction
-
-function! MakeZettel(...)
-  let s:sanitized_name = join(a:000, '-') . '.md'
-  let s:time = strftime("%Y%m%d%H%M%S")
-
-  execute 'e ' . fnameescape($HOME . '/notes/the-zett/' . s:time. '-' . s:sanitized_name)
 endfunction
 
 """""""""""""""""""
