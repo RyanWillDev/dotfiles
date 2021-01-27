@@ -32,6 +32,7 @@ Use asdf plugin to install neovim nightly
 ### Vim
 
 Install [ripgrep](https://github.com/BurntSushi/ripgrep) for [fzf.vim](https://github.com/junegunn/fzf.vim)
+Install bat `brew install bat` adds syntax highlighting to fzf.vim preview
 
 ## Ale
 
