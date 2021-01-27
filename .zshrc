@@ -98,6 +98,8 @@ alias vim="nvim"
 alias v="vim"
 alias v.="vim ."
 
+export ZK_PATH=$HOME/notes/the-zett
+export PATH=$PATH:$HOME/zk/bin
 
 ##### ASDF #####
 # The recommendation of using brew to get the prefix is slow
