@@ -199,7 +199,7 @@ lua << EOF
     on_attach = require'completion'.on_attach
   }
 
-  vim.lsp.set_log_level(0)
+  vim.lsp.set_log_level("debug")
 
 EOF
 
@@ -210,14 +210,12 @@ nmap <silent> gh <cmd>lua vim.lsp.buf.hover()<CR>
 nmap <silent> gr <cmd>lua vim.lsp.buf.references()<CR>
 nmap <silent> ,e <cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
 
-let g:completion_confirm_key = "\<CR>"
-inoremap <exp><CR> <c-r>=pumvisible() && complete_info()['selected'] != -1 ? "<CR>" : "\n"<CR>
-
 let g:completion_enable_auto_paren = 1
 let g:vim_elixir_ls_elixir_ls_dir = $HOME . '/elixir-ls'
 
 " Configure completion
 let g:completion_enable_auto_hover = 0
+
 " Doesn't auto select/insert from completion menu
 set completeopt=menuone,noinsert,noselect
 " Turns off additonal message
@@ -299,7 +297,7 @@ inoremap jk <esc>
 " Window Mangagement
 nnoremap <C-w>. 15<C-w>>
 nnoremap <C-w>, 15<C-w><
-nnoremap <C-w>= 15<C-w>+
+nnoremap <C-w>+ 15<C-w>+
 nnoremap <C-w>- 15<C-w>-
 nnoremap <C-w>V <C-w>H
 nnoremap <C-w>S <C-w>K
