@@ -315,10 +315,10 @@ vnoremap Y "*y
 nnoremap Y "*y
 
 " Yank filename
-nnoremap <leader>yf :let @" = expand('%:t')<CR>
+nnoremap <leader>yf :let @" = expand('%:t')<CR>:let @*=@"<CR>
 
 " Yank file path relative to pwd
-nnoremap <leader>yrf :let @" = '/' . expand('%:.')<CR>
+nnoremap <leader>yrf :let @" = '/' . expand('%:.')<CR>:let @*=@"<CR>
 
 " Move up/down editor lines
 nnoremap j gj
