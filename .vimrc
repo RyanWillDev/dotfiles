@@ -97,11 +97,9 @@ let g:vimwiki_list = [{'path': '~/notes/main',
 augroup vimwikicmds
   autocmd! vimwikicmds
   autocmd Filetype vimwiki nnoremap <buffer> <leader>db  :call VimwikiDailyBoilerPlate()<CR>
-  autocmd Filetype vimwiki nnoremap <buffer> <leader>tb  :call VimwikiTicketBoilerPlate()<CR>
-  autocmd Filetype vimwiki nnoremap <buffer> <leader>mb  :call VimwikiMeetingBoilerPlate()<CR>
+  autocmd Filetype vimwiki nnoremap <buffer> <leader>tb  :call TicketBoilerPlate()<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>td <esc>:execute 'normal! i### '.strftime('%b %d, %Y')<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>tl :TicketLink<space>
-  autocmd Filetype vimwiki nnoremap <buffer> <leader>ml :MeetingLink<space>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dn :VimwikiMakeTomorrowDiaryNote<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dp :VimwikiMakeYesterdayDiaryNote<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dc :VimwikiMakeDiaryNote<CR>
@@ -109,7 +107,6 @@ augroup vimwikicmds
   autocmd Filetype vimwiki nnoremap <leader>bu :call Backup()<CR>
 
   command! -nargs=+ TicketLink :call MakeTicketLink(<f-args>)
-  command! -nargs=+ MeetingLink :call MakeMeetingLink(<f-args>)
 augroup END
 
 """"""""""""""""""
@@ -425,7 +422,7 @@ function! VimwikiDailyBoilerPlate()
   endfor
 endfunction
 
-function! VimwikiTicketBoilerPlate()
+function! TicketBoilerPlate()
   normal! gg
   0put='# '.toupper(expand('%:t:r'))
   put=''
@@ -435,54 +432,6 @@ function! VimwikiTicketBoilerPlate()
     put=''
     put='## '.section
   endfor
-endfunction
-
-function! VimwikiMeetingBoilerPlate()
-  normal! gg
-  0put='# '.toupper(expand('%:t:r'))
-
-  for section in ['Purpose', 'Action Items', 'Questions', 'Notes']
-    put=''
-    put='## '.section
-  endfor
-endfunction
-
-function! MakeTicketLink(newline, ...)
-  let s:ticket_name = []
-
-  for word in a:000
-    call add(s:ticket_name, toupper(word))
-  endfor
-
-  let s:link = '[' . join(s:ticket_name, '-') .'](/tickets/' . join(s:ticket_name, '-') . ')'
-
-  if a:newline
-    " Add the link on the next line
-    put='- ' . s:link
-  else
-    " Add the link in line
-    execute 'normal! i ' . s:link
-  endif
-endfunction
-
-function! MakeMeetingLink(newline, ...)
-  let s:proper_title = []
-  let s:link_title = join(a:000, '-')
-  let s:today = strftime("%Y-%m-%d")
-
-  for word in a:000
-    call add(s:proper_title, toupper(word))
-  endfor
-
-  let s:link = '[' . join(s:proper_title, ' ') .'](/meetings/' . s:today . '-' . s:link_title . ')'
-
-  if a:newline
-    " Add the link on the next line
-    put='- ' . s:link
-  else
-    " Add the link in line
-    execute 'normal! i ' . s:link
-  endif
 endfunction
 
 """""""""""""""""""
