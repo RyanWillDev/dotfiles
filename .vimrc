@@ -423,6 +423,24 @@ function! VimwikiDailyBoilerPlate()
   endfor
 endfunction
 
+function! MakeTicketLink(newline, ...)
+  let s:ticket_name = []
+
+  for word in a:000
+    call add(s:ticket_name, toupper(word))
+  endfor
+
+  let s:link = '[' . join(s:ticket_name, '-') .'](/tickets/' . join(s:ticket_name, '-') . ')'
+
+  if a:newline
+    " Add the link on the next line
+    put='- ' . s:link
+  else
+    " Add the link in line
+    execute 'normal! i ' . s:link
+  endif
+endfunction
+
 function! TicketBoilerPlate()
   normal! gg
   0put='# '.toupper(expand('%:t:r'))
