@@ -120,7 +120,6 @@ augroup END
 """"""""""""""""""
 nnoremap <leader>nn :NewNote<space>
 nnoremap <leader>no :call OpenNote()<CR>
-nnoremap  :NewNote<space>
 command! -nargs=+ NewNote :call MakeNote(<f-args>)
 
 function! MakeNote(...)
@@ -131,7 +130,7 @@ function! MakeNote(...)
 endfunction
 
 function! OpenNote()
-  " Uses the id of the note and a wild card to " open the file by id.
+  " Uses the id of the note and a wild card to open the file by id.
   " Since the ids should always be unique we can rely on this.
   e <cword>*
 endfunction
