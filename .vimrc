@@ -523,7 +523,7 @@ set cursorcolumn
 " Whitespace
 set wrap
 set textwidth=80
-set formatoptions=tcqrn1
+set formatoptions=tcrnl1j
 set tabstop=2
 set shiftwidth=2
 set softtabstop=2
