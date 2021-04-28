@@ -12,19 +12,10 @@ then
       tmux attach
     else
       sleep 1
-      if [[  -z $WORK_MACHINE  ]]; then
-        tmux new -c "/Users/${USER}/notes/main" -n "notes" nvim \;\
-          send-keys -t 0 ",ww" \;\
-          send-keys -t 0 ",aft" \;\
-          new-window -c "/Users/${USER}/Projects" \;\
-          select-window -l
-      else
         tmux new -c "/Users/${USER}/notes/main" -n "notes" nvim \;\
           send-keys -t 0 ",w,w" \;\
           send-keys -t 0 ",aft" \;\
-          new-window -c "/Users/${USER}/Projects" \;\
-          select-window -l
-      fi
+          new-window -d -c "/Users/${USER}/Projects"
     fi
   else
     echo "You don't have tmux installed : ("
