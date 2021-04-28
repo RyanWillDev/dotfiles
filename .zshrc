@@ -97,6 +97,7 @@ source $ZSH/oh-my-zsh.sh
 alias vim="nvim"
 alias v="vim"
 alias v.="vim ."
+alias oz="open_zett"
 
 export ZK_PATH=$HOME/notes/the-zett
 export PATH=$PATH:$HOME/zk/bin
