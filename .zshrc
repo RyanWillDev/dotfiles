@@ -242,3 +242,9 @@ gifify () {
 
   ffmpeg -i $1 -s 1080x720 -pix_fmt rgb24 -r $frame_rate -f gif - | gifsicle --optimize=3 --delay=3 > "${output_filename}.gif"
 }
+
+open_zett () {
+  tmux new-window -e ZK_PATH="${1:-$ZK_PATH}" -c "${1:-$ZK_PATH}" nvim \;\
+    split-window -e ZK_PATH="${1:-$ZK_PATH}" -d -h zks \;\
+    split-window -e ZK_PATH="${1:-$ZK_PATH}" -dv -t 1 zkt
+}
