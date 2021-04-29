@@ -246,6 +246,5 @@ gifify () {
 
 open_zett () {
   tmux new-window -e ZK_PATH="${1:-$ZK_PATH}" -c "${1:-$ZK_PATH}" nvim \;\
-    split-window -e ZK_PATH="${1:-$ZK_PATH}" -d -h zks \;\
-    split-window -e ZK_PATH="${1:-$ZK_PATH}" -dv -t 1 zkt
+    split-window -e ZK_PATH="${1:-$ZK_PATH}" -d -h zks
 }
