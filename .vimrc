@@ -126,7 +126,7 @@ function! MakeNote(...)
   let s:file_name = join(a:000, ' ') . '.md'
   let s:time = strftime("%Y%m%d%H%M%S")
 
-  execute 'e ' . fnameescape($ZK_PATH . s:time . ' ' . s:file_name)
+  execute 'e ' . fnameescape($ZK_PATH . '/' . s:time . ' ' . s:file_name)
 endfunction
 
 function! OpenNote()
