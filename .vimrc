@@ -431,6 +431,11 @@ function! VimwikiDailyBoilerPlate()
   for section in ['TODOs', 'Tickets', 'Meetings', 'Notes']
     put=''
     put='## '.section
+    if section == 'TODOs'
+      put=''
+      put='**Short Term**'
+      put='**Long Term**'
+    endif
   endfor
 endfunction
 
