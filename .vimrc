@@ -120,6 +120,7 @@ augroup END
 """"""""""""""""""
 nnoremap <leader>nn :NewNote<space>
 nnoremap <leader>no :call OpenNote()<CR>
+nnoremap <leader>na :call YankNoteAnchor()<CR>
 command! -nargs=+ NewNote :call MakeNote(<f-args>)
 
 function! MakeNote(...)
@@ -133,6 +134,16 @@ function! OpenNote()
   " Uses the id of the note and a wild card to open the file by id.
   " Since the ids should always be unique we can rely on this.
   e <cword>*
+endfunction
+
+function! YankNoteAnchor()
+let filename = expand('%:t')
+let parts = split(filename)
+let id = parts[0]
+let anchor = '[[' . id . ']]'
+
+let @" = anchor
+let @*=@"
 endfunction
 
 """"""""""""""""""
