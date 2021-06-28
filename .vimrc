@@ -182,6 +182,8 @@ let g:ale_rust_rls_executable = $HOME . '/.cargo/bin/rls'
 """"""""""""""""""
 "      LSP       "
 """"""""""""""""""
+let g:completion_enable_auto_signature = 0
+
 lua << EOF
 
   require'lspconfig'.elixirls.setup{
