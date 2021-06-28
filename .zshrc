@@ -122,11 +122,13 @@ fi
 
 ##### GIT ALIASES #####
 
+# Misc
 alias gco='git checkout'
-alias gcob='git checkout -b'
+alias gs='git status'
+alias gsw='git show'
+alias grl='git reflog'
 
 # Commit
-alias gs='git status'
 alias ga='git add'
 alias gap='git add -p'
 alias gc='git commit'
@@ -141,7 +143,8 @@ alias gdc='git diff --cached'
 # Branch
 alias gb='git branch'
 alias gbd='git branch -D'
-
+alias gbc='gcob'
+alias gcob='git checkout -b'
 # Removes all local branches except master and develop
 alias gbc='git branch | grep -vE "(master|develop)" | xargs git branch -D'
 
@@ -155,9 +158,9 @@ gri () {
 
 # Stash
 alias gsh='git stash'
-alias gsl='git stash list'
-alias gsp='git stash pop'
-alias gsc='git stash clear'
+alias gshl='git stash list'
+alias gshp='git stash pop'
+alias gshc='git stash clear'
 
 gsa () {
   git stash apply stash@{$1}
