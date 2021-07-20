@@ -143,10 +143,10 @@ alias gdc='git diff --cached'
 # Branch
 alias gb='git branch'
 alias gbd='git branch -D'
-alias gbc='gcob'
+alias gbn='gcob'
 alias gcob='git checkout -b'
 # Removes all local branches except master and develop
-alias gbc='git branch | grep -vE "(master|develop)" | xargs git branch -D'
+alias gbc='git branch | grep -vE "(master|develop|main)" | xargs git branch -D'
 
 # Rebase
 alias gr='git rebase'

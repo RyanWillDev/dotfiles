@@ -182,6 +182,8 @@ let g:ale_rust_rls_executable = $HOME . '/.cargo/bin/rls'
 """"""""""""""""""
 "      LSP       "
 """"""""""""""""""
+" No the floating window signature is not respecting pumvisible causing the
+" autosave to fire when it previously would not.
 let g:completion_enable_auto_signature = 0
 
 lua << EOF
