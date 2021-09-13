@@ -245,11 +245,9 @@ lua << EOF
   --vim.lsp.set_log_level("debug")
 EOF
 
-let g:completion_enable_auto_paren = 0
 let g:vim_elixir_ls_elixir_ls_dir = $HOME . '/elixir-ls'
 
 " Configure completion
-let g:completion_enable_auto_hover = 0
 
 " Doesn't auto select/insert from completion menu
 set completeopt=menuone,noinsert,noselect
