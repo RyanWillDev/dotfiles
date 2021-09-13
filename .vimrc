@@ -31,7 +31,8 @@ Plug 'tpope/vim-endwise'
 " Linting and Autocompletion
 Plug 'w0rp/ale'
 Plug 'neovim/nvim-lspconfig'
-Plug 'nvim-lua/completion-nvim'
+Plug 'hrsh7th/nvim-cmp', {'branch': 'main'}
+Plug 'hrsh7th/cmp-nvim-lsp', {'branch': 'main'}
 
 " Fuzzy searching files, commits, colorschemes, etc
 Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --all'}
@@ -188,10 +189,29 @@ let g:ale_rust_rls_executable = $HOME . '/.cargo/bin/rls'
 let g:completion_enable_auto_signature = 0
 
 lua << EOF
+  local cmp = require'cmp'
+  cmp.setup({
+    sources = {
+      { name = 'nvim_lsp' }
+    },
+  })
+
+  local capabilities = vim.lsp.protocol.make_client_capabilities()
+  capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+
+  local on_attach = function(client, bufnr)
+
+    local map_opts = { noremap=true, silent=true }
+
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', map_opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gh', '<cmd>lua vim.lsp.buf.hover()<CR>', map_opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', map_opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', ',e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', map_opts)
+  end
 
   require'lspconfig'.elixirls.setup{
     cmd = { vim.env.HOME .. "/elixir-ls/release/language_server.sh" },
-    on_attach=require'completion'.on_attach,
+    on_attach = on_attach,
     settings = {
       elixirLS = {
         -- The default env is test
@@ -201,7 +221,7 @@ lua << EOF
   }
 
   require'lspconfig'.solargraph.setup{
-    on_attach = require'completion'.on_attach,
+    on_attach = on_attach,
     settings = {
       solargraph = {
         diagnostics = true
@@ -210,21 +230,15 @@ lua << EOF
   }
 
   require'lspconfig'.tsserver.setup{
-    on_attach = require'completion'.on_attach
+    on_attach = on_attach
   }
 
   vim.lsp.set_log_level("debug")
 
+  --vim.lsp.set_log_level("debug")
 EOF
 
-nmap <silent> gd <cmd>lua vim.lsp.buf.definition()<CR>
-nmap <silent> gvd ,v<cmd>lua vim.lsp.buf.definition()<CR>
-nmap <silent> gsd ,s<cmd>lua vim.lsp.buf.definition()<CR>
-nmap <silent> gh <cmd>lua vim.lsp.buf.hover()<CR>
-nmap <silent> gr <cmd>lua vim.lsp.buf.references()<CR>
-nmap <silent> ,e <cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
-
-let g:completion_enable_auto_paren = 1
+let g:completion_enable_auto_paren = 0
 let g:vim_elixir_ls_elixir_ls_dir = $HOME . '/elixir-ls'
 
 " Configure completion
