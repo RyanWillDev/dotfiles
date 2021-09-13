@@ -237,9 +237,6 @@ lua << EOF
     on_attach = on_attach,
     cmd = {'zk', 'lsp'},
     filetypes = {'markdown'},
-    root_dir = function()
-      return vim.loop.cwd()
-    end,
   }
 
   --vim.lsp.set_log_level("debug")
