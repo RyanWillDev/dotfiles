@@ -265,9 +265,9 @@ set updatetime=300
 """"""""""""""""""
 "    FUGITIVE    "
 """"""""""""""""""
-nnoremap <leader>gb :Gblame<CR>
+nnoremap <leader>gb :Git blame<CR>
 nnoremap <leader>gd :Gdiff<CR>
-nnoremap <leader>gl :0Glog<CR><CR><C-w>j
+nnoremap <leader>gl :Gclog<CR><CR><C-w>j
 
 """"""""""""""""""
 "  END FUGITIVE  "
