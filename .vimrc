@@ -14,7 +14,7 @@ let g:auto_format_enabled = 0
 
 call plug#begin('~/.local/share/nvim/site/plugged')
 " Colorschemes
-Plug 'RyanWillDev/vim-citylights'
+Plug 'drewtempelmeyer/palenight.vim'
 
 Plug 'vimwiki/vimwiki'
 Plug 'scrooloose/nerdtree'
@@ -580,9 +580,11 @@ map <leader>l :set list!<CR> " Toggle tabs and EOL
 
 " Color scheme (terminal)
 set background=dark
-set termguicolors
-colorscheme citylights
+colorscheme palenight
 
+if (has("termguicolors"))
+  set termguicolors
+endif
 """"""""""""""""""
 "   END CONFIG   "
 """"""""""""""""""
