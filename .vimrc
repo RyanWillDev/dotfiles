@@ -105,6 +105,7 @@ augroup vimwikicmds
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dn :VimwikiMakeTomorrowDiaryNote<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dp :VimwikiMakeYesterdayDiaryNote<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>dc :VimwikiMakeDiaryNote<CR>
+  autocmd Filetype vimwiki nnoremap <buffer> <leader>tn :VimwikiTable
 
   autocmd Filetype vimwiki nnoremap <leader>bu :call Backup()<CR>
 
