@@ -233,7 +233,14 @@ lua << EOF
     on_attach = on_attach
   }
 
-  vim.lsp.set_log_level("debug")
+  require'lspconfig'.zk.setup{
+    on_attach = on_attach,
+    cmd = {'zk', 'lsp'},
+    filetypes = {'markdown'},
+    root_dir = function()
+      return vim.loop.cwd()
+    end,
+  }
 
   --vim.lsp.set_log_level("debug")
 EOF
