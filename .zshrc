@@ -145,7 +145,7 @@ alias gb='git branch'
 alias gbd='git branch -D'
 alias gbn='gcob'
 alias gcob='git checkout -b'
-# Removes all local branches except master and develop
+# Removes all local branches except master, develop, and main
 alias gbc='git branch | grep -vE "(master|develop|main)" | xargs git branch -D'
 
 # Rebase
@@ -158,9 +158,9 @@ gri () {
 
 # Stash
 alias gsh='git stash'
-alias gshl='git stash list'
-alias gshp='git stash pop'
-alias gshc='git stash clear'
+alias gsl='git stash list'
+alias gsp='git stash pop'
+alias gsc='git stash clear'
 
 gsa () {
   git stash apply stash@{$1}
