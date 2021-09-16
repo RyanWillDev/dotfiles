@@ -20,7 +20,6 @@ Plug 'vimwiki/vimwiki'
 Plug 'scrooloose/nerdtree'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
-Plug 'nathanaelkane/vim-indent-guides'
 
 " Auto add matching praens and brackets
 Plug 'jiangmiao/auto-pairs'
@@ -289,16 +288,6 @@ nnoremap <leader>gl :Gclog<CR><CR><C-w>j
 """"""""""""""""""
 "  END FUGITIVE  "
 """"""""""""""""""
-
-""""""""""""""""""
-"  INDENT GUIDE  "
-""""""""""""""""""
-
-let g:indent_guides_enable_on_vim_startup = 1
-
-"""""""""""""""""""""
-" END INDENT GUIDE  "
-"""""""""""""""""""""
 
 """"""""""""""""""
 "    NERDTREE    "
