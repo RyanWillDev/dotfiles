@@ -183,20 +183,17 @@ let g:ale_rust_rls_executable = $HOME . '/.cargo/bin/rls'
 """"""""""""""""""
 "      LSP       "
 """"""""""""""""""
-" No the floating window signature is not respecting pumvisible causing the
-" autosave to fire when it previously would not.
-let g:completion_enable_auto_signature = 0
-
 lua << EOF
   local cmp = require'cmp'
   cmp.setup({
     sources = {
       { name = 'nvim_lsp' }
-    },
+    }
   })
 
   local capabilities = vim.lsp.protocol.make_client_capabilities()
   capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+  capabilities.textDocument.completion.completionItem.snippetSupport = false
 
   local on_attach = function(client, bufnr)
 
@@ -225,17 +222,20 @@ lua << EOF
       solargraph = {
         diagnostics = true
       }
-    }
+    },
+    capabilities = capabilities
   }
 
   require'lspconfig'.tsserver.setup{
-    on_attach = on_attach
+    on_attach = on_attach,
+    capabilities = capabilities
   }
 
   require'lspconfig'.zk.setup{
     on_attach = on_attach,
-    cmd = {'zk', 'lsp'},
-    filetypes = {'markdown'},
+    cmd = { 'zk', 'lsp' },
+    filetypes = { 'markdown' },
+    capabilities = capabilities,
   }
 
   --vim.lsp.set_log_level("debug")
