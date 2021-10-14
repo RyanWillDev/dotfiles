@@ -33,6 +33,8 @@ Plug 'w0rp/ale'
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/nvim-cmp', {'branch': 'main'}
 Plug 'hrsh7th/cmp-nvim-lsp', {'branch': 'main'}
+Plug 'L3MON4D3/LuaSnip'
+Plug 'saadparwaiz1/cmp_luasnip'
 
 " Fuzzy searching files, commits, colorschemes, etc
 Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --all'}
@@ -188,8 +190,18 @@ lua << EOF
   local cmp = require'cmp'
   cmp.setup({
     sources = {
-      { name = 'nvim_lsp' }
-    }
+      { name = 'nvim_lsp' },
+      { name = 'luasnip' },
+      { name =  'buffer'}
+    },
+    snippet = {
+      -- https://github.com/hrsh7th/nvim-cmp/wiki/Example-mappings#no-snippet-plugin
+      -- You have to have a snippet support otherwise it breaks nvim-cmp if the language server returns snippets
+      -- like tsserver does.
+      expand = function(args)
+        require('luasnip').lsp_expand(args.body)
+      end,
+    },
   })
 
   local capabilities = vim.lsp.protocol.make_client_capabilities()
