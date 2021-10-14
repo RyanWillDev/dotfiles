@@ -57,6 +57,12 @@ Plug 'maxmellon/vim-jsx-pretty', {'for': 'javascript'}
 " TypeScript
 Plug 'HerringtonDarkholme/yats.vim', {'for': 'typescript'}
 
+" Zig
+Plug 'ziglang/zig.vim', {'for': 'zig'}
+
+" Scheme/Lisp/Clojure
+Plug 'Olical/conjure', {'tag': 'v4.25.0'}
+Plug 'bhurlow/vim-parinfer'
 call plug#end()
 
 """""""""""""""""
