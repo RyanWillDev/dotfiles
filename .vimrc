@@ -6,6 +6,7 @@ filetype off
 
 " Use , as leader
 let mapleader = ","
+let maplocalleader = ","
 let g:auto_format_enabled = 0
 
 """""""""""""
