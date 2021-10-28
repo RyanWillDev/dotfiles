@@ -107,7 +107,7 @@ augroup vimwikicmds
   autocmd! vimwikicmds
   autocmd Filetype vimwiki nnoremap <buffer> <leader>db  :call VimwikiDailyBoilerPlate()<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>tb  :call TicketBoilerPlate()<CR>
-  autocmd Filetype vimwiki nnoremap <buffer> <leader>td <esc>:execute 'normal! i### '.strftime('%b %d, %Y')<CR>
+  autocmd Filetype vimwiki nnoremap <buffer> <leader>td <esc>:execute 'normal! i'.strftime('%b %d, %Y')<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>tss <esc>:exe "normal! i**Start: ".strftime('%H:%M')."**"<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>tse <esc>:exe "normal! i**End: ".strftime('%H:%M')."**"<CR>
   autocmd Filetype vimwiki nnoremap <buffer> <leader>tl :TicketLink<space>
