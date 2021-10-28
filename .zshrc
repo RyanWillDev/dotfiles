@@ -99,8 +99,13 @@ alias v="vim"
 alias v.="vim ."
 alias oz="open_zett"
 
+##### Zettelkasten #####
+# This is overwritten by work_stuff if it exists
 export ZK_PATH=$HOME/notes/the-zett
-export PATH=$PATH:$HOME/zk/bin
+
+if [[ ! "$PATH" == *${HOME}/zk* ]]; then
+export PATH=$PATH:$HOME/zk
+fi
 
 ##### ASDF #####
 # The recommendation of using brew to get the prefix is slow
