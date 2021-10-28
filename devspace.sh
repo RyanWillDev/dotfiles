@@ -11,11 +11,10 @@ then
     then
       tmux attach
     else
-      sleep 1
-        tmux new -c "/Users/${USER}/notes/main" -n "notes" nvim \;\
-          send-keys -t 0 ",w,w" \;\
-          send-keys -t 0 ",aft" \;\
-          new-window -d -c "/Users/${USER}/Projects"
+      tmux new -c "/Users/${USER}/notes/main" -n "notes" nvim \;\
+        send-keys -t 0 ",w,w" \;\
+        send-keys -t 0 ",aft" \;\
+        new-window -d -c "/Users/${USER}/Projects"
     fi
   else
     echo "You don't have tmux installed : ("
