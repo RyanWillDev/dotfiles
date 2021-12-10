@@ -134,10 +134,14 @@ nnoremap <leader>na :call YankNoteAnchor()<CR>
 command! -nargs=+ NewNote :call MakeNote(<f-args>)
 
 function! MakeNote(...)
-  let s:file_name = join(a:000, ' ') . '.md'
-  let s:time = strftime("%Y%m%d%H%M%S")
+  "let s:file_name = join(a:000, ' ') . '.md'
+  "let s:time = strftime("%Y%m%d%H%M%S")
+  "execute 'e ' . fnameescape($ZK_PATH . '/' . s:time . ' ' . s:file_name)
 
-  execute 'e ' . fnameescape($ZK_PATH . '/' . s:time . ' ' . s:file_name)
+  let s:file_name = join(a:000, ' ') " zk new adds extension
+  let path = system('zk new -p -t' . s:file_name) " -p prints path instead of opens
+  let path = trim(path) " Remove newlines
+  execute 'e ' . fnameescape(path)
 endfunction
 
 function! OpenNote()
