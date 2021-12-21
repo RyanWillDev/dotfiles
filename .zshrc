@@ -254,24 +254,18 @@ gifify () {
 
 # Assumes both kafka and zookeeper are installed with Hombrew
 kafka-do() {
-  if [ ! command -v zookeeper-server-start &>/dev/null ] || [ ! command -v kafka-server-start &>/dev/null ]
-  then
-    echo "Required programs zookeeper and/or kafka not installed. Both can be installed with homebrew."
-    return 1
-  fi
-
   if [ "${1}" = "start" ]
   then
     # Start Zookeeper and Kafka in background capturing pids for execution
-    zookeeper-server-start /usr/local/etc/kafka/zookeeper.properties &
+    zookeeper-server-start /usr/local/etc/kafka/zookeeper.properties &>/dev/null &
     ZOOPID=$!
 
-    kafka-server-start /usr/local/etc/kafka/server.properties &
+    kafka-server-start /usr/local/etc/kafka/server.properties &>/dev/null  &
     KAFKAPID=$!
   elif [ "${1}" = "stop" ]
+  then
     kill -9 $ZOOPID
     kill -9 $KAFKAPID
-  then
   else
     echo "Argument must be start or stop"
   fi
