@@ -540,7 +540,7 @@ set signcolumn=yes
 syntax on
 
 " Enable Code Fencing
-let g:markdown_fenced_languages = ['elixir', 'js=javascript', 'json', 'ruby', 'bash=sh']
+let g:markdown_fenced_languages = ['elixir', 'js=javascript', 'json', 'ruby', 'bash=sh', 'sql']
 
 " Opens Image files using the open command
 let g:netrw_browsex_viewer="xdg-open"
