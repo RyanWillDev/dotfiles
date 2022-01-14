@@ -492,6 +492,13 @@ function! TicketBoilerPlate()
   put=''
   put='[TICKET]('. $TICKET_TRACKER_URL .toupper(expand('%:t:r')).')'
 
+  put=''
+  put='## TOC'
+
+  for section in ['TODOs', 'Notes', 'Log']
+    put='- ['.section.']'.'(#'.section.')'
+  endfor
+
   for section in ['TODOs', 'Notes', 'Log']
     put=''
     put='## '.section
