@@ -140,7 +140,7 @@ function! MakeNote(...)
   "execute 'e ' . fnameescape($ZK_PATH . '/' . s:time . ' ' . s:file_name)
 
   let s:file_name = join(a:000, ' ') " zk new adds extension
-  let path = system('zk new -p -t' . s:file_name) " -p prints path instead of opens
+  let path = system('zk new -p -t "' . s:file_name . '"') " -p prints path instead of opens
   let path = trim(path) " Remove newlines
   execute 'e ' . fnameescape(path)
 endfunction
