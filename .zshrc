@@ -67,6 +67,8 @@ plugins=()
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
+setopt extendedglob
+
 
 # export MANPATH="/usr/local/man:$MANPATH"
 
