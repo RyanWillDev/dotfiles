@@ -11,7 +11,7 @@ then
     then
       tmux attach
     else
-      tmux new -c "/Users/${USER}/notes/main" -n "notes" nvim \;\
+      tmux new -c "/Users/${USER}/notes" -n "notes" nvim \;\
         send-keys -t 0 ",w,w" \;\
         send-keys -t 0 ",aft" \;\
         new-window -d -c "/Users/${USER}/Projects"
