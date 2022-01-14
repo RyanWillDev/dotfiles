@@ -94,14 +94,15 @@ command! W w
 let g:vimwiki_global_ext = 0
 let g:vimwiki_listsyms = ' ○◐●✓'
 let g:vimwiki_listsym_rejected = '✗'
-let g:vimwiki_list = [{'path': '~/notes/main',
+let g:vimwiki_list = [{'path': '~/notes',
                       \ 'syntax': 'markdown',
                       \'ext': '.md',
                       \'diary_rel_path': 'daily/',
                       \'diary_index': 'daily',
                       \'diary_header': 'Daily Notes',
-                      \'auto_diary_index': 1},
-                    \]
+                      \'auto_diary_index': 1,
+                      \'nested_syntaxes': {'elixir': 'elixir', 'js': 'javascript', 'ruby': 'ruby', 'sql': 'sql'},
+                    \}]
 
 augroup vimwikicmds
   autocmd! vimwikicmds
