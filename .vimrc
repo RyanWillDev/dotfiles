@@ -232,12 +232,6 @@ lua << EOF
   require'lspconfig'.elixirls.setup{
     cmd = { vim.env.HOME .. "/elixir-ls/release/language_server.sh" },
     on_attach = on_attach,
-    settings = {
-      elixirLS = {
-        -- The default env is test
-        mixEnv = "dev"
-      }
-    }
   }
 
   require'lspconfig'.solargraph.setup{
