@@ -488,3 +488,14 @@ TOC
 nullable
 autovacuum
 Helgoland
+composable
+Serializable
+Nondeterminacy
+nondeterministic
+mutex
+Bigraph
+Pinterest
+OLTP
+OLAP
+Kleppmann
+MLB
