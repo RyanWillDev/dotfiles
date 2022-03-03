@@ -134,6 +134,8 @@ alias gco='git checkout'
 alias gs='git status'
 alias gsw='git show'
 alias grl='git reflog'
+alias gu='git reset HEAD'
+alias gcop='git checkout -p'
 
 # Commit
 alias ga='git add'
@@ -141,7 +143,6 @@ alias gap='git add -p'
 alias gc='git commit'
 alias gcm='git commit -m'
 alias gca='git commit --amend'
-alias gu='git reset HEAD'
 
 # Diff
 alias gd='git diff'
@@ -152,6 +153,7 @@ alias gb='git branch'
 alias gbd='git branch -D'
 alias gbn='gcob'
 alias gcob='git checkout -b'
+
 # Removes all local branches except master, develop, and main
 alias gbc='git branch | grep -vE "(master|develop|main)" | xargs git branch -D'
 
