@@ -456,7 +456,7 @@ function! VimwikiDailyBoilerPlate()
   normal! gg
   0put='# '.strftime('%b %d, %Y')
 
-  for section in ['TODOs', 'Tickets', 'Meetings', 'Notes']
+  for section in ['TODOs', 'Tickets', 'Notes']
     put=''
     put='## '.section
   endfor

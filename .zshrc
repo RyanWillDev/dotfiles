@@ -136,6 +136,7 @@ alias gsw='git show'
 alias grl='git reflog'
 alias gu='git reset HEAD'
 alias gcop='git checkout -p'
+alias gm='git merge'
 
 # Commit
 alias ga='git add'
