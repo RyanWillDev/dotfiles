@@ -200,11 +200,13 @@ let g:ale_rust_rls_executable = $HOME . '/.cargo/bin/rls'
 lua << EOF
   local cmp = require'cmp'
   cmp.setup({
-    sources = {
+    -- Default mappings were removed. See https://github.com/hrsh7th/nvim-cmp/issues/231#issuecomment-1098175017
+    mapping = cmp.mapping.preset.insert({}),
+    sources = cmp.config.sources({
       { name = 'nvim_lsp' },
       { name = 'luasnip' },
       { name =  'buffer'}
-    },
+    }),
     snippet = {
       -- https://github.com/hrsh7th/nvim-cmp/wiki/Example-mappings#no-snippet-plugin
       -- You have to have a snippet support otherwise it breaks nvim-cmp if the language server returns snippets
