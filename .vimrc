@@ -61,7 +61,7 @@ Plug 'HerringtonDarkholme/yats.vim', {'for': 'typescript'}
 Plug 'ziglang/zig.vim', {'for': 'zig'}
 
 " Scheme/Lisp/Clojure
-Plug 'Olical/conjure', {'tag': 'v4.25.0'}
+Plug 'Olical/conjure', {'branch': 'develop'} " Specifying develop is a temporary fix for crashing on launch https://github.com/Olical/conjure/issues/293
 Plug 'bhurlow/vim-parinfer'
 call plug#end()
 
@@ -234,6 +234,7 @@ lua << EOF
   require'lspconfig'.elixirls.setup{
     cmd = { vim.env.HOME .. "/elixir-ls/release/language_server.sh" },
     on_attach = on_attach,
+    capabilities = capabilities
   }
 
   require'lspconfig'.solargraph.setup{
