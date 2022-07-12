@@ -510,3 +510,13 @@ schemas
 SEO
 preloaded
 subquery
+upsert
+formatter
+boolean
+Typings
+Dialyzer
+unschedule
+fp
+Sandi Metz
+Cardinality
+cardinality

@@ -48,7 +48,6 @@ Plug 'vim-ruby/vim-ruby', {'for': ['ruby', 'eruby' ]}
 
 " Elixir
 Plug 'elixir-lang/vim-elixir', {'for': ['elixir', 'eelixir']}
-Plug 'GrzegorzKozub/vim-elixirls', {'for': ['elixir', 'eelixir'], 'do': ':ElixirLsCompileSync'}
 
 " JavaScript
 Plug 'pangloss/vim-javascript', {'for': 'javascript'}
@@ -63,6 +62,8 @@ Plug 'ziglang/zig.vim', {'for': 'zig'}
 " Scheme/Lisp/Clojure
 Plug 'Olical/conjure', {'branch': 'develop'} " Specifying develop is a temporary fix for crashing on launch https://github.com/Olical/conjure/issues/293
 Plug 'bhurlow/vim-parinfer'
+Plug 'guns/vim-sexp'
+
 call plug#end()
 
 """""""""""""""""
@@ -234,7 +235,10 @@ lua << EOF
   require'lspconfig'.elixirls.setup{
     cmd = { vim.env.HOME .. "/elixir-ls/release/language_server.sh" },
     on_attach = on_attach,
-    capabilities = capabilities
+    capabilities = capabilities,
+    settings = {
+      --dialyzerEnabled = false
+    }
   }
 
   require'lspconfig'.solargraph.setup{
@@ -259,7 +263,7 @@ lua << EOF
     capabilities = capabilities,
   }
 
-  --vim.lsp.set_log_level("debug")
+--  vim.lsp.set_log_level("debug")
 EOF
 
 let g:vim_elixir_ls_elixir_ls_dir = $HOME . '/elixir-ls'

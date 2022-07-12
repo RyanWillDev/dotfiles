@@ -99,7 +99,7 @@ setopt extendedglob
 alias vim="nvim"
 alias v="vim"
 alias v.="vim ."
-alias oz="open_zett"
+alias rg="rg -i"
 
 ##### Zettelkasten #####
 # This is overwritten by work_stuff if it exists
@@ -130,6 +130,7 @@ fi
 ##### GIT ALIASES #####
 
 # Misc
+alias gcl='git clone'
 alias gco='git checkout'
 alias gs='git status'
 alias gsw='git show'
