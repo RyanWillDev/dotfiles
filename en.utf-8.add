@@ -488,6 +488,7 @@ TOC
 nullable
 autovacuum
 Helgoland
+<<<<<<< Updated upstream
 composable
 Serializable
 Nondeterminacy
@@ -520,3 +521,4 @@ fp
 Sandi Metz
 Cardinality
 cardinality
+Monorepo
