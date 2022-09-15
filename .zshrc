@@ -212,7 +212,7 @@ grh () {
 }
 
 ##### NAVIGATION SHORTCUTS #####
-alias scratchpad="cd ~/Projects/scratchpad"
+alias sp="cd ~/Projects/scratchpad"
 alias projects="cd ~/Projects"
 alias learn="cd ~/Projects/learn"
 alias personal="cd ~/Projects/personal"
