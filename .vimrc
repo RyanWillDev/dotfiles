@@ -551,9 +551,6 @@ set autoread
 " Always keep sign column open
 set signcolumn=yes
 
-" Turn on syntax highlighting
-syntax on
-
 " Enable Code Fencing
 let g:markdown_fenced_languages = ['elixir', 'js=javascript', 'json', 'ruby', 'bash=sh', 'sql']
 

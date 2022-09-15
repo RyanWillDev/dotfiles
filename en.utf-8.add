@@ -488,6 +488,7 @@ TOC
 nullable
 autovacuum
 Helgoland
+<<<<<<< Updated upstream
 composable
 Serializable
 Nondeterminacy
@@ -546,3 +547,4 @@ Multicast
 multicast
 v1
 Observability
+Monorepo
