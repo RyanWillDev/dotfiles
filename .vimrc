@@ -45,6 +45,8 @@ Plug 'junegunn/fzf.vim'
 " HTML
 Plug 'mattn/emmet-vim', {'for': ['html', 'css', 'eruby', 'eelixir']}
 
+Plug 'simrat39/rust-tools.nvim'
+
 " Ruby
 Plug 'vim-ruby/vim-ruby', {'for': ['ruby', 'eruby' ]}
 
@@ -222,21 +224,10 @@ lua << EOF
 
   local capabilities = vim.lsp.protocol.make_client_capabilities()
   capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
-  capabilities.textDocument.completion.completionItem.snippetSupport = false
-
-  local on_attach = function(client, bufnr)
-
-    local map_opts = { noremap=true, silent=true }
-
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', map_opts)
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gh', '<cmd>lua vim.lsp.buf.hover()<CR>', map_opts)
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', map_opts)
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', ',e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', map_opts)
-  end
+  capabilities.textDocument.completion.completionItem.snippetSupport = true
 
   require'lspconfig'.elixirls.setup{
     cmd = { vim.env.HOME .. "/elixir-ls/release/language_server.sh" },
-    on_attach = on_attach,
     capabilities = capabilities,
     settings = {
       --dialyzerEnabled = false
@@ -244,7 +235,6 @@ lua << EOF
   }
 
   require'lspconfig'.solargraph.setup{
-    on_attach = on_attach,
     settings = {
       solargraph = {
         diagnostics = true
@@ -254,19 +244,34 @@ lua << EOF
   }
 
   require'lspconfig'.tsserver.setup{
-    on_attach = on_attach,
     capabilities = capabilities
   }
 
   require'lspconfig'.zk.setup{
-    on_attach = on_attach,
     cmd = { 'zk', 'lsp' },
     filetypes = { 'markdown' },
     capabilities = capabilities,
   }
 
---  vim.lsp.set_log_level("debug")
+  require('rust-tools').setup({})
+
+  -- Enable diagnostics
+  vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+    vim.lsp.diagnostic.on_publish_diagnostics, {
+      virtual_text = true,
+      signs = true,
+      update_in_insert = true,
+    }
+  )
+
+  -- vim.lsp.set_log_level("debug")
 EOF
+
+" LSP Keymaps
+nnoremap gd <cmd>lua vim.lsp.buf.definition()<CR>
+nnoremap gh <cmd>lua vim.lsp.buf.hover()<CR>
+nnoremap gr <cmd>lua vim.lsp.buf.references()<CR>
+nnoremap ,e <cmd>lua vim.diagnostic.open_float()<CR>
 
 let g:vim_elixir_ls_elixir_ls_dir = $HOME . '/elixir-ls'
 
