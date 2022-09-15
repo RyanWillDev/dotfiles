@@ -15,7 +15,9 @@ let g:auto_format_enabled = 0
 
 call plug#begin('~/.local/share/nvim/site/plugged')
 " Colorschemes
-Plug 'drewtempelmeyer/palenight.vim'
+"Plug 'drewtempelmeyer/palenight.vim'
+Plug 'dracula/vim'
+"Plug 'morhetz/gruvbox'
 
 Plug 'vimwiki/vimwiki'
 Plug 'scrooloose/nerdtree'
@@ -618,7 +620,7 @@ map <leader>l :set list!<CR> " Toggle tabs and EOL
 
 " Color scheme (terminal)
 set background=dark
-colorscheme palenight
+colorscheme dracula
 
 if (has("termguicolors"))
   set termguicolors
