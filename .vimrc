@@ -243,7 +243,23 @@ lua << EOF
   }
 
   require'lspconfig'.tsserver.setup{
-    capabilities = capabilities
+    capabilities = capabilities,
+    on_attach = function(client)
+      formatting = {
+        insertSpaceAfterOpeningAndBeforeClosingEmptyBraces = false,
+        insertSpaceAfterFunctionKeywordForAnonymousFunctions = true,
+        semicolons = "insert"
+      }
+
+      settings = {
+        settings = vim.tbl_deep_extend("force", client.config.settings, {
+          typescript = { format = formatting },
+          javascript = { format = formatting },
+        })
+      }
+
+      client.notify("workspace/didChangeConfiguration", settings)
+    end,
   }
 
   require'lspconfig'.zk.setup{
