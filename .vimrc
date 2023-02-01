@@ -554,7 +554,8 @@ autocmd QuickFixCmdPost *grep* cwindow
 " Spell check
 setlocal spelllang=en_us complete+=kspell
 " Automatically enable spell check for specific file types
-autocmd FileType gitcommit,markdown setlocal spell
+autocmd FileType gitcommit,markdown setlocal spell spelllang=en_us complete+=kspell
+
 " Toggle spell check
 nnoremap ,tsc :set spell!<CR>
 
