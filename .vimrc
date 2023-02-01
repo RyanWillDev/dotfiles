@@ -456,7 +456,7 @@ function! FormatFile()
     "call CocActionAsync('format', { err, res -> execute('call AutoSave()') })
     "call CocAction('format')
 
-    lua vim.lsp.buf.formatting_sync()
+    lua vim.lsp.buf.format()
 
     " Used for removing whitepsace & prettier formatter
     ALEFix
