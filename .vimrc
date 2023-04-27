@@ -36,6 +36,8 @@ Plug 'w0rp/ale'
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/nvim-cmp', {'branch': 'main'}
 Plug 'hrsh7th/cmp-nvim-lsp', {'branch': 'main'}
+Plug 'hrsh7th/cmp-buffer', {'branch': 'main'}
+Plug 'f3fora/cmp-spell'
 Plug 'L3MON4D3/LuaSnip'
 Plug 'saadparwaiz1/cmp_luasnip'
 
@@ -211,7 +213,9 @@ lua << EOF
     sources = cmp.config.sources({
       { name = 'nvim_lsp' },
       { name = 'luasnip' },
-      { name =  'buffer'}
+    }, {
+      { name = 'buffer' },
+      { name = 'spell' },
     }),
     snippet = {
       -- https://github.com/hrsh7th/nvim-cmp/wiki/Example-mappings#no-snippet-plugin
@@ -554,7 +558,7 @@ autocmd QuickFixCmdPost *grep* cwindow
 " Spell check
 setlocal spelllang=en_us complete+=kspell
 " Automatically enable spell check for specific file types
-autocmd FileType gitcommit,markdown setlocal spell spelllang=en_us complete+=kspell
+autocmd FileType gitcommit,markdown,vimwiki setlocal spell spelllang=en_us complete+=kspell
 
 " Toggle spell check
 nnoremap ,tsc :set spell!<CR>
