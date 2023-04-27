@@ -58,7 +58,11 @@ Plug 'elixir-lang/vim-elixir', {'for': ['elixir', 'eelixir']}
 
 " JavaScript
 Plug 'pangloss/vim-javascript', {'for': 'javascript'}
-Plug 'maxmellon/vim-jsx-pretty', {'for': 'javascript'}
+"Plug 'maxmellon/vim-jsx-pretty', {'for': 'javascript'}
+Plug 'prettier/vim-prettier', {
+      \ 'do': 'npm install',
+      \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'svelte', 'yaml', 'html'],
+      \}
 
 " TypeScript
 Plug 'HerringtonDarkholme/yats.vim', {'for': 'typescript'}
@@ -180,18 +184,9 @@ endfunction
 let g:ale_lint_on_save = 1
 let g:ale_fixers = {
       \'*': ['trim_whitespace'],
-      \'css': ['prettier'],
-      \'html': ['prettier'],
-      \'javascript': ['prettier'],
-      \'javascriptreact': ['prettier'],
-      \'json': ['prettier'],
-      \'markdown': ['prettier'],
-      \'scss': ['prettier'],
-      \'typescript': ['prettier']
       \}
 
 let g:ale_linters = {
-      \'elixir': ['credo'],
       \'rust': ['rls', 'cargo'],
       \}
 
@@ -201,6 +196,31 @@ let g:ale_rust_rls_executable = $HOME . '/.cargo/bin/rls'
 "     END ALE    "
 """"""""""""""""""
 
+""""""""""""""""""
+"    Prettier    "
+""""""""""""""""""
+let g:prettier#autoformat = 1
+let g:prettier#autoformat_config_present = 0
+let g:prettier#autoformat_require_pragma = 0
+let g:prettier#autoformat_config_files = [
+      \      'javascript',
+      \      'typescript',
+      \      'javascriptreact',
+      \      'typescriptreact',
+      \      'css',
+      \      'less',
+      \      'scss',
+      \      'json',
+      \      'graphql',
+      \      'markdown',
+      \      'vue',
+      \      'yaml',
+      \      'html'
+      \      ]
+
+""""""""""""""""""
+"  End Prettier  "
+""""""""""""""""""
 
 """"""""""""""""""
 "      LSP       "
@@ -253,7 +273,7 @@ lua << EOF
       formatting = {
         insertSpaceAfterOpeningAndBeforeClosingEmptyBraces = false,
         insertSpaceAfterFunctionKeywordForAnonymousFunctions = true,
-        semicolons = "insert"
+        semicolons = "ignore"
       }
 
       settings = {
