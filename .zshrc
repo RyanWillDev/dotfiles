@@ -142,6 +142,7 @@ alias gm='git merge'
 # Commit
 alias ga='git add'
 alias gap='git add -p'
+alias gan='git add -N'
 alias gc='git commit'
 alias gcm='git commit -m'
 alias gca='git commit --amend'
