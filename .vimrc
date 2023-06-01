@@ -20,7 +20,8 @@ Plug 'dracula/vim'
 Plug 'morhetz/gruvbox'
 Plug 'joshdick/onedark.vim', {'branch': 'main'}
 
-Plug 'vimwiki/vimwiki'
+Plug 'jkramer/vim-checkbox'
+"Plug 'vimwiki/vimwiki'
 Plug 'scrooloose/nerdtree'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
@@ -116,23 +117,23 @@ let g:vimwiki_list = [{'path': '~/notes',
                       \'nested_syntaxes': {'elixir': 'elixir', 'js': 'javascript', 'ruby': 'ruby', 'sql': 'sql'},
                     \}]
 
-augroup vimwikicmds
-  autocmd! vimwikicmds
-  autocmd Filetype vimwiki nnoremap <buffer> <leader>db  :call VimwikiDailyBoilerPlate()<CR>
-  autocmd Filetype vimwiki nnoremap <buffer> <leader>tb  :call TicketBoilerPlate()<CR>
-  autocmd Filetype vimwiki nnoremap <buffer> <leader>td <esc>:execute 'normal! i'.strftime('%b %d, %Y')<CR>
-  autocmd Filetype vimwiki nnoremap <buffer> <leader>tss <esc>:exe "normal! A **Start: ".strftime('%H:%M')."**"<CR>
-  autocmd Filetype vimwiki nnoremap <buffer> <leader>tse <esc>:exe "normal! A **End: ".strftime('%H:%M')."**"<CR>
-  autocmd Filetype vimwiki nnoremap <buffer> <leader>tl :TicketLink<space>
-  autocmd Filetype vimwiki nnoremap <buffer> <leader>dn :VimwikiMakeTomorrowDiaryNote<CR>
-  autocmd Filetype vimwiki nnoremap <buffer> <leader>dp :VimwikiMakeYesterdayDiaryNote<CR>
-  autocmd Filetype vimwiki nnoremap <buffer> <leader>dc :VimwikiMakeDiaryNote<CR>
-  autocmd Filetype vimwiki nnoremap <buffer> <leader>tn :VimwikiTable
-
-  autocmd Filetype vimwiki nnoremap <leader>bu :call Backup()<CR>
-
-  command! -nargs=+ TicketLink :call MakeTicketLink(<f-args>)
-augroup END
+" TODO this can be removed if sticking with zk
+"augroup vimwikicmds
+"  autocmd! vimwikicmds
+"  autocmd Filetype vimwiki nnoremap <buffer> <leader>db  :call VimwikiDailyBoilerPlate()<CR>
+"  autocmd Filetype vimwiki nnoremap <buffer> <leader>tb  :call TicketBoilerPlate()<CR>
+"  autocmd Filetype vimwiki nnoremap <buffer> <leader>tss <esc>:exe "normal! A **Start: ".strftime('%H:%M')."**"<CR>
+"  autocmd Filetype vimwiki nnoremap <buffer> <leader>tse <esc>:exe "normal! A **End: ".strftime('%H:%M')."**"<CR>
+"  autocmd Filetype vimwiki nnoremap <buffer> <leader>tl :TicketLink<space>
+"  autocmd Filetype vimwiki nnoremap <buffer> <leader>dn :VimwikiMakeTomorrowDiaryNote<CR>
+"  autocmd Filetype vimwiki nnoremap <buffer> <leader>dp :VimwikiMakeYesterdayDiaryNote<CR>
+"  autocmd Filetype vimwiki nnoremap <buffer> <leader>dc :VimwikiMakeDiaryNote<CR>
+"  autocmd Filetype vimwiki nnoremap <buffer> <leader>tn :VimwikiTable
+"
+"  autocmd Filetype vimwiki nnoremap <leader>bu :call Backup()<CR>
+"
+"  command! -nargs=+ TicketLink :call MakeTicketLink(<f-args>)
+"augroup END
 
 """"""""""""""""""
 "  END VIM WIKI  "
@@ -142,9 +143,8 @@ augroup END
 "       ZK       "
 """"""""""""""""""
 nnoremap <leader>nn :NewNote<space>
-nnoremap <leader>no :call OpenNote()<CR>
-nnoremap <leader>na :call YankNoteAnchor()<CR>
 command! -nargs=+ NewNote :call MakeNote(<f-args>)
+nnoremap <buffer> <leader>td <esc>:execute 'normal! i'.strftime('%b %d, %Y')<CR>
 
 function! MakeNote(...)
   "let s:file_name = join(a:000, ' ') . '.md'
@@ -155,22 +155,6 @@ function! MakeNote(...)
   let path = system('zk new -p -t "' . s:file_name . '"') " -p prints path instead of opens
   let path = trim(path) " Remove newlines
   execute 'e ' . fnameescape(path)
-endfunction
-
-function! OpenNote()
-  " Uses the id of the note and a wild card to open the file by id.
-  " Since the ids should always be unique we can rely on this.
-  e <cword>*
-endfunction
-
-function! YankNoteAnchor()
-let filename = expand('%:t')
-let parts = split(filename)
-let id = parts[0]
-let anchor = '[[' . id . ']]'
-
-let @" = anchor
-let @*=@"
 endfunction
 
 """"""""""""""""""
