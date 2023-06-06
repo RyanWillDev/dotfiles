@@ -144,7 +144,9 @@ let g:vimwiki_list = [{'path': '~/notes',
 """"""""""""""""""
 nnoremap <leader>nn :NewNote<space>
 command! -nargs=+ NewNote :call MakeNote(<f-args>)
-nnoremap <buffer> <leader>td <esc>:execute 'normal! i'.strftime('%b %d, %Y')<CR>
+nnoremap <leader>td <esc>:execute 'normal! i'.strftime('%b %d, %Y')<CR>
+nnoremap <leader>tss <esc>:exe "normal! A **Start: ".strftime('%H:%M')."**"<CR>
+nnoremap <leader>tse <esc>:exe "normal! A **End: ".strftime('%H:%M')."**"<CR>
 
 function! MakeNote(...)
   "let s:file_name = join(a:000, ' ') . '.md'
