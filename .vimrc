@@ -460,12 +460,6 @@ endfunction
 
 function! FormatFile()
   if CanModifyFile() && g:auto_format_enabled && &modified
-    "Calling asynchronously formats the file your entering not leaving
-    "Not ideal to do sync format, but will have to do for now
-    " Format file asynchronously and save file when complete
-    "call CocActionAsync('format', { err, res -> execute('call AutoSave()') })
-    "call CocAction('format')
-
     lua vim.lsp.buf.format()
 
     " Used for removing whitepsace & prettier formatter
