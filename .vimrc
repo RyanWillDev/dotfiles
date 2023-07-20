@@ -16,9 +16,8 @@ let g:auto_format_enabled = 0
 call plug#begin('~/.local/share/nvim/site/plugged')
 " Colorschemes
 Plug 'drewtempelmeyer/palenight.vim'
-Plug 'dracula/vim'
-Plug 'morhetz/gruvbox'
 Plug 'joshdick/onedark.vim', {'branch': 'main'}
+Plug 'nordtheme/vim', {'branch': 'main'}
 
 Plug 'jkramer/vim-checkbox'
 "Plug 'vimwiki/vimwiki'
@@ -48,6 +47,9 @@ Plug 'junegunn/fzf.vim'
 
 " HTML
 Plug 'mattn/emmet-vim', {'for': ['html', 'css', 'eruby', 'eelixir']}
+
+" Markdown
+Plug 'preservim/vim-markdown'
 
 Plug 'simrat39/rust-tools.nvim'
 
@@ -299,8 +301,6 @@ nnoremap gh <cmd>lua vim.lsp.buf.hover()<CR>
 nnoremap gr <cmd>lua vim.lsp.buf.references()<CR>
 nnoremap ,e <cmd>lua vim.diagnostic.open_float()<CR>
 
-let g:vim_elixir_ls_elixir_ls_dir = $HOME . '/elixir-ls'
-
 " Configure completion
 
 " Doesn't auto select/insert from completion menu
@@ -352,6 +352,7 @@ nnoremap <leader>gl :Gclog<CR><CR><C-w>j
 """"""""""""""""""
 
 let NERDTreeShowHidden=1
+let NERDTreeShowLineNumbers=1
 
 nnoremap <leader>nt :NERDTreeToggle<CR>
 nnoremap <leader>nf :NERDTreeFind<CR>
@@ -574,11 +575,17 @@ nnoremap ,tsc :set spell!<CR>
 " Reload file if it changes outside of vim
 set autoread
 
+" Conceal Markdown syntax
+set conceallevel=2
+
 " Always keep sign column open
 set signcolumn=yes
 
 " Enable Code Fencing
 let g:markdown_fenced_languages = ['elixir', 'js=javascript', 'json', 'ruby', 'bash=sh', 'sql']
+
+" Turns off auto folding for vim-markdown
+let g:vim_markdown_folding_disabled = 1
 
 " Opens Image files using the open command
 let g:netrw_browsex_viewer="xdg-open"
@@ -648,7 +655,7 @@ map <leader>l :set list!<CR> " Toggle tabs and EOL
 
 " Color scheme (terminal)
 set background=dark
-colorscheme onedark
+colorscheme nord
 
 if (has("termguicolors"))
   set termguicolors
