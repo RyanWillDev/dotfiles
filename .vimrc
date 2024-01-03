@@ -281,7 +281,14 @@ lua << EOF
     capabilities = capabilities,
   }
 
-  require('rust-tools').setup({})
+  require('rust-tools').setup({
+    tools = {
+      inlay_hints = {
+        auto = true,
+        show_parameter_hints = true,
+      },
+    }
+  })
 
   -- Enable diagnostics
   vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(

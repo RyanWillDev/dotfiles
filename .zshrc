@@ -215,10 +215,11 @@ grh () {
 ##### NAVIGATION SHORTCUTS #####
 alias sp="cd ~/Projects/scratchpad"
 alias projects="cd ~/Projects"
-alias learn="cd ~/Projects/learn"
-alias personal="cd ~/Projects/personal"
-alias oss="cd ~/Projects/open-source"
+alias learn="cd ~/learn"
+alias personal="cd ~/personal"
+alias oss="cd ~/open-source"
 alias ..='cd ..'
+alias dots='cd ~/dotfiles'
 
 ##### BASH ALIASES #####
 alias la='ls -aCF'
