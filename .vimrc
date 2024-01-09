@@ -218,7 +218,14 @@ let g:prettier#autoformat_config_files = [
 let g:vim_markdown_new_list_item_indent = 2
 " Disable setting tabstop to 4 in .md files
 let g:markdown_recommended_style = 0
-map <Plug> <Plug>Markdown_EditUrlUnderCursor
+" Get the ge command back
+map <Leader>ge <Plug>Markdown_EditUrlUnderCursor
+
+" Jump to anchors on page
+let g:vim_markdown_follow_anchor = 1
+" Allow anchors to be specified with -
+" https://github.com/preservim/vim-markdown/issues/493
+let g:vim_markdown_anchorexpr = "'# ' .. substitute(v:anchor, '-', '[- ]', 'g') .. ' \*\\n\\c'"
 
 """"""""""""""""""
 "  End Markdown  "
