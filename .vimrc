@@ -70,6 +70,8 @@ Plug 'prettier/vim-prettier', {
 " TypeScript
 Plug 'HerringtonDarkholme/yats.vim', {'for': 'typescript'}
 
+Plug 'jparise/vim-graphql', {'for': 'graphql'}
+
 " Zig
 Plug 'ziglang/zig.vim', {'for': 'zig'}
 
@@ -589,8 +591,7 @@ set conceallevel=2
 set signcolumn=yes
 
 " Enable Code Fencing
-let g:markdown_fenced_languages = ['elixir', 'js=javascript', 'json', 'ruby', 'bash=sh', 'sql']
-
+let g:markdown_fenced_languages = ['elixir', 'gql=graphql', 'js=javascript', 'json', 'ruby', 'bash=sh', 'sql']
 " Turns off auto folding for vim-markdown
 let g:vim_markdown_folding_disabled = 1
 
