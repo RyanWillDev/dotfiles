@@ -213,6 +213,18 @@ let g:prettier#autoformat_config_files = [
 """"""""""""""""""
 
 """"""""""""""""""
+"    Markdown    "
+""""""""""""""""""
+let g:vim_markdown_new_list_item_indent = 2
+" Disable setting tabstop to 4 in .md files
+let g:markdown_recommended_style = 0
+map <Plug> <Plug>Markdown_EditUrlUnderCursor
+
+""""""""""""""""""
+"  End Markdown  "
+""""""""""""""""""
+
+""""""""""""""""""
 "      LSP       "
 """"""""""""""""""
 lua << EOF
