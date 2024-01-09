@@ -50,7 +50,9 @@ Plug 'mattn/emmet-vim', {'for': ['html', 'css', 'eruby', 'eelixir']}
 
 " Markdown
 Plug 'preservim/vim-markdown'
+Plug 'godlygeek/tabular'
 
+" Rust
 Plug 'simrat39/rust-tools.nvim'
 
 " Ruby
@@ -76,9 +78,9 @@ Plug 'jparise/vim-graphql', {'for': 'graphql'}
 Plug 'ziglang/zig.vim', {'for': 'zig'}
 
 " Scheme/Lisp/Clojure
-Plug 'Olical/conjure', {'branch': 'develop'} " Specifying develop is a temporary fix for crashing on launch https://github.com/Olical/conjure/issues/293
-Plug 'bhurlow/vim-parinfer'
-Plug 'guns/vim-sexp'
+"Plug 'Olical/conjure', {'branch': 'develop'} " Specifying develop is a temporary fix for crashing on launch https://github.com/Olical/conjure/issues/293
+"Plug 'bhurlow/vim-parinfer'
+"Plug 'guns/vim-sexp'
 
 call plug#end()
 
@@ -639,7 +641,7 @@ set cursorcolumn
 
 " Whitespace
 set wrap
-set textwidth=80
+set textwidth=120
 set formatoptions=tcrnl1j
 set tabstop=2
 set shiftwidth=2
