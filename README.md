@@ -69,5 +69,7 @@ Run the following after cloning
 
 compile, and create release inside `release` directory
 
-The previous steps can be done by opening an elixir file and running
-`:ElixirLSCompile`
+### zk
+
+Install and build [zk](https://github.com/zk-org/zk?tab=readme-ov-file#build-from-scratch) for notes
+
