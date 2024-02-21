@@ -20,7 +20,6 @@ Plug 'joshdick/onedark.vim', {'branch': 'main'}
 Plug 'nordtheme/vim', {'branch': 'main'}
 
 Plug 'jkramer/vim-checkbox'
-"Plug 'vimwiki/vimwiki'
 Plug 'scrooloose/nerdtree'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
@@ -104,45 +103,6 @@ command! W w
 
 """"""""""""""""""
 "    END FZF     "
-""""""""""""""""""
-
-""""""""""""""""""
-"    VIM WIKI    "
-""""""""""""""""""
-
-let g:vimwiki_global_ext = 0
-let g:vimwiki_listsyms = ' ○◐●✓'
-let g:vimwiki_listsym_rejected = '✗'
-let g:vimwiki_list = [{'path': '~/notes',
-                      \ 'syntax': 'markdown',
-                      \'ext': '.md',
-                      \'diary_rel_path': 'daily/',
-                      \'diary_index': 'daily',
-                      \'diary_header': 'Daily Notes',
-                      \'auto_diary_index': 1,
-                      \'nested_syntaxes': {'elixir': 'elixir', 'js': 'javascript', 'ruby': 'ruby', 'sql': 'sql'},
-                    \}]
-
-" TODO this can be removed if sticking with zk
-"augroup vimwikicmds
-"  autocmd! vimwikicmds
-"  autocmd Filetype vimwiki nnoremap <buffer> <leader>db  :call VimwikiDailyBoilerPlate()<CR>
-"  autocmd Filetype vimwiki nnoremap <buffer> <leader>tb  :call TicketBoilerPlate()<CR>
-"  autocmd Filetype vimwiki nnoremap <buffer> <leader>tss <esc>:exe "normal! A **Start: ".strftime('%H:%M')."**"<CR>
-"  autocmd Filetype vimwiki nnoremap <buffer> <leader>tse <esc>:exe "normal! A **End: ".strftime('%H:%M')."**"<CR>
-"  autocmd Filetype vimwiki nnoremap <buffer> <leader>tl :TicketLink<space>
-"  autocmd Filetype vimwiki nnoremap <buffer> <leader>dn :VimwikiMakeTomorrowDiaryNote<CR>
-"  autocmd Filetype vimwiki nnoremap <buffer> <leader>dp :VimwikiMakeYesterdayDiaryNote<CR>
-"  autocmd Filetype vimwiki nnoremap <buffer> <leader>dc :VimwikiMakeDiaryNote<CR>
-"  autocmd Filetype vimwiki nnoremap <buffer> <leader>tn :VimwikiTable
-"
-"  autocmd Filetype vimwiki nnoremap <leader>bu :call Backup()<CR>
-"
-"  command! -nargs=+ TicketLink :call MakeTicketLink(<f-args>)
-"augroup END
-
-""""""""""""""""""
-"  END VIM WIKI  "
 """"""""""""""""""
 
 """"""""""""""""""
@@ -517,15 +477,6 @@ function! WindowNumber()
     return tabpagewinnr(tabpagenr())
 endfunction
 
-function! VimwikiDailyBoilerPlate()
-  normal! gg
-  0put='# '.strftime('%b %d, %Y')
-
-  for section in ['TODOs', 'Tickets', 'Notes']
-    put=''
-    put='## '.section
-  endfor
-endfunction
 
 function! MakeTicketLink(newline, ...)
   let s:ticket_name = []
@@ -589,7 +540,7 @@ autocmd QuickFixCmdPost *grep* cwindow
 " Spell check
 setlocal spelllang=en_us complete+=kspell
 " Automatically enable spell check for specific file types
-autocmd FileType gitcommit,markdown,vimwiki setlocal spell spelllang=en_us complete+=kspell
+autocmd FileType gitcommit,markdown setlocal spell spelllang=en_us complete+=kspell
 
 " Toggle spell check
 nnoremap ,tsc :set spell!<CR>
