@@ -229,11 +229,11 @@ alias mkdir="mkdir -pv"
 alias rmf="rm -rf"
 
 if test -f "$HOME/work_stuff.sh"; then
-. $HOME/work_stuff.sh
+  . $HOME/work_stuff.sh
 fi
 
 if test -f "$HOME/devspace.sh"; then
-. $HOME/devspace.sh
+  . $HOME/devspace.sh
 fi
 
 ##### FUNCTIONS #####
