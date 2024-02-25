@@ -124,6 +124,9 @@ fi
 ##### FZF #####
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+##### BAT #####
+BAT_THEME=Nord
+
 ##### GIT ALIASES #####
 
 # Misc
