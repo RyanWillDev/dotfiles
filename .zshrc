@@ -101,9 +101,6 @@ alias v="vim"
 alias v.="vim ."
 alias rg="rg -i"
 
-##### Zettelkasten #####
-# This is overwritten by work_stuff if it exists
-export ZK_PATH=$HOME/notes/the-zett
 
 if [[ ! "$PATH" == *${HOME}/zk* ]]; then
 export PATH=$PATH:$HOME/zk
