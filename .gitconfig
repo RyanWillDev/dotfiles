@@ -1,2 +1,6 @@
 [core]
-	editor = nvim
+  editor = nvim
+
+[user]
+  name = Ryan Will
+  email = ryanwilldev@gmail.com
