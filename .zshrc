@@ -111,6 +111,11 @@ fi
 . /opt/homebrew/opt/asdf/libexec/asdf.sh
 #. $HOME/.asdf/completions/asdf.bash
 
+##### Homebrew #####
+if [[ ! "$PATH" == */opt/homebrew/bin/* ]]; then
+  export PATH="/opt/homebrew/bin/:$PATH"
+fi
+
 ###### RUST #####
 if [[ ! "$PATH" == */Users/${USER}/.cargo/bin* ]]; then
   export PATH="$PATH:/Users/${USER}/.cargo/bin"
