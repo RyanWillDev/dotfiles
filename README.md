@@ -27,6 +27,9 @@ Use asdf plugin to install neovim nightly
 3. Download [Plug](https://github.com/junegunn/vim-plug)
 4. Regenerate spell check files [this](https://thoughtbot.com/blog/vim-spell-checking) will help
 
+###
+`cp .gitconfig ~/.gitconfig`
+
 ## Requirements
 
 ### Vim
