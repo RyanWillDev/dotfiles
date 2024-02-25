@@ -111,6 +111,11 @@ fi
 . /opt/homebrew/opt/asdf/libexec/asdf.sh
 #. $HOME/.asdf/completions/asdf.bash
 
+##### Dotnet (P) #####
+if [[ ! "$PATH" == */Users/${USER}/.dotnet/tools* ]]; then
+  export PATH=":$PATH:/Users/${USER}/.dotnet/tools"
+fi
+
 ##### Homebrew #####
 if [[ ! "$PATH" == */opt/homebrew/bin/* ]]; then
   export PATH="/opt/homebrew/bin/:$PATH"
