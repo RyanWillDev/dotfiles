@@ -98,12 +98,12 @@ nnoremap <leader>fs :Rg<space>
 nnoremap <leader>fb :Buffers<CR>
 nnoremap <leader>ft :Rg<space>TODO\|FIXME<cr>
 
-" Override W windows command
-command! W w
-
 """"""""""""""""""
 "    END FZF     "
 """"""""""""""""""
+
+" Override W windows command
+command! W w
 
 """"""""""""""""""
 "       ZK       "
