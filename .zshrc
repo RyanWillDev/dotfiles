@@ -108,7 +108,7 @@ fi
 
 ##### ASDF #####
 # The recommendation of using brew to get the prefix is slow
-. /usr/local/opt/asdf/asdf.sh
+. /opt/homebrew/opt/asdf/libexec/asdf.sh
 #. $HOME/.asdf/completions/asdf.bash
 
 ###### RUST #####
