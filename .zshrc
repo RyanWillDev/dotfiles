@@ -135,7 +135,7 @@ fi
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 ##### BAT #####
-BAT_THEME=Nord
+export BAT_THEME=Nord
 
 ##### GIT ALIASES #####
 
