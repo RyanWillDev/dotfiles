@@ -14,7 +14,7 @@ if [ ! $TMUX ]; then
     else
       tmux new -c "/Users/${USER}/notes/${COMPANY_NAME}/zett" -n "notes" zk daily \;\
         send-keys -t 0 ",aft" \;\
-        new-window -d -c "/Users/${USER}/Projects/${COMPANY_NAME}"
+        new-window -d -c "/Users/${USER}/Projects"
     fi
   else
     echo "You don't have tmux installed : ("
