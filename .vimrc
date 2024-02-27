@@ -31,7 +31,8 @@ Plug 'jiangmiao/auto-pairs'
 " Auto add end to languages that use do/end sytax EG: ruby and elixir
 Plug 'tpope/vim-endwise'
 
-Plug 'w0rp/ale' " Linting and Autocompletion mostly just used for removing whitepsace and credo
+" Linting and Autocompletion
+Plug 'w0rp/ale'
 
 " LSP & Autocomplete stuff
 Plug 'neovim/nvim-lspconfig'
@@ -220,11 +221,24 @@ let g:vim_markdown_anchorexpr = "'# ' .. substitute(v:anchor, '-', '[- ]', 'g') 
 "      LSP       "
 """"""""""""""""""
 lua << EOF
+  local ls = require('luasnip')
+
   function on_attach(_client, _bufnr)
     vim.keymap.set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", { buffer = true, noremap = true })
     vim.keymap.set("n", "gh", "<cmd>lua vim.lsp.buf.hover()<CR>", { buffer = true, noremap = true })
     vim.keymap.set("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>", { buffer = true, noremap = true })
     vim.keymap.set("n", "<leader>e", "<cmd>lua vim.diagnostic.open_float()<CR>", { buffer = true, noremap = true })
+
+
+    vim.keymap.set({"i"}, "<C-Y>", function() ls.expand() end, {silent = true})
+    vim.keymap.set({"i", "s"}, "<C-N>", function() ls.jump( 1) end, {silent = true})
+    vim.keymap.set({"i", "s"}, "<C-P>", function() ls.jump(-1) end, {silent = true})
+
+    vim.keymap.set({"i", "s"}, "<C-C>", function()
+      if ls.choice_active() then
+      ls.change_choice(1)
+    end
+    end, {silent = true})
   end
 
   local cmp = require'cmp'
@@ -255,7 +269,7 @@ lua << EOF
       -- You have to have a snippet support otherwise it breaks nvim-cmp if the language server returns snippets
       -- like tsserver does.
       expand = function(args)
-        require('luasnip').lsp_expand(args.body)
+        ls.lsp_expand(args.body)
       end,
     },
   })
@@ -266,8 +280,12 @@ lua << EOF
   require("elixir").setup({
     nextls = {
       enable = true,
+      spitfire = true,
       on_attach = on_attach,
+      -- This breaks because workspace is incorrect
+      -- capabilities = capabilities,
       init_options = {
+        mix_env = "dev",
         experimental = {
           completions = {
             enable = true -- control if completions are enabled. defaults to false
@@ -340,14 +358,15 @@ lua << EOF
 
   require'lspconfig'.gopls.setup{}
 
+  -- diagnostics seem to show with or without this
   -- Enable diagnostics
-  vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-    vim.lsp.diagnostic.on_publish_diagnostics, {
-      virtual_text = true,
-      signs = true,
-      update_in_insert = true,
-    }
-  )
+  --vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+  --  vim.lsp.diagnostic.on_publish_diagnostics, {
+  --    virtual_text = true,
+  --    signs = true,
+  --    update_in_insert = true,
+  --  }
+  --)
 
   -- vim.lsp.set_log_level("debug")
 
@@ -558,7 +577,7 @@ function! FormatFile()
     lua vim.lsp.buf.format()
 
     " Used for removing whitepsace & prettier formatter
-    ALEFix
+    "ALEFix
   endif
 endfunction
 
