@@ -31,7 +31,8 @@ Plug 'jiangmiao/auto-pairs'
 " Auto add end to languages that use do/end sytax EG: ruby and elixir
 Plug 'tpope/vim-endwise'
 
-Plug 'w0rp/ale' " Linting and Autocompletion mostly just used for removing whitepsace and credo
+" Linting and Autocompletion
+"Plug 'w0rp/ale'
 
 " LSP & Autocomplete stuff
 Plug 'neovim/nvim-lspconfig'
@@ -224,7 +225,10 @@ lua << EOF
     nextls = {
       enable = true,
       on_attach = on_attach,
+      -- This breaks because workspace is incorrect
+      -- capabilities = capabilities,
       init_options = {
+        mix_env = "dev",
         experimental = {
           completions = {
             enable = true -- control if completions are enabled. defaults to false
@@ -293,14 +297,15 @@ lua << EOF
     }
   })
 
+  -- diagnostics seem to show with or without this
   -- Enable diagnostics
-  vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-    vim.lsp.diagnostic.on_publish_diagnostics, {
-      virtual_text = true,
-      signs = true,
-      update_in_insert = true,
-    }
-  )
+  --vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+  --  vim.lsp.diagnostic.on_publish_diagnostics, {
+  --    virtual_text = true,
+  --    signs = true,
+  --    update_in_insert = true,
+  --  }
+  --)
 
   -- vim.lsp.set_log_level("debug")
 
