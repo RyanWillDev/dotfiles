@@ -23,6 +23,7 @@ Plug 'jkramer/vim-checkbox'
 Plug 'scrooloose/nerdtree'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
 " Auto add matching praens and brackets
 Plug 'jiangmiao/auto-pairs'
@@ -48,6 +49,10 @@ Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 " Fuzzy searching files, commits, colorschemes, etc
 Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --all'}
 Plug 'junegunn/fzf.vim'
+
+" Elixir
+Plug 'elixir-tools/elixir-tools.nvim'
+Plug 'nvim-lua/plenary.nvim'
 
 " HTML
 Plug 'mattn/emmet-vim', {'for': ['html', 'css', 'eruby', 'eelixir']}
@@ -215,6 +220,13 @@ let g:vim_markdown_anchorexpr = "'# ' .. substitute(v:anchor, '-', '[- ]', 'g') 
 "      LSP       "
 """"""""""""""""""
 lua << EOF
+  function on_attach(_client, _bufnr)
+    vim.keymap.set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", { buffer = true, noremap = true })
+    vim.keymap.set("n", "gh", "<cmd>lua vim.lsp.buf.hover()<CR>", { buffer = true, noremap = true })
+    vim.keymap.set("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>", { buffer = true, noremap = true })
+    vim.keymap.set("n", "<leader>e", "<cmd>lua vim.diagnostic.open_float()<CR>", { buffer = true, noremap = true })
+  end
+
   local cmp = require'cmp'
   local lspkind = require('lspkind')
   cmp.setup({
@@ -251,17 +263,34 @@ lua << EOF
   local capabilities = require('cmp_nvim_lsp').default_capabilities()
   capabilities.textDocument.completion.completionItem.snippetSupport = true
 
-  require'lspconfig'.elixirls.setup{
-    cmd = { vim.env.HOME .. "/elixir-ls/release/language_server.sh" },
-    capabilities = capabilities,
-    settings = {
-      --dialyzerEnabled = false
-    }
-  }
+  require("elixir").setup({
+    nextls = {
+      enable = true,
+      on_attach = on_attach,
+      init_options = {
+        experimental = {
+          completions = {
+            enable = true -- control if completions are enabled. defaults to false
+          }
+        }
+      }
+    },
+    credo = {enable = true},
+    elixirls = {enable = false},
+  })
+
+  --require'lspconfig'.elixirls.setup{
+  --  cmd = { vim.env.HOME .. "/elixir-ls/release/language_server.sh" },
+  --  capabilities = capabilities,
+  --  settings = {
+  --    --dialyzerEnabled = false
+  --  }
+  --}
 
   require'lspconfig'.erlangls.setup{}
 
   require'lspconfig'.solargraph.setup{
+    on_attach = on_attach,
     settings = {
       solargraph = {
         diagnostics = true
@@ -273,6 +302,8 @@ lua << EOF
   require'lspconfig'.tsserver.setup{
     capabilities = capabilities,
     on_attach = function(client)
+      on_attach() -- Configure Keymaps
+
       formatting = {
         insertSpaceAfterOpeningAndBeforeClosingEmptyBraces = false,
         insertSpaceAfterFunctionKeywordForAnonymousFunctions = true,
@@ -291,12 +322,14 @@ lua << EOF
   }
 
   require'lspconfig'.zk.setup{
+    on_attach = on_attach,
     cmd = { 'zk', 'lsp' },
     filetypes = { 'markdown' },
     capabilities = capabilities,
   }
 
   require('rust-tools').setup({
+    on_attach = on_attach,
     tools = {
       inlay_hints = {
         auto = true,
@@ -361,12 +394,6 @@ lua << EOF
 }
 
 EOF
-
-" LSP Keymaps
-nnoremap gd <cmd>lua vim.lsp.buf.definition()<CR>
-nnoremap gh <cmd>lua vim.lsp.buf.hover()<CR>
-nnoremap gr <cmd>lua vim.lsp.buf.references()<CR>
-nnoremap ,e <cmd>lua vim.diagnostic.open_float()<CR>
 
 " Configure completion
 
