@@ -63,6 +63,26 @@ Plug 'prettier/vim-prettier', {
       \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'svelte', 'yaml', 'html'],
       \}
 
+" treesitter does not work for fenced markdown languages
+" You can enable regex highlighting, but that is supposed to cause performance issues.
+" treesitter is already disabled for markdown in order to use the `vim-markdown` plugin,
+" so we'll just load the fenced language plugs for markdown files
+Plug 'vim-ruby/vim-ruby', {'for': 'markdown'}
+
+" Elixir
+Plug 'elixir-lang/vim-elixir', {'for': 'markdown'}
+
+" JavaScript
+Plug 'pangloss/vim-javascript', {'for': 'markdown'}
+
+" TypeScript
+Plug 'HerringtonDarkholme/yats.vim', {'for': 'markdown'}
+
+Plug 'jparise/vim-graphql', {'for': 'markdown'}
+
+" Zig
+Plug 'ziglang/zig.vim', {'for': 'markdown'}
+
 " Scheme/Lisp/Clojure
 "Plug 'Olical/conjure', {'branch': 'develop'} " Specifying develop is a temporary fix for crashing on launch https://github.com/Olical/conjure/issues/293
 "Plug 'bhurlow/vim-parinfer'
@@ -295,7 +315,7 @@ lua << EOF
     -- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
     -- the name of the parser)
     -- list of language that will be disabled
-    disable = {},
+    disable = {'markdown'},
     -- Or use a function for more flexibility, e.g. to disable slow treesitter highlight for large files
    -- disable = function(lang, buf)
    --     local max_filesize = 100 * 1024 -- 100 KB
@@ -593,7 +613,7 @@ set conceallevel=2
 set signcolumn=yes
 
 " Enable Code Fencing
-let g:markdown_fenced_languages = ['elixir', 'gql=graphql', 'js=javascript', 'json', 'ruby', 'bash=sh', 'sql']
+let g:markdown_fenced_languages = ['elixir', 'graphql', 'javascript', 'typescript', 'json', 'ruby', 'bash', 'sql']
 " Turns off auto folding for vim-markdown
 let g:vim_markdown_folding_disabled = 1
 
