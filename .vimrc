@@ -679,7 +679,7 @@ set spellfile=~/.config/nvim/en.utf-8.add,~/.config/nvim/work.utf-8.add
 
 " Visualize tabs and newlines
 "set listchars=tab:▸\ ,eol:¬,trail:•
-set listchars=trail:•
+set listchars=tab:\ \ ,trail:•,
 set list
 map <leader>l :set list!<CR> " Toggle tabs and EOL
 
