@@ -35,6 +35,7 @@ Plug 'w0rp/ale' " Linting and Autocompletion mostly just used for removing white
 " LSP & Autocomplete stuff
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/nvim-cmp', {'branch': 'main'}
+Plug 'onsails/lspkind.nvim'
 Plug 'hrsh7th/cmp-nvim-lsp', {'branch': 'main'}
 Plug 'hrsh7th/cmp-buffer', {'branch': 'main'}
 Plug 'f3fora/cmp-spell'
@@ -205,7 +206,19 @@ let g:vim_markdown_anchorexpr = "'# ' .. substitute(v:anchor, '-', '[- ]', 'g') 
 """"""""""""""""""
 lua << EOF
   local cmp = require'cmp'
+  local lspkind = require('lspkind')
   cmp.setup({
+    formatting = {
+      format = lspkind.cmp_format({
+        mode = 'symbol',
+        menu = {
+          buffer = '[Buffer]',
+          luasnip = '[LuaSnip]',
+          nvim_lsp = '[LSP]',
+          spell = '[Spell]'
+        },
+      }),
+    },
     -- Default mappings were removed. See https://github.com/hrsh7th/nvim-cmp/issues/231#issuecomment-1098175017
     mapping = cmp.mapping.preset.insert({}),
     sources = cmp.config.sources({
