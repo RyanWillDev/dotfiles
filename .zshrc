@@ -223,11 +223,11 @@ grh () {
 }
 
 ##### NAVIGATION SHORTCUTS #####
-alias sp="cd ~/Projects/scratchpad"
+alias sp="cd ~/scratchpad"
 alias projects="cd ~/Projects"
 alias learn="cd ~/learn"
 alias personal="cd ~/personal"
-alias oss="cd ~/open-source"
+alias oss="cd ~/oss"
 alias ..='cd ..'
 alias dots='cd ~/dotfiles'
 

@@ -17,7 +17,7 @@ call plug#begin('~/.local/share/nvim/site/plugged')
 " Colorschemes
 Plug 'drewtempelmeyer/palenight.vim'
 Plug 'joshdick/onedark.vim', {'branch': 'main'}
-Plug 'nordtheme/vim', {'branch': 'main'}
+Plug 'arcticicestudio/nord-vim'
 
 Plug 'jkramer/vim-checkbox'
 Plug 'scrooloose/nerdtree'
@@ -315,7 +315,7 @@ lua << EOF
 
   -- Automatically install missing parsers when entering buffer
   -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
-  auto_install = false,
+  auto_install = true,
 
   -- List of parsers to ignore installing (or "all")
   ignore_install = {},
