@@ -117,18 +117,28 @@ command! W w
 "       ZK       "
 """"""""""""""""""
 nnoremap <leader>nn :NewNote<space>
-command! -nargs=+ NewNote :call MakeNote(<f-args>)
+command! -nargs=+ NewNote :call MakeNote(0, <f-args>)
+
+nnoremap <leader>nwn :NewWorkNote<space>
+command! -nargs=+ NewWorkNote :call MakeNote(1, <f-args>)
+
 nnoremap <leader>td <esc>:execute 'normal! i'.strftime('%b %d, %Y')<CR>
 nnoremap <leader>tss <esc>:exe "normal! A **Start: ".strftime('%H:%M')."**"<CR>
 nnoremap <leader>tse <esc>:exe "normal! A **End: ".strftime('%H:%M')."**"<CR>
 
-function! MakeNote(...)
+function! MakeNote(is_work_note, ...)
   "let s:file_name = join(a:000, ' ') . '.md'
   "let s:time = strftime("%Y%m%d%H%M%S")
   "execute 'e ' . fnameescape($ZK_PATH . '/' . s:time . ' ' . s:file_name)
-
   let s:file_name = join(a:000, ' ') " zk new adds extension
+
+  if a:is_work_note
+  let path = system('zk work_note "' . s:file_name . '"') " -p prints path instead of opens
+  else
   let path = system('zk new -p -t "' . s:file_name . '"') " -p prints path instead of opens
+  endif
+
+  "let path = system('zk new -p -t "' . s:file_name . '"') " -p prints path instead of opens
   let path = trim(path) " Remove newlines
   execute 'e ' . fnameescape(path)
 endfunction
@@ -248,6 +258,8 @@ lua << EOF
       --dialyzerEnabled = false
     }
   }
+
+  require'lspconfig'.erlangls.setup{}
 
   require'lspconfig'.solargraph.setup{
     settings = {
@@ -700,7 +712,7 @@ map <leader>l :set list!<CR> " Toggle tabs and EOL
 
 " Color scheme (terminal)
 set background=dark
-colorscheme nord
+colorscheme onedark
 
 if (has("termguicolors"))
   set termguicolors

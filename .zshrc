@@ -131,11 +131,16 @@ if [[ ! "$PATH" == */Applications/Postgres.app/Contents/Versions/latest/bin* ]];
   export PATH="$PATH:/Applications/Postgres.app/Contents/Versions/latest/bin"
 fi
 
+
+if [[ ! "$PATH" == */Users/${USER}/.cache/rebar3/bin:$PATH* ]]; then
+  export PATH=/Users/${USER}/.cache/rebar3/bin:$PATH
+fi
+
 ##### FZF #####
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 ##### BAT #####
-export BAT_THEME=Nord
+export BAT_THEME=OneHalfDark
 
 ##### GIT ALIASES #####
 
@@ -289,3 +294,6 @@ kafka-do() {
     echo "Argument must be start or stop"
   fi
 }
+
+# Created by `pipx` on 2024-06-11 20:37:53
+export PATH="$PATH:/Users/ryan/.local/bin"
