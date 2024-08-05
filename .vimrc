@@ -299,13 +299,16 @@ lua << EOF
 
   --require'lspconfig'.elixirls.setup{
   --  cmd = { vim.env.HOME .. "/elixir-ls/release/language_server.sh" },
+  --  on_attach = on_attach,
   --  capabilities = capabilities,
   --  settings = {
   --    --dialyzerEnabled = false
   --  }
   --}
 
-  require'lspconfig'.erlangls.setup{}
+  require'lspconfig'.erlangls.setup{
+    on_attach = on_attach
+  }
 
   require'lspconfig'.solargraph.setup{
     on_attach = on_attach,
