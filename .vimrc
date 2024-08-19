@@ -17,7 +17,9 @@ call plug#begin('~/.local/share/nvim/site/plugged')
 " Colorschemes
 Plug 'drewtempelmeyer/palenight.vim'
 Plug 'joshdick/onedark.vim', {'branch': 'main'}
-Plug 'arcticicestudio/nord-vim'
+Plug 'nordtheme/vim', { 'as': 'nord' }
+Plug 'sainnhe/everforest'
+Plug 'EdenEast/nightfox.nvim'
 
 Plug 'jkramer/vim-checkbox'
 Plug 'scrooloose/nerdtree'
@@ -666,7 +668,7 @@ autocmd QuickFixCmdPost *grep* cwindow
 " Spell check
 setlocal spelllang=en_us complete+=kspell
 " Automatically enable spell check for specific file types
-autocmd FileType gitcommit,markdown setlocal spell spelllang=en_us complete+=kspell
+autocmd BufReadPost * setlocal spell spelllang=en_us complete+=kspell
 
 " Toggle spell check
 nnoremap ,tsc :set spell!<CR>
@@ -760,12 +762,16 @@ set list
 map <leader>l :set list!<CR> " Toggle tabs and EOL
 
 " Color scheme (terminal)
-set background=dark
-colorscheme onedark
-
 if (has("termguicolors"))
+  " Fixes italic fonts
+  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
   set termguicolors
 endif
+
+set background=dark
+let g:everforest_background = 'soft'
+colorscheme everforest
 """"""""""""""""""
 "   END CONFIG   "
 """"""""""""""""""
