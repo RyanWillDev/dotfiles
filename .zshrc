@@ -279,6 +279,34 @@ gifify () {
   ffmpeg -i $1 -s 1080x720 -pix_fmt rgb24 -r $frame_rate -f gif - | gifsicle --optimize=3 --delay=3 > "${output_filename}.gif"
 }
 
+lets_go() {
+  if [[ "${1}" == "" ]]; then
+    echo "Requires a ticket id\n"
+    echo "Example: lets_go ticket_id base_branch branch_type"
+    return 1
+  fi
+
+  # Uses ":u" expansion modifier to uppercase ticket_id
+  local ticket_id="${1:u}"
+  local base_branch=${2:-"main"}
+  local branch_type=${3:-"feat"}
+
+  git checkout $base_branch
+  git pull origin --no-rebase
+
+  git checkout -b "${branch_type}/${ticket_id}"
+}
+
+clean_up() {
+  if [[ "${1}" == "" ]]; then
+    echo "Requires a filename or other string to grep current directory for"
+    echo "Example: cleanup Screen"
+    return 1
+  fi
+ ls | rg $1 | xargs -I {} mv {} ~/.Trash/{}
+}
+
+
 # Assumes both kafka and zookeeper are installed with Hombrew
 kafka-do() {
   if [ "${1}" = "start" ]
