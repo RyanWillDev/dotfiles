@@ -322,7 +322,7 @@ lua << EOF
     capabilities = capabilities
   }
 
-  require'lspconfig'.tsserver.setup{
+  require'lspconfig'.ts_ls.setup{
     capabilities = capabilities,
     on_attach = function(client)
       on_attach() -- Configure Keymaps
@@ -361,7 +361,9 @@ lua << EOF
     }
   })
 
-  require'lspconfig'.gopls.setup{}
+  require'lspconfig'.gopls.setup{
+    on_attach = on_attach,
+  }
 
   -- diagnostics seem to show with or without this
   -- Enable diagnostics
@@ -581,8 +583,8 @@ function! FormatFile()
   if CanModifyFile() && g:auto_format_enabled && &modified
     lua vim.lsp.buf.format()
 
-    " Used for removing whitepsace & prettier formatter
-    "ALEFix
+    " Used for removing whitepsace
+    ALEFix
   endif
 endfunction
 
