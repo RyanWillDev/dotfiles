@@ -246,13 +246,6 @@ alias ls='ls -CF'
 alias mkdir="mkdir -pv"
 alias rmf="rm -rf"
 
-if test -f "$HOME/work_stuff.sh"; then
-  . $HOME/work_stuff.sh
-fi
-
-if test -f "$HOME/devspace.sh"; then
-  . $HOME/devspace.sh
-fi
 
 ##### FUNCTIONS #####
 mkcd () { # Make Change Directory
@@ -289,7 +282,7 @@ lets_go() {
   # Uses ":u" expansion modifier to uppercase ticket_id
   local ticket_id="${1:u}"
   local base_branch=${2:-"main"}
-  local branch_type=${3:-"feat"}
+  local branch_type=${3:-"feature"}
 
   git checkout $base_branch
   git pull origin --no-rebase
@@ -326,5 +319,11 @@ kafka-do() {
   fi
 }
 
-# Created by `pipx` on 2024-06-11 20:37:53
-export PATH="$PATH:/Users/ryan/.local/bin"
+# let work_stuff override anything in this file
+if test -f "$HOME/work_stuff.sh"; then
+  . $HOME/work_stuff.sh
+fi
+
+if test -f "$HOME/devspace.sh"; then
+  . $HOME/devspace.sh
+fi
