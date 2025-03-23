@@ -322,6 +322,7 @@ kafka-do() {
 # let work_stuff override anything in this file
 if test -f "$HOME/work_stuff.sh"; then
   . $HOME/work_stuff.sh
+  export WORK_ENV="true"
 fi
 
 if test -f "$HOME/devspace.sh"; then
