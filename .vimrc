@@ -57,6 +57,10 @@ Plug 'junegunn/fzf.vim'
 Plug 'elixir-tools/elixir-tools.nvim'
 Plug 'nvim-lua/plenary.nvim'
 
+if expand('$WORK_ENV') == 'true'
+  Plug 'olimorris/codecompanion.nvim'
+endif
+
 " HTML
 Plug 'mattn/emmet-vim', {'for': ['html', 'css', 'eruby', 'eelixir']}
 
@@ -222,7 +226,31 @@ let g:vim_markdown_anchorexpr = "'# ' .. substitute(v:anchor, '-', '[- ]', 'g') 
 """"""""""""""""""
 "      LSP       "
 """"""""""""""""""
-lua << EOF
+lua <<EOF
+
+  if os.getenv("WORK_ENV") then
+    local gemini_api_key = os.getenv("GEMINI_API_KEY")
+    require("codecompanion").setup({
+      strategies = {
+        chat = {
+          adapter = "gemini",
+        },
+        inline = {
+          adapter = "gemini",
+        },
+      },
+      adapters = {
+        gemini = function()
+          return require("codecompanion.adapters").extend("gemini", {
+            env = {
+              api_key = gemini_api_key,
+            },
+          })
+        end,
+      },
+    })
+  end
+
   local ls = require('luasnip')
 
   function on_attach(_client, _bufnr)
@@ -263,8 +291,11 @@ lua << EOF
       { name = 'nvim_lsp' },
       { name = 'luasnip' },
     }, {
-      { name = 'buffer' },
       { name = 'spell' },
+      { name = 'buffer' },
+      per_filetype = {
+          codecompanion = { "codecompanion" },
+      },
     }),
     snippet = {
       -- https://github.com/hrsh7th/nvim-cmp/wiki/Example-mappings#no-snippet-plugin
@@ -401,7 +432,7 @@ lua << EOF
     -- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
     -- the name of the parser)
     -- list of language that will be disabled
-    disable = {'markdown'},
+    --disable = {'markdown'},
     -- Or use a function for more flexibility, e.g. to disable slow treesitter highlight for large files
    -- disable = function(lang, buf)
    --     local max_filesize = 100 * 1024 -- 100 KB
