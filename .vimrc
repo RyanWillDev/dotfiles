@@ -524,6 +524,7 @@ nnoremap <C-w>S <C-w>K
 nnoremap <C-w>0 <C-w>=
 nnoremap ,v <C-w>v<C-w>l
 nnoremap ,s <C-w>s<C-w>j
+nnoremap <silent> <C-w>t :tab split<CR>
 let i = 1
 while i <= 9
     execute 'nnoremap <Leader>' . i . ' :' . i . 'wincmd w<CR>'
