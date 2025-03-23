@@ -125,8 +125,8 @@ nnoremap <leader>nwn :NewWorkNote<space>
 command! -nargs=+ NewWorkNote :call MakeNote(1, <f-args>)
 
 nnoremap <leader>td <esc>:execute 'normal! i'.strftime('%b %d, %Y')<CR>
-nnoremap <leader>tss <esc>:exe "normal! A **Start: ".strftime('%H:%M')."**"<CR>
-nnoremap <leader>tse <esc>:exe "normal! A **End: ".strftime('%H:%M')."**"<CR>
+nnoremap <leader>tss <esc>:exe "normal! A**Start: ".strftime('%H:%M')."**"<CR>
+nnoremap <leader>tse <esc>:exe "normal! A**End: ".strftime('%H:%M')."**"<CR>
 
 function! MakeNote(is_work_note, ...)
   "let s:file_name = join(a:000, ' ') . '.md'
