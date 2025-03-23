@@ -73,33 +73,23 @@ Plug 'simrat39/rust-tools.nvim'
 
 Plug 'prettier/vim-prettier', {
       \ 'do': 'npm install',
-      \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'svelte', 'yaml', 'html'],
+      \ 'for': [
+      \   'javascript',
+      \   'typescript',
+      \   'javascriptreact',
+      \   'typescriptreact',
+      \   'css',
+      \   'less',
+      \   'scss',
+      \   'json',
+      \   'graphql',
+      \   'markdown',
+      \   'vue',
+      \   'svelte',
+      \   'yaml',
+      \   'html'
+      \ ],
       \}
-
-" treesitter does not work for fenced markdown languages
-" You can enable regex highlighting, but that is supposed to cause performance issues.
-" treesitter is already disabled for markdown in order to use the `vim-markdown` plugin,
-" so we'll just load the fenced language plugs for markdown files
-Plug 'vim-ruby/vim-ruby', {'for': 'markdown'}
-
-" Elixir
-Plug 'elixir-lang/vim-elixir', {'for': 'markdown'}
-
-" JavaScript
-Plug 'pangloss/vim-javascript', {'for': 'markdown'}
-
-" TypeScript
-Plug 'HerringtonDarkholme/yats.vim', {'for': 'markdown'}
-
-Plug 'jparise/vim-graphql', {'for': 'markdown'}
-
-" Zig
-Plug 'ziglang/zig.vim', {'for': 'markdown'}
-
-" Scheme/Lisp/Clojure
-"Plug 'Olical/conjure', {'branch': 'develop'} " Specifying develop is a temporary fix for crashing on launch https://github.com/Olical/conjure/issues/293
-"Plug 'bhurlow/vim-parinfer'
-"Plug 'guns/vim-sexp'
 
 call plug#end()
 
@@ -217,6 +207,7 @@ map <Leader>ge <Plug>Markdown_EditUrlUnderCursor
 let g:vim_markdown_follow_anchor = 1
 " Allow anchors to be specified with -
 " https://github.com/preservim/vim-markdown/issues/493
+" This no longer works?
 let g:vim_markdown_anchorexpr = "'# ' .. substitute(v:anchor, '-', '[- ]', 'g') .. ' \*\\n\\c'"
 
 """"""""""""""""""
@@ -723,8 +714,6 @@ set conceallevel=2
 " Always keep sign column open
 set signcolumn=yes
 
-" Enable Code Fencing
-let g:markdown_fenced_languages = ['elixir', 'graphql', 'javascript', 'typescript', 'json', 'ruby', 'bash', 'sql']
 " Turns off auto folding for vim-markdown
 let g:vim_markdown_folding_disabled = 1
 
