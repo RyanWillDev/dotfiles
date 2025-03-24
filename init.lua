@@ -1,10 +1,12 @@
 -- TODOs:
 -- Fix autoformat
 -- Configure LSP
+--  - DONE
 -- Fix hidden file select in telescope
 --  - DONE 
 -- Fix multi file select in telescope
 --  - https://github.com/nvim-telescope/telescope.nvim/issues/1048#issuecomment-1679797700
+-- Show nvim-tree line numbers?
 -- Configure plugins
 -- Move everything to its own file
 
@@ -66,6 +68,7 @@ require("lazy").setup({
   },
    -- Language Server Protocol support
   { "neovim/nvim-lspconfig", }, -- Base LSP configurations 
+  'onsails/lspkind.nvim',
 
   -- Autocompletion system
   {
@@ -259,6 +262,209 @@ vim.cmd [[
 
 -- End options.lua
 
+-- TODO: Move to ./lua/lsp.lua
+-- TODO: Maybe break out autocomplete stuff from this
+local ls = require('luasnip')
+
+function on_attach(_client, _bufnr)
+  vim.keymap.set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", { buffer = true, noremap = true })
+  vim.keymap.set("n", "gh", "<cmd>lua vim.lsp.buf.hover()<CR>", { buffer = true, noremap = true })
+  vim.keymap.set("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>", { buffer = true, noremap = true })
+  vim.keymap.set("n", "<leader>e", "<cmd>lua vim.diagnostic.open_float()<CR>", { buffer = true, noremap = true })
+
+
+  vim.keymap.set({"i"}, "<C-Y>", function() ls.expand() end, {silent = true})
+  vim.keymap.set({"i", "s"}, "<C-N>", function() ls.jump( 1) end, {silent = true})
+  vim.keymap.set({"i", "s"}, "<C-P>", function() ls.jump(-1) end, {silent = true})
+
+  vim.keymap.set({"i", "s"}, "<C-C>", function()
+    if ls.choice_active() then
+    ls.change_choice(1)
+  end
+  end, {silent = true})
+end
+
+local cmp = require'cmp'
+local lspkind = require('lspkind')
+cmp.setup({
+  formatting = {
+    format = lspkind.cmp_format({
+      mode = 'symbol',
+      menu = {
+        buffer = '[Buffer]',
+        luasnip = '[LuaSnip]',
+        nvim_lsp = '[LSP]',
+        spell = '[Spell]'
+      },
+    }),
+  },
+  -- Default mappings were removed. See https://github.com/hrsh7th/nvim-cmp/issues/231#issuecomment-1098175017
+  mapping = cmp.mapping.preset.insert({}),
+  sources = cmp.config.sources({
+    { name = 'nvim_lsp' },
+    { name = 'luasnip' },
+  }, {
+    { name = 'spell' },
+    { name = 'buffer' },
+    per_filetype = {
+        codecompanion = { "codecompanion" },
+    },
+  }),
+  snippet = {
+    -- https://github.com/hrsh7th/nvim-cmp/wiki/Example-mappings#no-snippet-plugin
+    -- You have to have a snippet support otherwise it breaks nvim-cmp if the language server returns snippets
+    -- like tsserver does.
+    expand = function(args)
+      ls.lsp_expand(args.body)
+    end,
+  },
+})
+
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
+capabilities.textDocument.completion.completionItem.snippetSupport = true
+
+ -- require("elixir").setup({
+ --   nextls = {
+ --     enable = true,
+ --     spitfire = true,
+ --     on_attach = on_attach,
+ --     -- This breaks because workspace is incorrect
+ --     -- capabilities = capabilities,
+ --     init_options = {
+ --       mix_env = "dev",
+ --       experimental = {
+ --         completions = {
+ --           enable = true -- control if completions are enabled. defaults to false
+ --         }
+ --       }
+ --     }
+ --   },
+ --   credo = {enable = true},
+ --   elixirls = {enable = false},
+ -- })
+
+  require'lspconfig'.elixirls.setup{
+    cmd = { vim.env.HOME .. "/elixir-ls/release/language_server.sh" },
+    on_attach = on_attach,
+    capabilities = capabilities,
+    settings = {
+      --dialyzerEnabled = false
+    }
+  }
+
+require'lspconfig'.erlangls.setup{
+  on_attach = on_attach
+}
+
+require'lspconfig'.solargraph.setup{
+  on_attach = on_attach,
+  settings = {
+    solargraph = {
+      diagnostics = true
+    }
+  },
+  capabilities = capabilities
+}
+
+require'lspconfig'.ts_ls.setup{
+  capabilities = capabilities,
+  on_attach = function(client)
+    on_attach() -- Configure Keymaps
+
+    formatting = {
+      insertSpaceAfterOpeningAndBeforeClosingEmptyBraces = false,
+      insertSpaceAfterFunctionKeywordForAnonymousFunctions = true,
+      semicolons = "ignore"
+    }
+
+    settings = {
+      settings = vim.tbl_deep_extend("force", client.config.settings, {
+        typescript = { format = formatting },
+        javascript = { format = formatting },
+      })
+    }
+
+    client.notify("workspace/didChangeConfiguration", settings)
+  end,
+}
+
+require'lspconfig'.zk.setup{
+  on_attach = on_attach,
+  cmd = { 'zk', 'lsp' },
+  filetypes = { 'markdown' },
+  capabilities = capabilities,
+}
+
+--require('rust-tools').setup({
+--  on_attach = on_attach,
+--  tools = {
+--    inlay_hints = {
+--      auto = true,
+--      show_parameter_hints = true,
+--    },
+--  }
+--})
+
+require'lspconfig'.gopls.setup{
+  on_attach = on_attach,
+}
+
+-- diagnostics seem to show with or without this
+-- Enable diagnostics
+vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+  vim.lsp.diagnostic.on_publish_diagnostics, {
+    virtual_text = true,
+    signs = true,
+    update_in_insert = true,
+  }
+)
+
+-- End lsp.lua
+
+
+-- TODO move to ./lua/tree-sitter.lua
+require'nvim-treesitter.configs'.setup {
+  -- A list of parser names, or "all" (the five listed parsers should always be installed)
+  ensure_installed = {},
+
+  -- Install parsers synchronously (only applied to `ensure_installed`)
+  sync_install = false,
+
+  -- Automatically install missing parsers when entering buffer
+  -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
+  auto_install = true,
+
+  -- List of parsers to ignore installing (or "all")
+  ignore_install = {},
+
+  ---- If you need to change the installation directory of the parsers (see -> Advanced Setup)
+  -- parser_install_dir = "/some/path/to/store/parsers", -- Remember to run vim.opt.runtimepath:append("/some/path/to/store/parsers")!
+
+  highlight = {
+    enable = true,
+
+    -- NOTE: these are the names of the parsers and not the filetype. (for example if you want to
+    -- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
+    -- the name of the parser)
+    -- list of language that will be disabled
+    --disable = {'markdown'},
+    -- Or use a function for more flexibility, e.g. to disable slow treesitter highlight for large files
+   -- disable = function(lang, buf)
+   --     local max_filesize = 100 * 1024 -- 100 KB
+   --     local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+   --     if ok and stats and stats.size > max_filesize then
+   --         return true
+   --     end
+   -- end,
+
+    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+    -- Using this option may slow down your editor, and you may see some duplicate highlights.
+    -- Instead of true it can also be a list of languages
+    additional_vim_regex_highlighting = false,
+  },
+}
+
 
 -- TODO: Move to ./lua/nvim-tree.lua
 -- -- explorer.lua
@@ -397,3 +603,50 @@ if builtin_ok then
   vim.keymap.set('n', '<leader>fr', builtin.lsp_references, { desc = "Find references" })
 end
 
+
+-- TODO: Move to ./lua/helpers.lua (maybe?)
+local function can_modify_file()
+  return vim.bo.modifiable and vim.fn.expand('%') ~= ''
+end
+
+local function auto_save()
+  if can_modify_file() and not vim.fn.pumvisible() and vim.bo.modified then
+    vim.cmd('wa') -- Write all buffers
+  end
+end
+
+local function format_file()
+  if can_modify_file() and vim.g.auto_format_enabled == 1 and vim.bo.modified then
+    vim.lsp.buf.format()
+    vim.cmd('ALEFix')
+  end
+end
+
+local function auto_save_and_format()
+  format_file()
+  auto_save()
+end
+
+--vim.api.nvim_set_function('CanModifyFile', {noremap = true}, function()
+--  return can_modify_file()
+--end)
+--
+--vim.api.nvim_set_function('AutoSave', {noremap = true}, function()
+--  return auto_save()
+--end)
+--
+--vim.api.nvim_set_function('FormatFile', {noremap = true}, function()
+--  return format_file()
+--end)
+--
+--vim.api.nvim_set_function('AutoSaveAndFormat', {noremap = true}, function()
+--  return auto_save_and_format()
+--end)
+--
+--local function window_number()
+--    return vim.fn.tabpagewinnr(vim.fn.tabpagenr())
+--end
+--
+--vim.api.nvim_set_function('WindowNumber', {noremap = true}, function()
+--  return window_number()
+--end)
