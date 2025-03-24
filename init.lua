@@ -7,6 +7,8 @@
 -- Fix multi file select in telescope
 --  - https://github.com/nvim-telescope/telescope.nvim/issues/1048#issuecomment-1679797700
 -- Show nvim-tree line numbers?
+-- Fix moving windows with <C-w>J,K,L,H
+-- Fix resizing windows with <C-w>=
 -- Configure plugins
 -- Move everything to its own file
 
@@ -110,7 +112,10 @@ require("lazy").setup({
   },
 
   -- LLM Stuff
-  {'olimorris/codecompanion.nvim', cond = vim.env.WORK_ENV == 'true'},
+  { 'olimorris/codecompanion.nvim',
+    cond = function(_) return vim.env.WORK_ENV == 'true' end, 
+    config = true
+  },
 })
 
 -- TODO: Move to ./lua/keymaps.lua
@@ -126,7 +131,9 @@ vim.api.nvim_set_keymap('i', 'jk', '<esc>', { noremap = true, silent = true })
 -- vim.keymap.set("n", "<leader>fg", "<cmd>Commits<CR>")
 -- vim.keymap.set("n", "<leader>fs", "<cmd>Rg <space>")
 --  vim.keymap.set("n", "<leader>fb", "<cmd>Buffers<CR>")
-vim.keymap.set("n", "<leader>ft", "<cmd>Rg <space>TODO\\|FIXME<CR>")
+
+-- Can use ,fs and live grep
+-- vim.keymap.set("n", "<leader>ft", "<cmd>Rg <space>TODO\\|FIXME<CR>")
 vim.keymap.set("i", "jk", "<esc>")
 vim.keymap.set("n", "<leader>gb", "<cmd>Git blame<CR>")
 vim.keymap.set("n", "<leader>gd", "<cmd>Gdiff<CR>")
@@ -264,6 +271,56 @@ vim.cmd [[
 
 -- TODO: Move to ./lua/lsp.lua
 -- TODO: Maybe break out autocomplete stuff from this
+
+if os.getenv("WORK_ENV") then
+  local gemini_api_key = os.getenv("GEMINI_API_KEY")
+  require("codecompanion").setup({
+    strategies = {
+      chat = {
+        adapter = "gemini",
+        slash_commands = {
+          ["file"] = {
+            opts = {
+              provider = "telescope",
+              contains_code = true
+            }
+          },
+          ["buffer"] = {
+            opts = {
+              provider = "telescope",
+              contains_code = true
+            }
+          },
+          ["help"] = {
+            opts = {
+              provider = "telescope",
+              contains_code = true
+            }
+          },
+          ["symbols"] = {
+            opts = {
+              provider = "telescope",
+              contains_code = true
+            }
+          }
+        }
+      },
+      inline = {
+        adapter = "gemini",
+      },
+    },
+    adapters = {
+      gemini = function()
+        return require("codecompanion.adapters").extend("gemini", {
+          env = {
+            api_key = gemini_api_key,
+          },
+        })
+      end,
+    },
+  })
+end
+
 local ls = require('luasnip')
 
 function on_attach(_client, _bufnr)
