@@ -4,7 +4,7 @@
 -- Configure LSP
 --  - DONE
 -- Fix hidden file select in telescope
---  - DONE 
+--  - DONE
 -- Fix multi file select in telescope
 --  - https://github.com/nvim-telescope/telescope.nvim/issues/1048#issuecomment-1679797700
 -- Show nvim-tree line numbers?
@@ -12,7 +12,9 @@
 -- Fix resizing windows with <C-w>=
 -- Configure plugins
 -- Move everything to its own file
-
+-- Update Readme
+-- Move all colorschemes over
+-- See about changing all keymaps to be lua functions
 -- TODO: Move to ./lua/plugins.lua
 -- plugins.lua
 -- Bootstrap Lazy.nvim if not installed
@@ -70,7 +72,7 @@ require("lazy").setup({
     priority = 100, -- Load early
   },
    -- Language Server Protocol support
-  { "neovim/nvim-lspconfig", }, -- Base LSP configurations 
+  { "neovim/nvim-lspconfig", }, -- Base LSP configurations
   'onsails/lspkind.nvim',
 
   -- Autocompletion system
@@ -102,19 +104,25 @@ require("lazy").setup({
   { "airblade/vim-gitgutter", },
 
   -- Color Themes
-  { 
-    "nordtheme/vim", 
-    as = "nord",
-    priority = 1000, -- load last
-  },
   {
-    "EdenEast/nightfox.nvim",
-    priority = 1000, -- load last
+    "nordtheme/vim",
+    as = "nord",
+  },
+   "EdenEast/nightfox.nvim",
+
+  -- Markdown Rendering
+  {
+    'MeanderingProgrammer/render-markdown.nvim',
+     dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
+    ---@module 'render-markdown'
+    ---@type render.md.UserConfig
+    opts = {},
+    ft = { "markdown", "codecompanion" },
   },
 
   -- LLM Stuff
   { 'olimorris/codecompanion.nvim',
-    cond = function(_) return vim.env.WORK_ENV == 'true' end, 
+    cond = function(_) return vim.env.WORK_ENV == 'true' end,
     config = true
   },
 })
@@ -197,7 +205,6 @@ vim.o.relativenumber = true
 vim.o.updatetime = 300 -- Shows gitgutter signs (faster?)
 
 vim.g.auto_format_enabled = 0 -- Used by autoformat function. Default to off
--- vim.o.nocompatible = true
 vim.o.modelines = 0
 vim.o.number = true
 vim.o.relativenumber = true
@@ -263,7 +270,7 @@ vim.cmd [[
       \ if line("'\"") > 0 && line("'\"") <= line("$") |
       \   exe "normal! g`\"" |
       \ endif
- 
+
  autocmd QuickFixCmdPost *grep* cwindow
 ]]
 
