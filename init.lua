@@ -663,7 +663,7 @@ end
 
 -- TODO: Move to ./lua/helpers.lua (maybe?)
 local function can_modify_file()
-  return vim.bo.modifiable and vim.fn.expand('%') ~= ''
+  return vim.bo.modifiable and vim.fn.expand('%') ~= '' -- filename is not ''
 end
 
 local function auto_save()
@@ -675,16 +675,21 @@ end
 local function format_file()
   if can_modify_file() and vim.g.auto_format_enabled == 1 and vim.bo.modified then
     vim.lsp.buf.format()
-    --vim.cmd('ALEFix')
   end
 end
 
 local function auto_save_and_format()
+  -- Strip trailing whitespace
+  -- Uses string literal to avoid having to figure out escaping
+  if can_modify_file() then
+    vim.cmd([[:%s/\s\+$//e]])
+  end
+
   format_file()
   auto_save()
 end
 
-local function toggle_auto_format() 
+local function toggle_auto_format()
   if vim.g.auto_format_enabled == 1 then
     print('Auto format disabled')
     vim.g.auto_format_enabled = 0
