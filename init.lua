@@ -553,6 +553,7 @@ local setup_ok, _ = pcall(nvim_tree.setup, {
   sort_by = "case_sensitive",
   view = {
     width = 30,
+    number = true,
   },
   renderer = {
     group_empty = true,
