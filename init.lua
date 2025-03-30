@@ -298,6 +298,18 @@ vim.cmd [[
 if os.getenv("WORK_ENV") then
   local gemini_api_key = os.getenv("GEMINI_API_KEY")
   require("codecompanion").setup({
+    display = {
+        action_palette = {
+        width = 95,
+        height = 10,
+        prompt = "Prompt ", -- Prompt used for interactive LLM calls
+        provider = "telescope", -- default|telescope|mini_pick
+        opts = {
+          show_default_actions = true, -- Show the default actions in the action palette?
+          show_default_prompt_library = true, -- Show the default prompt library in the action palette?
+        },
+      },
+    },
     strategies = {
       chat = {
         adapter = "gemini",
@@ -342,6 +354,14 @@ if os.getenv("WORK_ENV") then
       end,
     },
   })
+
+  --vim.keymap.set({ "n", "v" }, "<C-a>", "<cmd>CodeCompanionActions<cr>", { noremap = true, silent = true })
+  vim.keymap.set("n", "<leader>ac", "<cmd>CodeCompanionChat Toggle<cr>", { noremap = true, silent = true })
+  vim.keymap.set("v", "<leader>ac", "<cmd>CodeCompanionChat Add<cr>", { noremap = true, silent = true })
+  vim.keymap.set("v", "<leader>ae", "<cmd>CodeCompanionw<cr>", { noremap = true, silent = true })
+
+  -- Expand 'cc' into 'CodeCompanion' in the command line
+  vim.cmd([[cab cc CodeCompanion]])
 end
 
 local ls = require('luasnip')
