@@ -7,6 +7,7 @@
 --  - DONE
 -- Fix multi file select in telescope
 --  - https://github.com/nvim-telescope/telescope.nvim/issues/1048#issuecomment-1679797700
+--  - DONE
 -- Show nvim-tree line numbers?
 -- Fix moving windows with <C-w>J,K,L,H
 -- Fix resizing windows with <C-w>=
@@ -615,6 +616,27 @@ if not has_telescope then
   return
 end
 
+---@param prompt_bufnr integer The buffer number of the Telescope prompt.
+--- Handles the multi-selection of entries in a Telescope picker and populates the quickfix list with the selected entries.
+--- If no entries are multi-selected, it falls back to the default selection action.
+local function handle_multi_select(prompt_bufnr)
+  local picker = require('telescope.actions.state').get_current_picker(prompt_bufnr)
+  local multi = picker:get_multi_selection()
+  if not vim.tbl_isempty(multi) then
+    require('telescope.actions').close(prompt_bufnr)
+    local qflist = {}
+    for _, j in pairs(multi) do
+      if j.path ~= nil then
+        table.insert(qflist, { filename = j.path, lnum = j.lnum, col = j.col })
+      end
+    end
+    vim.fn.setqflist({}, ' ', { items = qflist })
+    vim.cmd('copen')
+  else
+    require('telescope.actions').select_default(prompt_bufnr)
+  end
+end
+
 -- Set up telescope with error handling
 local setup_ok, _ = pcall(telescope.setup, {
   defaults = {
@@ -641,15 +663,23 @@ local setup_ok, _ = pcall(telescope.setup, {
   },
   pickers = {
     live_grep = {
-        file_ignore_patterns = { 'node_modules', '.git', '.venv' },
+      file_ignore_patterns = { 'node_modules', '.git', '.venv', 'deps' },
         additional_args = function(_)
             return { "--hidden" }
-        end
+        end,
+      mappings = {
+        i = {
+          ["<CR>"] = handle_multi_select,
+        }
+      }
     },
     find_files = {
-        file_ignore_patterns = { 'node_modules', '.git', '.venv' },
+        file_ignore_patterns = { 'node_modules', '.git', '.venv', 'deps' },
+        additional_args = function(_)
+            return { "--hidden" }
+        end,
         hidden = true
-    }
+    },
   },
 })
 
