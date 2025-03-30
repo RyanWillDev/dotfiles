@@ -722,10 +722,14 @@ pcall(function() require('telescope').load_extension('fzf') end)
 -- Useful Telescope mappings with error handling
 local builtin_ok, builtin = pcall(require, 'telescope.builtin')
 if builtin_ok then
-  vim.keymap.set('n', '<leader>fp', builtin.find_files, { desc = "Find files" })
-  vim.keymap.set('n', '<leader>fs', builtin.live_grep, { desc = "Live grep" })
-  vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = "Buffers" })
-  vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = "Help tags" })
+  vim.keymap.set('n', '<leader>fp', builtin.find_files, { desc = "Find files", noremap = true })
+  vim.keymap.set('n', '<leader>fs', builtin.live_grep, { desc = "Live grep", noremap = true })
+  vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = "Buffers", noremap = true })
+
+  -- Vim related searches
+  vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = "Help tags", noremap = true })
+  vim.keymap.set('n', '<leader>fk', builtin.keymaps, { desc = "Keymaps", noremap = true })
+
   -- LSP-related searches
   vim.keymap.set('n', 'gd', builtin.lsp_definitions, { desc = "Find definitions", noremap = true })
   vim.keymap.set('n', 'gr', builtin.lsp_references, { desc = "Find references", noremap = true })
