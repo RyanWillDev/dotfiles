@@ -1,5 +1,6 @@
 -- TODOs:
 -- Fix autoformat
+--  - DONE
 -- Configure LSP
 --  - DONE
 -- Fix hidden file select in telescope
@@ -180,9 +181,8 @@ vim.keymap.set("n", "<leader>;", ",")
 
 -- Formatting
 vim.keymap.set("n", "<leader>q", "gqip")
--- End Keymaps
---
 
+-- End Keymaps
 
 -- TODO: Move to ./lua/options.lua
 -- Colorscheme
@@ -667,7 +667,7 @@ local function can_modify_file()
 end
 
 local function auto_save()
-  if can_modify_file() and not vim.fn.pumvisible() and vim.bo.modified then
+  if can_modify_file() and not (vim.fn.pumvisible() == 1) and vim.bo.modified then
     vim.cmd('wa') -- Write all buffers
   end
 end
@@ -675,7 +675,7 @@ end
 local function format_file()
   if can_modify_file() and vim.g.auto_format_enabled == 1 and vim.bo.modified then
     vim.lsp.buf.format()
-    vim.cmd('ALEFix')
+    --vim.cmd('ALEFix')
   end
 end
 
@@ -684,26 +684,21 @@ local function auto_save_and_format()
   auto_save()
 end
 
---vim.api.nvim_set_function('CanModifyFile', {noremap = true}, function()
---  return can_modify_file()
---end)
---
---vim.api.nvim_set_function('AutoSave', {noremap = true}, function()
---  return auto_save()
---end)
---
---vim.api.nvim_set_function('FormatFile', {noremap = true}, function()
---  return format_file()
---end)
---
---vim.api.nvim_set_function('AutoSaveAndFormat', {noremap = true}, function()
---  return auto_save_and_format()
---end)
---
---local function window_number()
---    return vim.fn.tabpagewinnr(vim.fn.tabpagenr())
---end
---
---vim.api.nvim_set_function('WindowNumber', {noremap = true}, function()
---  return window_number()
---end)
+local function toggle_auto_format() 
+  if vim.g.auto_format_enabled == 1 then
+    print('Auto format disabled')
+    vim.g.auto_format_enabled = 0
+  else
+    print('Auto format enabled')
+    vim.g.auto_format_enabled = 1
+  end
+end
+
+-- Since we overwrite the `BufWriteCmd` this will be executed when :w is evoked
+-- in addition to the other auto-save events
+vim.api.nvim_create_autocmd({"FocusLost","BufLeave","WinLeave","TabLeave", "BufWriteCmd",}, {
+  pattern = "*",
+  callback = auto_save_and_format,
+})
+
+vim.keymap.set("n", "<leader>aft", toggle_auto_format, { noremap = true })
