@@ -274,6 +274,12 @@ vim.cmd [[
  autocmd QuickFixCmdPost *grep* cwindow
 ]]
 
+-- Set :W to just execute w
+-- This is a common mistype for me
+vim.cmd [[
+  command! W w
+]]
+
 -- End options.lua
 
 -- TODO: Move to ./lua/lsp.lua
