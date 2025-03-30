@@ -16,6 +16,8 @@
 -- Update Readme
 -- Move all colorschemes over
 -- See about changing all keymaps to be lua functions
+-- Load colorschemes last once everything is moved
+
 -- TODO: Move to ./lua/plugins.lua
 -- plugins.lua
 -- Bootstrap Lazy.nvim if not installed
@@ -108,8 +110,12 @@ require("lazy").setup({
   {
     "nordtheme/vim",
     as = "nord",
+    priority = 1000,
   },
-   "EdenEast/nightfox.nvim",
+  {
+    "EdenEast/nightfox.nvim",
+    priority = 1000,
+  },
 
   -- Markdown Rendering
   {
