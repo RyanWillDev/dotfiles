@@ -9,8 +9,11 @@
 --  - https://github.com/nvim-telescope/telescope.nvim/issues/1048#issuecomment-1679797700
 --  - DONE
 -- Show nvim-tree line numbers?
+-- - DONE
 -- Fix moving windows with <C-w>J,K,L,H
+-- - DONE (not sure how)
 -- Fix resizing windows with <C-w>=
+-- - DONE (not sure how)
 -- Configure plugins
 -- Move everything to its own file
 -- Update Readme
