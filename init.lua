@@ -367,9 +367,7 @@ end
 local ls = require('luasnip')
 
 function on_attach(_client, _bufnr)
-  vim.keymap.set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", { buffer = true, noremap = true })
   vim.keymap.set("n", "gh", "<cmd>lua vim.lsp.buf.hover()<CR>", { buffer = true, noremap = true })
-  vim.keymap.set("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>", { buffer = true, noremap = true })
   vim.keymap.set("n", "<leader>e", "<cmd>lua vim.diagnostic.open_float()<CR>", { buffer = true, noremap = true })
 
 
@@ -729,8 +727,10 @@ if builtin_ok then
   vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = "Buffers" })
   vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = "Help tags" })
   -- LSP-related searches
-  vim.keymap.set('n', '<leader>fd', builtin.lsp_definitions, { desc = "Find definitions" })
-  vim.keymap.set('n', '<leader>fr', builtin.lsp_references, { desc = "Find references" })
+  vim.keymap.set('n', 'gd', builtin.lsp_definitions, { desc = "Find definitions", noremap = true })
+  vim.keymap.set('n', 'gr', builtin.lsp_references, { desc = "Find references", noremap = true })
+  vim.keymap.set('n', 'go', builtin.lsp_outgoing_calls, { desc = "Find outgoing calls", noremap = true })
+  vim.keymap.set('n', 'gi', builtin.lsp_incoming_calls, { desc = "Find incoming calls", noremap = true })
 end
 
 
