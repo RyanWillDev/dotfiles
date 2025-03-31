@@ -755,7 +755,10 @@ end
 
 -- TODO: Move to ./lua/helpers.lua (maybe?)
 local function can_modify_file()
-  return vim.bo.modifiable and vim.fn.expand('%') ~= '' -- filename is not ''
+  local filename = vim.fn.expand('%')
+  return vim.bo.modifiable
+      and filename ~= ''                         -- filename is not ''
+      and not string.match(filename, 'fugitive') -- git-fugitive windows are modifiable
 end
 
 local function auto_save()
