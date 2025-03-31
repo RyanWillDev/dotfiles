@@ -679,6 +679,7 @@ local function handle_multi_select(prompt_bufnr)
   end
 end
 
+local ignored_file_patterns = { 'node_modules', '.git', '.venv', 'deps', '_build', '.elixir_ls' }
 -- Set up telescope with error handling
 local setup_ok, _ = pcall(telescope.setup, {
   defaults = {
@@ -705,10 +706,10 @@ local setup_ok, _ = pcall(telescope.setup, {
   },
   pickers = {
     live_grep = {
-      file_ignore_patterns = { 'node_modules', '.git', '.venv', 'deps' },
-        additional_args = function(_)
-            return { "--hidden" }
-        end,
+      file_ignore_patterns = ignored_file_patterns,
+      additional_args = function(_)
+        return { "--hidden" }
+      end,
       mappings = {
         i = {
           ["<CR>"] = handle_multi_select,
@@ -716,11 +717,11 @@ local setup_ok, _ = pcall(telescope.setup, {
       }
     },
     find_files = {
-        file_ignore_patterns = { 'node_modules', '.git', '.venv', 'deps' },
-        additional_args = function(_)
-            return { "--hidden" }
-        end,
-        hidden = true
+      file_ignore_patterns = ignored_file_patterns,
+      additional_args = function(_)
+        return { "--hidden" }
+      end,
+      hidden = true
     },
   },
 })
