@@ -14,6 +14,7 @@
 -- - DONE (not sure how)
 -- Fix resizing windows with <C-w>=
 -- - DONE (not sure how)
+-- Fix toggling checkboxes
 -- Configure plugins
 -- Move everything to its own file
 -- Update Readme
@@ -796,9 +797,51 @@ end
 
 -- Since we overwrite the `BufWriteCmd` this will be executed when :w is evoked
 -- in addition to the other auto-save events
-vim.api.nvim_create_autocmd({"FocusLost","BufLeave","WinLeave","TabLeave", "BufWriteCmd",}, {
+vim.api.nvim_create_autocmd({ "FocusLost", "BufLeave", "WinLeave", "TabLeave", "BufWriteCmd", }, {
   pattern = "*",
   callback = auto_save_and_format,
 })
 
 vim.keymap.set("n", "<leader>aft", toggle_auto_format, { noremap = true })
+
+-- Toggle markdown checkboxes
+-- Default options
+vim.g.checkbox_states = vim.g.checkbox_states or { ' ', 'x' }
+vim.g.insert_checkbox = vim.g.insert_checkbox or '\\<'
+vim.g.insert_checkbox_prefix = vim.g.insert_checkbox_prefix or ''
+vim.g.insert_checkbox_suffix = vim.g.insert_checkbox_suffix or ' '
+
+
+local function toggle_checkbox()
+  local line = vim.fn.getline('.')
+  local checkbox_pattern = '%[.%]'
+  print('running')
+
+  if string.find(line, checkbox_pattern) then
+    print('in if')
+    local states = vim.deepcopy(vim.g.checkbox_states)
+    table.insert(states, states[1])
+
+    for i, state in ipairs(states) do
+      local pattern = '%[' .. state .. '%]'
+      if string.find(line, pattern) then
+        local next_state = states[i + 1]
+        line = string.gsub(line, pattern, '[' .. next_state .. ']', 1)
+        break
+      end
+    end
+  else
+    if vim.g.insert_checkbox ~= '' then
+      print('in else then')
+      local insert_pattern = vim.g.insert_checkbox
+      local replacement =
+          vim.g.insert_checkbox_prefix .. '[' .. vim.g.checkbox_states[1] .. ']' .. vim.g.insert_checkbox_suffix
+      print(replacement)
+      line = string.gsub(line, insert_pattern, replacement, 1)
+    end
+  end
+
+  vim.fn.setline('.', line)
+end
+
+vim.keymap.set('n', '<leader>tt', toggle_checkbox, { noremap = true, silent = true })
