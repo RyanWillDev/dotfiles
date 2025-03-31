@@ -50,7 +50,8 @@ require("lazy").setup({
   -- General Code Plugins
   'jiangmiao/auto-pairs',
   'tpope/vim-endwise',
-  {'prettier/vim-prettier',
+  {
+    'prettier/vim-prettier',
     build = 'yarn install --frozen-lockfile --production',
     ft = {
       'javascript',
@@ -77,7 +78,7 @@ require("lazy").setup({
     build = ":TSUpdate",
     priority = 100, -- Load early
   },
-   -- Language Server Protocol support
+  -- Language Server Protocol support
   { "neovim/nvim-lspconfig", }, -- Base LSP configurations
   'onsails/lspkind.nvim',
 
@@ -85,11 +86,11 @@ require("lazy").setup({
   {
     "hrsh7th/nvim-cmp",
     dependencies = {
-      "hrsh7th/cmp-nvim-lsp", -- LSP source for nvim-cmp
-      "hrsh7th/cmp-buffer",   -- Buffer source
-      "hrsh7th/cmp-path",     -- Path source
-      "L3MON4D3/LuaSnip",     -- Snippet engine
-      "f3fora/cmp-spell",     -- Allows spell suggestions
+      "hrsh7th/cmp-nvim-lsp",     -- LSP source for nvim-cmp
+      "hrsh7th/cmp-buffer",       -- Buffer source
+      "hrsh7th/cmp-path",         -- Path source
+      "L3MON4D3/LuaSnip",         -- Snippet engine
+      "f3fora/cmp-spell",         -- Allows spell suggestions
       "saadparwaiz1/cmp_luasnip", -- Snippet source
     },
   },
@@ -123,7 +124,7 @@ require("lazy").setup({
   -- Markdown Rendering
   {
     'MeanderingProgrammer/render-markdown.nvim',
-     dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
+    dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
     ---@module 'render-markdown'
     ---@type render.md.UserConfig
     opts = {},
@@ -131,7 +132,8 @@ require("lazy").setup({
   },
 
   -- LLM Stuff
-  { 'olimorris/codecompanion.nvim',
+  {
+    'olimorris/codecompanion.nvim',
     cond = function(_) return vim.env.WORK_ENV == 'true' end,
     config = true
   },
@@ -141,7 +143,7 @@ require("lazy").setup({
 -- Keymaps
 --vim.api.nvim_set_keymap('i', 'jk', '<esc>', { noremap = true, silent = true })
 -- Leader key
-vim.g.mapleader = ',' -- Comma as the leader key
+vim.g.mapleader = ','      -- Comma as the leader key
 vim.g.maplocalleader = ',' -- Comma as the leader key
 vim.api.nvim_set_keymap('i', 'jk', '<esc>', { noremap = true, silent = true })
 
@@ -212,7 +214,7 @@ vim.cmd("set noshiftround")
 vim.o.number = true
 vim.o.relativenumber = true
 
-vim.o.updatetime = 300 -- Shows gitgutter signs (faster?)
+vim.o.updatetime = 300        -- Shows gitgutter signs (faster?)
 
 vim.g.auto_format_enabled = 0 -- Used by autoformat function. Default to off
 vim.o.modelines = 0
@@ -245,7 +247,7 @@ vim.o.ignorecase = true
 vim.o.smartcase = true
 vim.o.showmatch = true
 vim.o.spellfile = vim.fn.expand("~/.config/nvim/en.utf-8.add") .. "," .. vim.fn.expand("~/.config/nvim/work.utf-8.add")
-vim.o.listchars = "tab:  ,trail:•,"
+vim.o.listchars = "tab:>>,trail:•,"
 vim.o.list = true
 vim.o.autoread = true
 vim.o.conceallevel = 2
@@ -307,13 +309,13 @@ if os.getenv("WORK_ENV") then
   local gemini_api_key = os.getenv("GEMINI_API_KEY")
   require("codecompanion").setup({
     display = {
-        action_palette = {
+      action_palette = {
         width = 95,
         height = 10,
-        prompt = "Prompt ", -- Prompt used for interactive LLM calls
-        provider = "telescope", -- default|telescope|mini_pick
+        prompt = "Prompt ",                   -- Prompt used for interactive LLM calls
+        provider = "telescope",               -- default|telescope|mini_pick
         opts = {
-          show_default_actions = true, -- Show the default actions in the action palette?
+          show_default_actions = true,        -- Show the default actions in the action palette?
           show_default_prompt_library = true, -- Show the default prompt library in the action palette?
         },
       },
@@ -379,18 +381,18 @@ function on_attach(_client, _bufnr)
   vim.keymap.set("n", "<leader>e", "<cmd>lua vim.diagnostic.open_float()<CR>", { buffer = true, noremap = true })
 
 
-  vim.keymap.set({"i"}, "<C-Y>", function() ls.expand() end, {silent = true})
-  vim.keymap.set({"i", "s"}, "<C-N>", function() ls.jump( 1) end, {silent = true})
-  vim.keymap.set({"i", "s"}, "<C-P>", function() ls.jump(-1) end, {silent = true})
+  vim.keymap.set({ "i" }, "<C-Y>", function() ls.expand() end, { silent = true })
+  vim.keymap.set({ "i", "s" }, "<C-N>", function() ls.jump(1) end, { silent = true })
+  vim.keymap.set({ "i", "s" }, "<C-P>", function() ls.jump(-1) end, { silent = true })
 
-  vim.keymap.set({"i", "s"}, "<C-C>", function()
+  vim.keymap.set({ "i", "s" }, "<C-C>", function()
     if ls.choice_active() then
-    ls.change_choice(1)
-  end
-  end, {silent = true})
+      ls.change_choice(1)
+    end
+  end, { silent = true })
 end
 
-local cmp = require'cmp'
+local cmp = require 'cmp'
 local lspkind = require('lspkind')
 cmp.setup({
   formatting = {
@@ -413,7 +415,7 @@ cmp.setup({
     { name = 'spell' },
     { name = 'buffer' },
     per_filetype = {
-        codecompanion = { "codecompanion" },
+      codecompanion = { "codecompanion" },
     },
   }),
   snippet = {
@@ -429,40 +431,40 @@ cmp.setup({
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 capabilities.textDocument.completion.completionItem.snippetSupport = true
 
- -- require("elixir").setup({
- --   nextls = {
- --     enable = true,
- --     spitfire = true,
- --     on_attach = on_attach,
- --     -- This breaks because workspace is incorrect
- --     -- capabilities = capabilities,
- --     init_options = {
- --       mix_env = "dev",
- --       experimental = {
- --         completions = {
- --           enable = true -- control if completions are enabled. defaults to false
- --         }
- --       }
- --     }
- --   },
- --   credo = {enable = true},
- --   elixirls = {enable = false},
- -- })
+-- require("elixir").setup({
+--   nextls = {
+--     enable = true,
+--     spitfire = true,
+--     on_attach = on_attach,
+--     -- This breaks because workspace is incorrect
+--     -- capabilities = capabilities,
+--     init_options = {
+--       mix_env = "dev",
+--       experimental = {
+--         completions = {
+--           enable = true -- control if completions are enabled. defaults to false
+--         }
+--       }
+--     }
+--   },
+--   credo = {enable = true},
+--   elixirls = {enable = false},
+-- })
 
-  require'lspconfig'.elixirls.setup{
-    cmd = { vim.env.HOME .. "/elixir-ls/release/language_server.sh" },
-    on_attach = on_attach,
-    capabilities = capabilities,
-    settings = {
-      --dialyzerEnabled = false
-    }
+require 'lspconfig'.elixirls.setup {
+  cmd = { vim.env.HOME .. "/elixir-ls/release/language_server.sh" },
+  on_attach = on_attach,
+  capabilities = capabilities,
+  settings = {
+    --dialyzerEnabled = false
   }
+}
 
-require'lspconfig'.erlangls.setup{
+require 'lspconfig'.erlangls.setup {
   on_attach = on_attach
 }
 
-require'lspconfig'.solargraph.setup{
+require 'lspconfig'.solargraph.setup {
   on_attach = on_attach,
   settings = {
     solargraph = {
@@ -472,7 +474,7 @@ require'lspconfig'.solargraph.setup{
   capabilities = capabilities
 }
 
-require'lspconfig'.ts_ls.setup{
+require 'lspconfig'.ts_ls.setup {
   capabilities = capabilities,
   on_attach = function(client)
     on_attach() -- Configure Keymaps
@@ -494,7 +496,7 @@ require'lspconfig'.ts_ls.setup{
   end,
 }
 
-require'lspconfig'.zk.setup{
+require 'lspconfig'.zk.setup {
   on_attach = on_attach,
   cmd = { 'zk', 'lsp' },
   filetypes = { 'markdown' },
@@ -511,8 +513,12 @@ require'lspconfig'.zk.setup{
 --  }
 --})
 
-require'lspconfig'.gopls.setup{
+require 'lspconfig'.gopls.setup {
   on_attach = on_attach,
+}
+
+require 'lspconfig'.lua_ls.setup {
+  on_attach = on_attach
 }
 
 -- diagnostics seem to show with or without this
@@ -529,7 +535,7 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
 
 
 -- TODO move to ./lua/tree-sitter.lua
-require'nvim-treesitter.configs'.setup {
+require 'nvim-treesitter.configs'.setup {
   -- A list of parser names, or "all" (the five listed parsers should always be installed)
   ensure_installed = {},
 
@@ -555,13 +561,13 @@ require'nvim-treesitter.configs'.setup {
     -- list of language that will be disabled
     --disable = {'markdown'},
     -- Or use a function for more flexibility, e.g. to disable slow treesitter highlight for large files
-   -- disable = function(lang, buf)
-   --     local max_filesize = 100 * 1024 -- 100 KB
-   --     local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
-   --     if ok and stats and stats.size > max_filesize then
-   --         return true
-   --     end
-   -- end,
+    -- disable = function(lang, buf)
+    --     local max_filesize = 100 * 1024 -- 100 KB
+    --     local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+    --     if ok and stats and stats.size > max_filesize then
+    --         return true
+    --     end
+    -- end,
 
     -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
     -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
@@ -626,9 +632,9 @@ local setup_ok, _ = pcall(nvim_tree.setup, {
 
     -- custom mappings
     vim.keymap.set("n", "P", api.tree.change_root_to_parent, opts("Up"))
-    vim.keymap.set("n", "?",     api.tree.toggle_help, opts("Help"))
+    vim.keymap.set("n", "?", api.tree.toggle_help, opts("Help"))
     vim.keymap.set("n", "C", api.tree.change_root_to_node, opts("Change Root"))
-    vim.keymap.set("n", "x",     api.tree.collapse_all, opts("Collapse node"))
+    vim.keymap.set("n", "x", api.tree.collapse_all, opts("Collapse node"))
   end
 })
 
