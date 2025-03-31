@@ -15,6 +15,8 @@
 -- Fix resizing windows with <C-w>=
 -- - DONE (not sure how)
 -- Fix toggling checkboxes
+-- - DONE
+-- Link to heading in page
 -- Configure plugins
 -- Move everything to its own file
 -- Update Readme
@@ -806,39 +808,37 @@ vim.keymap.set("n", "<leader>aft", toggle_auto_format, { noremap = true })
 
 -- Toggle markdown checkboxes
 -- Default options
-vim.g.checkbox_states = vim.g.checkbox_states or { ' ', 'x' }
-vim.g.insert_checkbox = vim.g.insert_checkbox or '\\<'
-vim.g.insert_checkbox_prefix = vim.g.insert_checkbox_prefix or ''
-vim.g.insert_checkbox_suffix = vim.g.insert_checkbox_suffix or ' '
-
 
 local function toggle_checkbox()
   local line = vim.fn.getline('.')
+  local states = { ' ', '-', 'x' }
   local checkbox_pattern = '%[.%]'
-  print('running')
 
   if string.find(line, checkbox_pattern) then
-    print('in if')
-    local states = vim.deepcopy(vim.g.checkbox_states)
-    table.insert(states, states[1])
+    -- table.insert(states, states[1])
+    local pattern
 
     for i, state in ipairs(states) do
-      local pattern = '%[' .. state .. '%]'
+      if state == '-' then
+        -- Need to escape the `-` state since that has meaning in the pattern
+        pattern = '%[%' .. state .. '%]'
+      else
+        pattern = '%[' .. state .. '%]'
+      end
+
       if string.find(line, pattern) then
-        local next_state = states[i + 1]
-        line = string.gsub(line, pattern, '[' .. next_state .. ']', 1)
+        local next_i = math.fmod(i, 3) + 1 -- lua starts at 1
+        local next_state = states[next_i]
+        line = string.gsub(line, checkbox_pattern, '[' .. next_state .. ']', 1)
         break
       end
     end
   else
-    if vim.g.insert_checkbox ~= '' then
-      print('in else then')
-      local insert_pattern = vim.g.insert_checkbox
-      local replacement =
-          vim.g.insert_checkbox_prefix .. '[' .. vim.g.checkbox_states[1] .. ']' .. vim.g.insert_checkbox_suffix
-      print(replacement)
-      line = string.gsub(line, insert_pattern, replacement, 1)
-    end
+    -- Handles the case where we're already on a list item.
+    line = string.gsub(line, '-', '- [ ]', 1)
+    -- Handles the case where we want to create a list item
+    line = string.gsub(line, '%w+', '- [ ] %0', 1)
+    -- In theory, only one of above string.gsub calls should have an effect
   end
 
   vim.fn.setline('.', line)
