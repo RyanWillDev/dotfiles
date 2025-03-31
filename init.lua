@@ -253,6 +253,14 @@ vim.o.signcolumn = "yes"
 vim.o.completeopt = "menuone,noinsert,noselect"
 vim.o.shortmess = vim.o.shortmess .. "c"
 
+-- Spell check
+vim.api.nvim_set_option_value('spelllang', 'en_us', { scope = 'local' })
+vim.api.nvim_set_option_value('complete', vim.api.nvim_get_option_value('complete', {}) .. ',kspell', { scope = 'local' })
+
+vim.cmd [[
+  autocmd BufReadPost * setlocal spell spelllang=en_us complete+=kspell
+]]
+
 -- Calculate window number and set the statusline to include it
 vim.cmd [[
  function! WindowNumber()
