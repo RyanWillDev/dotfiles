@@ -17,6 +17,7 @@
 -- Fix toggling checkboxes
 -- - DONE
 -- Link to heading in page
+-- - DONE
 -- Configure plugins
 -- Move everything to its own file
 -- Update Readme
@@ -845,3 +846,23 @@ local function toggle_checkbox()
 end
 
 vim.keymap.set('n', '<leader>tt', toggle_checkbox, { noremap = true, silent = true })
+
+local function goto_heading_from_anchor()
+  local line = vim.api.nvim_get_current_line()
+  local col = vim.api.nvim_win_get_cursor(0)[2]
+  local link_start, link_end, link_match = string.find(line, "%[[^%]]*%](%(#[%a%d-]*)%)")
+  local cursor_in_link = col >= link_start - 1 and col <= link_end - 1 -- handle lua's 1-based indexing
+
+  if link_match and cursor_in_link then
+    local heading_reference = link_match:match("#(.*)")
+    local heading_pattern = "#*" .. heading_reference:gsub("%-", " ")
+
+    local search_result = vim.fn.search(heading_pattern, "cnw")
+
+    if search_result ~= 0 then
+      vim.api.nvim_win_set_cursor(0, { search_result, 0 })
+    end
+  end
+end
+
+vim.keymap.set("n", "<leader>ge", goto_heading_from_anchor, { desc = "Go to Heading from Anchor" })
