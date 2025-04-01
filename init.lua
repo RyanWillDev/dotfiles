@@ -145,17 +145,15 @@ require("lazy").setup({
 
 -- TODO: Move to ./lua/keymaps.lua
 -- Keymaps
---vim.api.nvim_set_keymap('i', 'jk', '<esc>', { noremap = true, silent = true })
 -- Leader key
 vim.g.mapleader = ','      -- Comma as the leader key
 vim.g.maplocalleader = ',' -- Comma as the leader key
 vim.api.nvim_set_keymap('i', 'jk', '<esc>', { noremap = true, silent = true })
 
--- vim.keymap.set("n", "<leader>ff", "<cmd>Files<CR>")
--- vim.keymap.set("n", "<leader>fp", "<cmd>GFiles<CR>")
--- vim.keymap.set("n", "<leader>fg", "<cmd>Commits<CR>")
--- vim.keymap.set("n", "<leader>fs", "<cmd>Rg <space>")
---  vim.keymap.set("n", "<leader>fb", "<cmd>Buffers<CR>")
+
+vim.keymap.set("n", "<leader>td", "<esc>:execute 'normal! i'.strftime('%b %d, %Y')<CR>")
+vim.keymap.set("n", "<leader>tss", "<esc>:exe 'normal! A**Start: '.strftime('%H:%M').'**'<CR>")
+vim.keymap.set("n", "<leader>tse", "<esc>:exe 'normal! A**End: '.strftime('%H:%M').'**'<CR>")
 
 -- Can use ,fs and live grep
 -- vim.keymap.set("n", "<leader>ft", "<cmd>Rg <space>TODO\\|FIXME<CR>")
@@ -747,6 +745,10 @@ if builtin_ok then
   -- Vim related searches
   vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = "Help tags", noremap = true })
   vim.keymap.set('n', '<leader>fk', builtin.keymaps, { desc = "Keymaps", noremap = true })
+
+  -- Git related searches
+  vim.keymap.set('n', '<leader>fg', builtin.git_commits, { desc = "Keymaps", noremap = true })
+  vim.keymap.set('n', '<leader>flg', builtin.git_bcommits, { desc = "Keymaps", noremap = true })
 
   -- LSP-related searches
   vim.keymap.set('n', 'gd', builtin.lsp_definitions, { desc = "Find definitions", noremap = true })
