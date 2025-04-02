@@ -18,6 +18,8 @@
 -- - DONE
 -- Link to heading in page
 -- - DONE
+-- Port Note keymaps
+--
 -- Configure plugins
 -- Move everything to its own file
 -- Update Readme
