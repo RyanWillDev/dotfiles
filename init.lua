@@ -730,8 +730,13 @@ local setup_ok, _ = pcall(telescope.setup, {
       additional_args = function(_)
         return { "--hidden" }
       end,
-      hidden = true
-    },
+      hidden = true,
+      mappings = {
+        i = {
+          ["<CR>"] = handle_multi_select,
+        }
+      },
+    }
   },
 })
 
