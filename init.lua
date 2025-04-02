@@ -843,11 +843,9 @@ local function toggle_checkbox()
       end
     end
   else
-    -- Handles the case where we're already on a list item.
-    line = string.gsub(line, '-', '- [ ]', 1)
-    -- Handles the case where we want to create a list item
-    line = string.gsub(line, '%w+', '- [ ] %0', 1)
-    -- In theory, only one of above string.gsub calls should have an effect
+    -- remove the leading - if it exists
+    line = string.gsub(line, '^-%s*', '', 1)
+    line = '- [ ] ' .. line
   end
 
   vim.fn.setline('.', line)
