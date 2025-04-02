@@ -636,6 +636,9 @@ local setup_ok, _ = pcall(nvim_tree.setup, {
     vim.keymap.set("n", "?", api.tree.toggle_help, opts("Help"))
     vim.keymap.set("n", "C", api.tree.change_root_to_node, opts("Change Root"))
     vim.keymap.set("n", "x", api.tree.collapse_all, opts("Collapse node"))
+    vim.keymap.set("n", "y", api.fs.copy.node, opts("Copy node"))
+    vim.keymap.set("n", "<leader>v", api.node.open.vertical, opts("Open vertical split"))
+    vim.keymap.set("n", "<leader>h", api.node.open.horizontal, opts("Open horizontal split"))
   end
 })
 
