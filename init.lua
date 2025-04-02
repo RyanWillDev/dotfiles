@@ -856,7 +856,8 @@ vim.keymap.set('n', '<leader>tt', toggle_checkbox, { noremap = true, silent = tr
 
 local function goto_heading_from_anchor()
   local line = vim.api.nvim_get_current_line()
-  local col = vim.api.nvim_win_get_cursor(0)[2]
+  local cursor = vim.api.nvim_win_get_cursor(0)
+  local line_num, col = unpack(cursor)
   local link_start, link_end, link_match = string.find(line, "%[[^%]]*%](%(#[%a%d-]*)%)")
   local cursor_in_link = col >= link_start - 1 and col <= link_end - 1 -- handle lua's 1-based indexing
 
@@ -867,6 +868,8 @@ local function goto_heading_from_anchor()
     local search_result = vim.fn.search(heading_pattern, "cnw")
 
     if search_result ~= 0 then
+      local buffer = vim.api.nvim_get_current_buf()
+      vim.api.nvim_buf_set_mark(buffer, "'", line_num, col, {})
       vim.api.nvim_win_set_cursor(0, { search_result, 0 })
     end
   end
