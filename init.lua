@@ -820,7 +820,7 @@ vim.keymap.set("n", "<leader>aft", toggle_auto_format, { noremap = true })
 
 local function toggle_checkbox()
   local line = vim.fn.getline('.')
-  local states = { ' ', '-', 'x' }
+  local states = { ' ', 'x', '-' }
   local checkbox_pattern = '%[.%]'
 
   if string.find(line, checkbox_pattern) then
