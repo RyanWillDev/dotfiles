@@ -25,9 +25,13 @@
 -- See about changing all keymaps to be lua functions
 -- Load colorschemes last once everything is moved
 
+-- Let lua lsp know that vim is global
+local vim = _G.vim
+
 -- TODO: Move to ./lua/plugins.lua
 -- plugins.lua
 -- Bootstrap Lazy.nvim if not installed
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   print("Installing lazy.nvim...")
