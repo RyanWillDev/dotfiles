@@ -157,7 +157,7 @@ vim.g.maplocalleader = ',' -- Comma as the leader key
 vim.api.nvim_set_keymap('i', 'jk', '<esc>', { noremap = true, silent = true })
 
 
-vim.keymap.set("n", "<leader>td", "<esc>:execute 'normal! i'.strftime('%b %d, %Y')<CR>")
+vim.keymap.set("n", "<leader>td", "<esc>:execute 'normal! i'.strftime('%m-%d-%Y')<CR>")
 vim.keymap.set("n", "<leader>tss", "<esc>:exe 'normal! A**Start: '.strftime('%H:%M').'**'<CR>")
 vim.keymap.set("n", "<leader>tse", "<esc>:exe 'normal! A**End: '.strftime('%H:%M').'**'<CR>")
 
