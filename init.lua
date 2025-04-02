@@ -372,8 +372,9 @@ if os.getenv("WORK_ENV") then
   })
 
   vim.keymap.set("n", "<leader>ac", "<cmd>CodeCompanionChat Toggle<cr>", { noremap = true, silent = true })
+  vim.keymap.set("n", "<leader>aa", "<cmd>CodeCompanionActions<cr>", { noremap = true, silent = true })
   vim.keymap.set("v", "<leader>ac", "<cmd>CodeCompanionChat Add<cr>", { noremap = true, silent = true })
-  vim.keymap.set("v", "<leader>ae", "<cmd>CodeCompanionw<cr>", { noremap = true, silent = true })
+  vim.keymap.set("v", "<leader>ae", "<cmd>CodeCompanion<cr>", { noremap = true, silent = true })
 
   -- Expand 'cc' into 'CodeCompanion' in the command line
   vim.cmd([[cab cc CodeCompanion]])
