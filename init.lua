@@ -762,9 +762,12 @@ local function toggle_checkbox()
       end
     end
   else
-    -- remove the leading - if it exists
-    line = string.gsub(line, '^-%s*', '', 1)
-    line = '- [ ] ' .. line
+    -- Capture the leading whitespace
+    local leading_space = string.match(line, "^(%s*)") or ""
+    -- Remove the leading hyphens and any subsequent whitespace
+    line = string.gsub(line, "^%s*-%s*", "", 1)
+    -- Preserve leading whitespace
+    line = leading_space .. '- [ ] ' .. line
   end
 
   vim.fn.setline('.', line)
