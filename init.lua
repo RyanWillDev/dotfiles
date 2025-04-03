@@ -112,8 +112,10 @@ require("lazy").setup({
 
   -- Fuzzy finder
   {
-    "nvim-telescope/telescope.nvim",
-    dependencies = { "nvim-lua/plenary.nvim" }
+    "ibhagwan/fzf-lua",
+    -- optional for icon support
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    opts = {}
   },
 
   -- Git
@@ -209,6 +211,27 @@ vim.keymap.set("n", "<leader>;", ",")
 
 -- Formatting
 vim.keymap.set("n", "<leader>q", "gqip")
+
+-- FZF Lua
+local fzf = require("fzf-lua")
+
+-- File Related searches
+vim.keymap.set('n', '<leader>fp', fzf.files, { desc = "Find files", noremap = true })
+vim.keymap.set('n', '<leader>fs', fzf.live_grep, { desc = "Live grep", noremap = true })
+
+-- Vim related searches
+vim.keymap.set('n', '<leader>fb', fzf.buffers, { desc = "Buffers", noremap = true })
+vim.keymap.set('n', '<leader>fh', fzf.helptags, { desc = "Help tags", noremap = true })
+vim.keymap.set('n', '<leader>fk', fzf.keymaps, { desc = "Keymaps", noremap = true })
+
+-- Git related searches
+vim.keymap.set('n', '<leader>fg', fzf.git_commits, { desc = "Keymaps", noremap = true })
+
+-- LSP-related searches
+vim.keymap.set('n', 'gd', fzf.lsp_definitions, { desc = "Find definitions", noremap = true })
+vim.keymap.set('n', 'gr', fzf.lsp_references, { desc = "Find references", noremap = true })
+vim.keymap.set('n', 'go', fzf.lsp_outgoing_calls, { desc = "Find outgoing calls", noremap = true })
+vim.keymap.set('n', 'gi', fzf.lsp_incoming_calls, { desc = "Find incoming calls", noremap = true })
 
 -- End Keymaps
 
@@ -320,8 +343,8 @@ if os.getenv("WORK_ENV") then
       action_palette = {
         width = 95,
         height = 10,
-        prompt = "Prompt ",                   -- Prompt used for interactive LLM calls
-        provider = "telescope",               -- default|telescope|mini_pick
+        prompt = "Prompt ", -- Prompt used for interactive LLM calls
+        --provider = "fzf_lua",                 -- default|telescope|mini_pick
         opts = {
           show_default_actions = true,        -- Show the default actions in the action palette?
           show_default_prompt_library = true, -- Show the default prompt library in the action palette?
@@ -334,25 +357,25 @@ if os.getenv("WORK_ENV") then
         slash_commands = {
           ["file"] = {
             opts = {
-              provider = "telescope",
+              provider = "fzf_lua",
               contains_code = true
             }
           },
           ["buffer"] = {
             opts = {
-              provider = "telescope",
+              provider = "fzf_lua",
               contains_code = true
             }
           },
           ["help"] = {
             opts = {
-              provider = "telescope",
+              provider = "fzf_lua",
               contains_code = true
             }
           },
           ["symbols"] = {
             opts = {
-              provider = "telescope",
+              provider = "fzf_lua",
               contains_code = true
             }
           }
@@ -659,118 +682,6 @@ if not setup_ok then
 end
 
 -- End nvim-tree
-
-
--- TODO: move to ./lua/telescope.lua
--- Check if telescope is available
-local has_telescope, telescope = pcall(require, "telescope")
-if not has_telescope then
-  print("Warning: telescope not found. Fuzzy finding won't be available.")
-  return
-end
-
----@param prompt_bufnr integer The buffer number of the Telescope prompt.
---- Handles the multi-selection of entries in a Telescope picker and populates the quickfix list with the selected entries.
---- If no entries are multi-selected, it falls back to the default selection action.
-local function handle_multi_select(prompt_bufnr)
-  local picker = require('telescope.actions.state').get_current_picker(prompt_bufnr)
-  local multi = picker:get_multi_selection()
-  if not vim.tbl_isempty(multi) then
-    require('telescope.actions').close(prompt_bufnr)
-    local qflist = {}
-    for _, j in pairs(multi) do
-      if j.path ~= nil then
-        table.insert(qflist, { filename = j.path, lnum = j.lnum, col = j.col })
-      end
-    end
-    vim.fn.setqflist({}, ' ', { items = qflist })
-    vim.cmd('copen')
-  else
-    require('telescope.actions').select_default(prompt_bufnr)
-  end
-end
-
-local ignored_file_patterns = { 'node_modules', '.git', '.venv', 'deps', '_build', '.elixir_ls' }
--- Set up telescope with error handling
-local setup_ok, _ = pcall(telescope.setup, {
-  defaults = {
-    prompt_prefix = "🔍 ",
-    selection_caret = "❯ ",
-    path_display = { "truncate" },
-    layout_config = {
-      horizontal = {
-        preview_width = 0.55,
-        results_width = 0.8,
-      },
-      width = 0.87,
-      height = 0.80,
-      preview_cutoff = 120,
-    },
-    file_ignore_patterns = {
-      "node_modules/",
-      ".git/",
-      ".DS_Store"
-    },
-  },
-  extensions = {
-    -- Configure any extensions here
-  },
-  pickers = {
-    live_grep = {
-      file_ignore_patterns = ignored_file_patterns,
-      additional_args = function(_)
-        return { "--hidden" }
-      end,
-      mappings = {
-        i = {
-          ["<CR>"] = handle_multi_select,
-        }
-      }
-    },
-    find_files = {
-      file_ignore_patterns = ignored_file_patterns,
-      additional_args = function(_)
-        return { "--hidden" }
-      end,
-      hidden = true,
-      mappings = {
-        i = {
-          ["<CR>"] = handle_multi_select,
-        }
-      },
-    }
-  },
-})
-
-if not setup_ok then
-  print("Error setting up telescope. Some features might not work correctly.")
-  return
-end
-
--- Load telescope extensions if available
-pcall(function() require('telescope').load_extension('fzf') end)
-
--- Useful Telescope mappings with error handling
-local builtin_ok, builtin = pcall(require, 'telescope.builtin')
-if builtin_ok then
-  vim.keymap.set('n', '<leader>fp', builtin.find_files, { desc = "Find files", noremap = true })
-  vim.keymap.set('n', '<leader>fs', builtin.live_grep, { desc = "Live grep", noremap = true })
-  vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = "Buffers", noremap = true })
-
-  -- Vim related searches
-  vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = "Help tags", noremap = true })
-  vim.keymap.set('n', '<leader>fk', builtin.keymaps, { desc = "Keymaps", noremap = true })
-
-  -- Git related searches
-  vim.keymap.set('n', '<leader>fg', builtin.git_commits, { desc = "Keymaps", noremap = true })
-  vim.keymap.set('n', '<leader>flg', builtin.git_bcommits, { desc = "Keymaps", noremap = true })
-
-  -- LSP-related searches
-  vim.keymap.set('n', 'gd', builtin.lsp_definitions, { desc = "Find definitions", noremap = true })
-  vim.keymap.set('n', 'gr', builtin.lsp_references, { desc = "Find references", noremap = true })
-  vim.keymap.set('n', 'go', builtin.lsp_outgoing_calls, { desc = "Find outgoing calls", noremap = true })
-  vim.keymap.set('n', 'gi', builtin.lsp_incoming_calls, { desc = "Find incoming calls", noremap = true })
-end
 
 
 -- TODO: Move to ./lua/helpers.lua (maybe?)
