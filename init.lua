@@ -194,7 +194,7 @@ vim.keymap.set("n", "Y", '"*y')
 vim.keymap.set("n", "<leader>yf", ':let @" = expand("%:t")<CR>:let @*=@"<CR>')
 
 -- Yank file path relative to pwd
-vim.keymap.set("n", "<leader>yrf", ':let @" = "/" . expand("%:.")<CR>:let @*=@"<CR>')
+vim.keymap.set("n", "<leader>yrf", ':let @" = expand("%:.")<CR>:let @*=@"<CR>')
 
 -- Move up/down editor lines
 vim.keymap.set("n", "j", "gj")
