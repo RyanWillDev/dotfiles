@@ -19,7 +19,8 @@
 -- Link to heading in page
 -- - DONE
 -- Port Note keymaps
---
+-- - DONE
+-- Spelling fzf
 -- Configure plugins
 -- Move everything to its own file
 -- Update Readme
@@ -211,6 +212,35 @@ vim.keymap.set("n", "<leader>;", ",")
 
 -- Formatting
 vim.keymap.set("n", "<leader>q", "gqip")
+
+-- Notes
+local function MakeNote(is_work_note, title)
+  local file_name = title -- Use the title argument directly
+
+  local cmd
+  if is_work_note then
+    cmd = 'zk work_note "' .. file_name .. '"'
+  else
+    cmd = 'zk new -p -t "' .. file_name .. '"'
+  end
+
+  local path = vim.fn.system(cmd)
+  path = path:gsub("^%s+", ""):gsub("%s+$", "") -- Trim whitespace
+
+  local escaped_path = vim.fn.fnameescape(path)
+  vim.cmd('e ' .. escaped_path)
+end
+
+-- Example mapping using the simplified function:
+vim.keymap.set('n', '<leader>nn', function()
+  local title = vim.fn.input('Note title: ')
+  if title ~= '' then MakeNote(false, title) end
+end, { desc = "New Note" })
+
+vim.keymap.set('n', '<leader>nwn', function()
+  local title = vim.fn.input('Work note title: ')
+  if title ~= '' then MakeNote(true, title) end
+end, { desc = "New Work Note" })
 
 -- FZF Lua
 local fzf = require("fzf-lua")
