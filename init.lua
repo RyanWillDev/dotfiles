@@ -242,8 +242,89 @@ vim.keymap.set('n', '<leader>nwn', function()
   if title ~= '' then MakeNote(true, title) end
 end, { desc = "New Work Note" })
 
+-- Toggle markdown checkboxes
+
+local function toggle_checkbox()
+  local line = vim.fn.getline('.')
+  local states = { ' ', 'x', '-' }
+  local checkbox_pattern = '%[.%]'
+
+  if string.find(line, checkbox_pattern) then
+    -- table.insert(states, states[1])
+    local pattern
+
+    for i, state in ipairs(states) do
+      if state == '-' then
+        -- Need to escape the `-` state since that has meaning in the pattern
+        pattern = '%[%' .. state .. '%]'
+      else
+        pattern = '%[' .. state .. '%]'
+      end
+
+      if string.find(line, pattern) then
+        local next_i = math.fmod(i, 3) + 1 -- lua starts at 1
+        local next_state = states[next_i]
+        line = string.gsub(line, checkbox_pattern, '[' .. next_state .. ']', 1)
+        break
+      end
+    end
+  else
+    -- Capture the leading whitespace
+    local leading_space = string.match(line, "^(%s*)") or ""
+    -- Remove the leading hyphens and any subsequent whitespace
+    line = string.gsub(line, "^%s*-%s*", "", 1)
+    -- Preserve leading whitespace
+    line = leading_space .. '- [ ] ' .. line
+  end
+
+  vim.fn.setline('.', line)
+end
+
+vim.keymap.set('n', '<leader>tt', toggle_checkbox, { noremap = true, silent = true })
+
+-- Goto Heading considered helpful
+local function goto_heading_from_anchor()
+  local line = vim.api.nvim_get_current_line()
+  local cursor = vim.api.nvim_win_get_cursor(0)
+  local line_num, col = unpack(cursor)
+  local link_start, link_end, link_match = string.find(line, "%[[^%]]*%](%(#[%a%d-]*)%)")
+  -- print('link_start: ', link_start, 'link_end: ', link_end, 'link_match: ', link_match)
+
+  local cursor_in_link = col >= link_start - 1 and col <= link_end - 1 -- handle lua's 1-based indexing
+
+  if link_match and cursor_in_link then
+    local heading_reference = link_match:match("#(.*)")
+    local heading_pattern = "#*" .. heading_reference:gsub("%-", " ")
+    --  print('heading_reference: ', heading_reference)
+    --  print('heading_pattern: ', heading_pattern)
+
+    local search_result = vim.fn.search(heading_pattern, "cnw")
+    --  print('search_result: ', search_result)
+
+    if search_result == line_num then
+      print('jump to anchor failed to find heading')
+      return
+    end
+
+    if search_result ~= 0 then
+      local buffer = vim.api.nvim_get_current_buf()
+      vim.api.nvim_buf_set_mark(buffer, "'", line_num, col, {})
+      vim.api.nvim_win_set_cursor(0, { search_result, 0 })
+    end
+  end
+end
+
+vim.keymap.set("n", "<leader>ge", goto_heading_from_anchor, { desc = "Go to Heading from Anchor" })
+
 -- FZF Lua
 local fzf = require("fzf-lua")
+
+fzf.setup({
+  grep = {
+    hidden = true
+  }
+})
+-- End FZF Lua
 
 -- File Related searches
 vim.keymap.set('n', '<leader>fp', fzf.files, { desc = "Find files", noremap = true })
@@ -776,67 +857,3 @@ vim.api.nvim_create_autocmd({ "FocusLost", "BufLeave", "WinLeave", "TabLeave", "
 })
 
 vim.keymap.set("n", "<leader>aft", toggle_auto_format, { noremap = true })
-
--- Toggle markdown checkboxes
--- Default options
-
-local function toggle_checkbox()
-  local line = vim.fn.getline('.')
-  local states = { ' ', 'x', '-' }
-  local checkbox_pattern = '%[.%]'
-
-  if string.find(line, checkbox_pattern) then
-    -- table.insert(states, states[1])
-    local pattern
-
-    for i, state in ipairs(states) do
-      if state == '-' then
-        -- Need to escape the `-` state since that has meaning in the pattern
-        pattern = '%[%' .. state .. '%]'
-      else
-        pattern = '%[' .. state .. '%]'
-      end
-
-      if string.find(line, pattern) then
-        local next_i = math.fmod(i, 3) + 1 -- lua starts at 1
-        local next_state = states[next_i]
-        line = string.gsub(line, checkbox_pattern, '[' .. next_state .. ']', 1)
-        break
-      end
-    end
-  else
-    -- Capture the leading whitespace
-    local leading_space = string.match(line, "^(%s*)") or ""
-    -- Remove the leading hyphens and any subsequent whitespace
-    line = string.gsub(line, "^%s*-%s*", "", 1)
-    -- Preserve leading whitespace
-    line = leading_space .. '- [ ] ' .. line
-  end
-
-  vim.fn.setline('.', line)
-end
-
-vim.keymap.set('n', '<leader>tt', toggle_checkbox, { noremap = true, silent = true })
-
-local function goto_heading_from_anchor()
-  local line = vim.api.nvim_get_current_line()
-  local cursor = vim.api.nvim_win_get_cursor(0)
-  local line_num, col = unpack(cursor)
-  local link_start, link_end, link_match = string.find(line, "%[[^%]]*%](%(#[%a%d-]*)%)")
-  local cursor_in_link = col >= link_start - 1 and col <= link_end - 1 -- handle lua's 1-based indexing
-
-  if link_match and cursor_in_link then
-    local heading_reference = link_match:match("#(.*)")
-    local heading_pattern = "#*" .. heading_reference:gsub("%-", " ")
-
-    local search_result = vim.fn.search(heading_pattern, "cnw")
-
-    if search_result ~= 0 then
-      local buffer = vim.api.nvim_get_current_buf()
-      vim.api.nvim_buf_set_mark(buffer, "'", line_num, col, {})
-      vim.api.nvim_win_set_cursor(0, { search_result, 0 })
-    end
-  end
-end
-
-vim.keymap.set("n", "<leader>ge", goto_heading_from_anchor, { desc = "Go to Heading from Anchor" })
