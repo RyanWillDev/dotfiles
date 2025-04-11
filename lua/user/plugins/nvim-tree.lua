@@ -39,8 +39,7 @@ function M.config()
     },
     on_attach = function(bufnr)
       local vim = _G.vim -- Let lua lsp know that vim is global
-      print('NVIM-TREE', vim)
-      local api = require "nvim-tree.api"
+      local api = require("nvim-tree.api")
 
       local function opts(desc)
         return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
@@ -56,7 +55,7 @@ function M.config()
       vim.keymap.set("n", "x", api.tree.collapse_all, opts("Collapse node"))
       vim.keymap.set("n", "y", api.fs.copy.node, opts("Copy node"))
       vim.keymap.set("n", "<leader>v", api.node.open.vertical, opts("Open vertical split"))
-      vim.keymap.set("n", "<leader>h", api.node.open.horizontal, opts("Open horizontal split"))
+      vim.keymap.set("n", "<leader>s", api.node.open.horizontal, opts("Open horizontal split"))
     end
   })
 

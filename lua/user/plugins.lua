@@ -56,6 +56,7 @@ require("lazy").setup({
     build = ":TSUpdate",
     config = require('user.plugins.treesitter').config,
     priority = 100, -- Load early
+    lazy = false
   },
   -- Language Server Protocol support
   {
@@ -101,10 +102,12 @@ require("lazy").setup({
     "nordtheme/vim",
     as = "nord",
     priority = 1000,
+    lazy = false
   },
   {
     "EdenEast/nightfox.nvim",
     priority = 1000,
+    lazy = false
   },
 
   -- Markdown Rendering
