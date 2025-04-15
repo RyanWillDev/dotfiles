@@ -191,10 +191,8 @@ alias gsh='git stash'
 alias gsl='git stash list'
 alias gsp='git stash pop'
 alias gsc='git stash clear'
-
-gsa () {
-  git stash apply stash@{$1}
-}
+alias gsa='git stash apply'
+alias gssw='git stash show -p'
 
 gsd () {
   if [ $# -gt 1 ]
@@ -204,7 +202,7 @@ gsd () {
     # The ranges can be ascending or descending.
     for i in {$1..$2}; gsd $i;
   else
-    git stash drop stash@{$1}
+    git stash drop $1
   fi
 }
 
