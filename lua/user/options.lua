@@ -1,6 +1,9 @@
 -- Let lua lsp know that vim is global
 local vim = _G.vim
 
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
 vim.cmd("set noshiftround")
 vim.o.autoread = true
 vim.o.backspace = "indent,eol,start"

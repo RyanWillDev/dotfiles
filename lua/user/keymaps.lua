@@ -59,3 +59,4 @@ require('user.windows').keymaps()
 -- Plugins
 require('user.plugins.codecompanion').keymaps()
 require('user.plugins.fzf').keymaps()
+require('user.plugins.nvim-tree').keymaps()

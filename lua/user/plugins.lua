@@ -1,7 +1,7 @@
---local minuet = require('user.plugins.minuet')
---local nvim_tree = require('user.plugins.nvim-tree')
+local vim = _G.vim -- Let lua lsp know that vim is global
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+
 if not vim.loop.fs_stat(lazypath) then
   print("Installing lazy.nvim...")
   vim.fn.system({
@@ -82,7 +82,9 @@ require("lazy").setup({
   {
     "nvim-tree/nvim-tree.lua",
     dependencies = { "nvim-tree/nvim-web-devicons" },
-    config = require('user.plugins.nvim-tree').config
+    config = require('user.plugins.nvim-tree').config,
+    lazy = false,
+    version = '*'
   },
 
   -- Fuzzy finder
@@ -124,7 +126,10 @@ require("lazy").setup({
   {
     'olimorris/codecompanion.nvim',
     cond = function(_) return vim.env.WORK_ENV == 'true' end,
-    config = require('user.plugins.codecompanion').config
+    config = require('user.plugins.codecompanion').config,
+    --keys = {
+    --  { "<leader>ai", "<cmd>CodeCompanionChat<cr>", mode = "n", desc = "Stuff"}
+    --}
   },
   {
     'milanglacier/minuet-ai.nvim',

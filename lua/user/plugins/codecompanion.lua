@@ -66,7 +66,7 @@ function M.config(_plugin, _opts)
           },
           schema = {
             model = {
-              default = "gemini-2.5-pro-exp-03-25",
+              default = "gemini-2.0-flash",
             },
           },
         })

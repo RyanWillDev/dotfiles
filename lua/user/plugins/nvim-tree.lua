@@ -1,17 +1,14 @@
 local M = {}
 
-function M.config()
+function M.config(_plugin, _opts)
   local vim = _G.vim -- Let lua lsp know that vim is global
-  local has_tree, nvim_tree = pcall(require, "nvim-tree")
-  if not has_tree then
-    print("Warning: nvim-tree not found. File explorer won't be available.")
-    return
-  end
-  local setup_ok, _ = pcall(nvim_tree.setup, {
+
+  require("nvim-tree").setup({
     sort_by = "case_sensitive",
     view = {
       width = 30,
       number = true,
+      relativenumber = true,
     },
     renderer = {
       group_empty = true,
@@ -58,15 +55,12 @@ function M.config()
       vim.keymap.set("n", "<leader>s", api.node.open.horizontal, opts("Open horizontal split"))
     end
   })
+end
 
+function M.keymaps()
   -- Recommended mappings
   vim.keymap.set('n', '<leader>nt', '<cmd>NvimTreeToggle<CR>', { desc = "Toggle file explorer" })
   vim.keymap.set('n', '<leader>nf', '<cmd>NvimTreeFindFile<CR>', { desc = "Focus file in explorer" })
-
-  if not setup_ok then
-    print("Error setting up nvim-tree. Some features might not work correctly.")
-    return
-  end
 end
 
 return M
