@@ -35,6 +35,7 @@ function M.config(_plugin, _opts)
         },
       },
     },
+    prompt_library = prompt_library,
     strategies = {
       chat = {
         adapter = "gemini",
