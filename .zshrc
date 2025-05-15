@@ -211,6 +211,13 @@ gss () {
   git stash push -m $1 "${@:2}"
 }
 
+gsap () {
+  # Checking out the stash with the -p option allows you
+  # to remove changes from stash and apply each patch.
+  # Optionally accepts a -- then a space separated list of pathspecs.
+  git checkout -p stash@{$1} "${@:2}"
+}
+
 # Remote Repo
 alias gpush='git push -u origin HEAD'
 alias gp='gpush'
