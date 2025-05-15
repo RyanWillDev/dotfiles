@@ -132,6 +132,12 @@ require("lazy").setup({
     --}
   },
   {
+    'nvim-telescope/telescope.nvim',
+    tag = '0.1.8',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    ft = { "codecompanion" }
+  },
+  {
     'milanglacier/minuet-ai.nvim',
     cond = function(_) return vim.env.WORK_ENV == 'true' end,
   }

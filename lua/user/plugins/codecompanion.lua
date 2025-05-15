@@ -2,6 +2,17 @@ local vim = _G.vim -- Let lua lsp know that vim is global
 
 local M = {}
 
+local prompts = {
+  require("user.plugins.codecompanion.prompts.tech-spec-collaboration")
+}
+
+local prompt_library = {}
+
+for _k, mod in pairs(prompts) do
+  local name, config = mod.prompt()
+  prompt_library[name] = config
+end
+
 function M.keymaps()
   vim.keymap.set("n", "<leader>ac", "<cmd>CodeCompanionChat Toggle<cr>", { noremap = true, silent = true })
   vim.keymap.set("n", "<leader>aa", "<cmd>CodeCompanionActions<cr>", { noremap = true, silent = true })
@@ -16,10 +27,10 @@ function M.config(_plugin, _opts)
       action_palette = {
         width = 95,
         height = 10,
-        prompt = "Prompt ", -- Prompt used for interactive LLM calls
-        --provider = "fzf_lua",                 -- default|telescope|mini_pick
+        prompt = "Prompt ",                   -- Prompt used for interactive LLM calls
+        provider = "telescope",               -- default|telescope|mini_pick
         opts = {
-          show_default_actions = true,      -- Show the default actions in the action palette?
+          show_default_actions = true,        -- Show the default actions in the action palette?
           show_default_prompt_library = true, -- Show the default prompt library in the action palette?
         },
       },
