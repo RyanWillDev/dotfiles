@@ -45,27 +45,33 @@ local function goto_heading_from_anchor()
   local cursor = vim.api.nvim_win_get_cursor(0)
   local line_num, col = unpack(cursor)
   local link_start, link_end, link_match = string.find(line, "%[[^%]]*%](%(#[%a%d-]*)%)")
-  -- print('link_start: ', link_start, 'link_end: ', link_end, 'link_match: ', link_match)
+  print('link_start: ', link_start, 'link_end: ', link_end, 'link_match: ', link_match)
 
   local cursor_in_link = col >= link_start - 1 and col <= link_end - 1 -- handle lua's 1-based indexing
 
   if link_match and cursor_in_link then
     local heading_reference = link_match:match("#(.*)")
-    local heading_pattern = "#*" .. heading_reference:gsub("%-", " ")
-    --  print('heading_reference: ', heading_reference)
-    --  print('heading_pattern: ', heading_pattern)
+    -- print('heading_reference: &', heading_reference)
 
-    local search_result = vim.fn.search(heading_pattern, "cnw")
-    --  print('search_result: ', search_result)
+    local heading_pattern = "#*\\s*" .. heading_reference:gsub("[ %-]", "[ \\-]")
+    -- print('heading_pattern: ', heading_pattern)
+
+    -- prevent matches on the current line
+    local skip_pattern = "line('.') == " .. line_num
+
+    -- flags:
+    -- - s: set cursor jump position
+    -- - c: case insensitive
+    local search_result = vim.fn.search(heading_pattern, "sc", nil, nil, skip_pattern)
+    -- print('search_result: ', search_result)
 
     if search_result == line_num then
-      print('jump to anchor failed to find heading')
+      -- print('jump to anchor failed to find heading')
       return
     end
 
     if search_result ~= 0 then
       local buffer = vim.api.nvim_get_current_buf()
-      vim.api.nvim_buf_set_mark(buffer, "'", line_num, col, {})
       vim.api.nvim_win_set_cursor(0, { search_result, 0 })
     end
   end
