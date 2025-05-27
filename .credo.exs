@@ -25,7 +25,15 @@ exclude_test_files = %{included: ["**/*.ex", "**/*.exs"], excluded: ["test/**/*"
         # In the latter case `**/*.{ex,exs}` will be used.
         #
         included: ["lib/", "src/", "test/", "web/", "apps/"],
-        excluded: [~r"/_build/", ~r"/deps/", ~r"/node_modules/", "lib/mudora_web/controllers/"]
+        excluded: [
+          ~r"/_build/",
+          ~r"/deps/",
+          ~r"/node_modules/",
+          ~r"lib/.+_web.ex",
+          ~r"lib/.+_web/telemetry.ex",
+          ~r"lib/.+_web/controllers/",
+          ~r"lib/.+_web/components/core_components.ex"
+        ]
       },
       #
       # If you create your own checks, you must specify the source files for
