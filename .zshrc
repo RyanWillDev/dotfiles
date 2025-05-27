@@ -253,6 +253,13 @@ alias rmf="rm -rf"
 
 
 ##### FUNCTIONS #####
+backup-notes() {
+  cd ~/notes
+  ga .
+  gcm "backup"
+  gp
+}
+
 mkcd () { # Make Change Directory
   mkdir -p $1
   cd $1
