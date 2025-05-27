@@ -44,7 +44,7 @@ local function goto_heading_from_anchor()
   local line = vim.api.nvim_get_current_line()
   local cursor = vim.api.nvim_win_get_cursor(0)
   local line_num, col = unpack(cursor)
-  local link_start, link_end, link_match = string.find(line, "%[[^%]]*%](%(#[%a%d-]*)%)")
+  local link_start, link_end, link_match = string.find(line, "%[[^%]]*%](%(#[%w_-]*)%)")
   print('link_start: ', link_start, 'link_end: ', link_end, 'link_match: ', link_match)
 
   local cursor_in_link = col >= link_start - 1 and col <= link_end - 1 -- handle lua's 1-based indexing
