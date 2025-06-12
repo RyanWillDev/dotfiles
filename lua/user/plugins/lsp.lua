@@ -122,13 +122,13 @@ function M.config()
     on_attach = function(client)
       on_attach() -- Configure Keymaps
 
-      formatting = {
+      local formatting = {
         insertSpaceAfterOpeningAndBeforeClosingEmptyBraces = false,
         insertSpaceAfterFunctionKeywordForAnonymousFunctions = true,
         semicolons = "ignore"
       }
 
-      settings = {
+      local settings = {
         settings = vim.tbl_deep_extend("force", client.config.settings, {
           typescript = { format = formatting },
           javascript = { format = formatting },
@@ -146,15 +146,48 @@ function M.config()
     capabilities = capabilities,
   }
 
-  --require('rust-tools').setup({
+  --require('lspconfig').rust_analyzer.setup({
   --  on_attach = on_attach,
-  --  tools = {
-  --    inlay_hints = {
-  --      auto = true,
-  --      show_parameter_hints = true,
-  --    },
-  --  }
   --})
+
+  vim.lsp.config('rust-analyzer', {
+    on_attach = function(_client, _bufnr)
+      vim.keymap.set("n", "gh", "<cmd>lua vim.lsp.buf.hover()<CR>", { buffer = true, noremap = true })
+      vim.keymap.set("n", "<leader>e", function()
+          vim.cmd.RustLsp('renderDiagnostic', 'current')
+        end,
+        { buffer = true, noremap = true }
+      )
+
+      vim.keymap.set("n", "<leader>x", function()
+          vim.cmd.RustLsp('explainError', 'current')
+        end,
+        { buffer = true, noremap = true }
+      )
+
+      vim.keymap.set("n", "<leader>a", function()
+          vim.cmd.RustLsp('hover', 'actions')
+        end,
+        { buffer = true, noremap = true }
+      )
+
+      vim.keymap.set("n", "<leader>c", function()
+          vim.cmd.RustLsp('codeAction')
+        end,
+        { buffer = true, noremap = true }
+      )
+
+      vim.keymap.set({ "i" }, "<C-Y>", function() ls.expand() end, { silent = true })
+      vim.keymap.set({ "i", "s" }, "<C-N>", function() ls.jump(1) end, { silent = true })
+      vim.keymap.set({ "i", "s" }, "<C-P>", function() ls.jump(-1) end, { silent = true })
+
+      vim.keymap.set({ "i", "s" }, "<C-C>", function()
+        if ls.choice_active() then
+          ls.change_choice(1)
+        end
+      end, { silent = true })
+    end,
+  })
 
   require 'lspconfig'.gopls.setup {
     on_attach = on_attach,
