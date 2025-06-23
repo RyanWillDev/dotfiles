@@ -151,7 +151,7 @@ function M.config()
   --})
 
   vim.lsp.config('rust-analyzer', {
-    on_attach = function(_client, _bufnr)
+    on_attach = function(_client, bufnr)
       vim.keymap.set("n", "gh", "<cmd>lua vim.lsp.buf.hover()<CR>", { buffer = true, noremap = true })
       vim.keymap.set("n", "<leader>e", function()
           vim.cmd.RustLsp('renderDiagnostic', 'current')
@@ -186,7 +186,18 @@ function M.config()
           ls.change_choice(1)
         end
       end, { silent = true })
+
+      --  vim.lsp.inlay_hint.enable(true, { bufnr })
     end,
+    inlayHints = {
+      enable = true,
+      showParameterNames = true,
+      parameterHintsPrefix = "<- ",
+      otherHintsPrefix = "=> ",
+    },
+    diagnostics = {
+      enable = true
+    }
   })
 
   require 'lspconfig'.gopls.setup {
