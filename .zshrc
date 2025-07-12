@@ -156,6 +156,7 @@ alias grl='git reflog'
 alias gu='git reset HEAD'
 alias gcop='git checkout -p'
 alias gm='git merge'
+alias lg='lazygit'
 
 # Commit
 alias ga='git add'
