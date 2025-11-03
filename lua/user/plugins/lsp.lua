@@ -94,20 +94,38 @@ function M.config()
   --   elixirls = {enable = false},
   -- })
 
-  require 'lspconfig'.elixirls.setup {
+  vim.lsp.config('elixirls', {
     cmd = { vim.env.HOME .. "/elixir-ls/release/language_server.sh" },
     on_attach = on_attach,
     capabilities = capabilities,
     settings = {
       --dialyzerEnabled = false
     }
-  }
+  })
+  vim.lsp.enable('elixirls')
 
-  require 'lspconfig'.erlangls.setup {
+
+  vim.lsp.config('pylsp', {
+    on_attach = on_attach,
+    settings = {
+      pylsp = {
+        plugins = {
+          pycodestyle = {
+            ignore = { 'W391' },
+            maxLineLength = 100
+          }
+        }
+      }
+    }
+  })
+  vim.lsp.enable('pylsp')
+
+  vim.lsp.config('erlangls', {
     on_attach = on_attach
-  }
+  })
+  vim.lsp.enable('erlangls')
 
-  require 'lspconfig'.solargraph.setup {
+  vim.lsp.config('solargraph', {
     on_attach = on_attach,
     settings = {
       solargraph = {
@@ -115,9 +133,10 @@ function M.config()
       }
     },
     capabilities = capabilities
-  }
+  })
+  vim.lsp.enable('solargraph')
 
-  require 'lspconfig'.ts_ls.setup {
+  vim.lsp.config('ts_ls', {
     capabilities = capabilities,
     on_attach = function(client)
       on_attach() -- Configure Keymaps
@@ -137,14 +156,16 @@ function M.config()
 
       client.notify("workspace/didChangeConfiguration", settings)
     end,
-  }
+  })
+  vim.lsp.enable('ts_ls')
 
-  require 'lspconfig'.zk.setup {
+  vim.lsp.config('zk', {
     on_attach = on_attach,
     cmd = { 'zk', 'lsp' },
     filetypes = { 'markdown' },
     capabilities = capabilities,
-  }
+  })
+  vim.lsp.enable('zk')
 
   --require('lspconfig').rust_analyzer.setup({
   --  on_attach = on_attach,
@@ -199,14 +220,17 @@ function M.config()
       enable = true
     }
   })
+  vim.lsp.enable('rust-analyzer')
 
-  require 'lspconfig'.gopls.setup {
+  vim.lsp.config('gopls', {
     on_attach = on_attach,
-  }
+  })
+  vim.lsp.enable('gopls')
 
-  require 'lspconfig'.lua_ls.setup {
+  vim.lsp.config('lua_ls', {
     on_attach = on_attach
-  }
+  })
+  vim.lsp.enable('lua_ls')
 
   -- diagnostics seem to show with or without this
   -- Enable diagnostics

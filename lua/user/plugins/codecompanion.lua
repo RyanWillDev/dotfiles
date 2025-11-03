@@ -71,22 +71,22 @@ function M.config(_plugin, _opts)
       },
     },
     adapters = {
-      gemini = function()
-        return require("codecompanion.adapters").extend("gemini", {
-          env = {
-            api_key = gemini_api_key,
-          },
-          schema = {
-            model = {
-              default = "gemini-2.0-flash",
+      http = {
+        gemini = function()
+          return require("codecompanion.adapters").extend("gemini", {
+            env = {
+              api_key = gemini_api_key,
             },
-          },
-        })
-      end,
-    },
-    opts = {
-      system_prompt = function(opts)
-        return [[
+            schema = {
+              model = {
+                default = "gemini-2.0-flash",
+              },
+            },
+          })
+        end,
+        opts = {
+          system_prompt = function(opts)
+            return [[
           You are an AI programming assistant named "CodeCompanion". You are currently plugged into the Neovim text editor on a user's machine.
 
           Your core tasks include:
@@ -109,7 +109,7 @@ function M.config(_plugin, _opts)
           - Include the programming language name at the start of each Markdown code block.
           - Avoid including line numbers in code blocks.
           - Avoid wrapping the whole response in triple backticks.
-          - Only return code that's directly relevant to the task at hand. You may omit code that isn’t necessary for the solution.
+          - Only return code that's directly relevant to the task at hand. You may omit code that isn't necessary for the solution.
           - Avoid using H1 and H2 headers in your responses.
           - Use actual line breaks in your responses; only use "\n" when you want a literal backslash followed by 'n'.
           - All non-code text responses must be written in the English language indicated.
@@ -124,8 +124,9 @@ function M.config(_plugin, _opts)
           6. End your response with a short suggestion for the next user turn that directly supports continuing the conversation.
           7. Provide exactly one complete reply per conversation turn.
         ]]
-      end
-
+          end
+        }
+      }
     }
   })
 end
