@@ -53,6 +53,7 @@ function M.config(_plugin, _opts)
       vim.keymap.set("n", "y", api.fs.copy.node, opts("Copy node"))
       vim.keymap.set("n", "<leader>v", api.node.open.vertical, opts("Open vertical split"))
       vim.keymap.set("n", "<leader>s", api.node.open.horizontal, opts("Open horizontal split"))
+      vim.keymap.set("n", "x", api.node.navigate.parent_close, opts("Close parent directory"))
     end
   })
 end
