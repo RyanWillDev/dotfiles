@@ -343,3 +343,5 @@ fi
 if test -f "$HOME/devspace.sh"; then
   . $HOME/devspace.sh
 fi
+
+alias ghostty="/Applications/Ghostty.app/Contents/MacOS/ghostty"
