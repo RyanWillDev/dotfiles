@@ -230,8 +230,8 @@ alias gpu='gpull'
 alias gf='git fetch origin'
 
 # Log
-alias glog='git log --decorate --graph'
-alias glogs='git log --decorate --graph --stat'
+alias glog='git log --decorate --graph --abbrev-commit'
+alias glogs='git log --decorate --graph --stat --abbrev-commit'
 alias gsub='git subtree push --prefix'
 
 grh () {
