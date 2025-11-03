@@ -128,6 +128,21 @@ require("lazy").setup({
     opts = {},
     ft = { "markdown", "codecompanion" },
   },
+  {
+    "toppair/peek.nvim",
+    event = { "VeryLazy" },
+    build = "deno task --quiet build:fast",
+    config = function()
+      require("peek").setup()
+      vim.api.nvim_create_user_command("PeekOpen", require("peek").open, {})
+      vim.api.nvim_create_user_command("PeekClose", require("peek").close, {})
+    end,
+    keys = {
+      { "<leader>po", "<cmd>PeekOpen<cr>", mode = "n", desc = "Open Markdown previewer"},
+      { "<leader>pc", "<cmd>PeekClose<cr>", mode = "n", desc = "Close Markdown previewer"}
+    },
+    ft = { "markdown" }
+  },
 
   -- LLM Stuff
   {
@@ -144,10 +159,6 @@ require("lazy").setup({
     dependencies = { 'nvim-lua/plenary.nvim' },
     ft = { "codecompanion" }
   },
-  {
-    'milanglacier/minuet-ai.nvim',
-    cond = function(_) return vim.env.WORK_ENV == 'true' end,
-  }
 })
 
 require('user.plugins.lsp')
