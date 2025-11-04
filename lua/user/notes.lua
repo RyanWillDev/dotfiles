@@ -78,13 +78,15 @@ local function goto_heading_from_anchor()
 end
 
 
-local function MakeNote(is_work_note, title)
+local function MakeNote(type, title)
   local file_name = title -- Use the title argument directly
 
   local cmd
-  if is_work_note then
+  if type == 'work' then
     cmd = 'zk work_note "' .. file_name .. '"'
-  else
+  elseif type == 'ticket' then
+    cmd = 'zk ticket "' .. file_name .. '"'
+  elseif type == 'personal' then
     cmd = 'zk new -p -t "' .. file_name .. '"'
   end
 
@@ -101,13 +103,18 @@ function M.keymaps()
 
   vim.keymap.set('n', '<leader>nn', function()
     local title = vim.fn.input('Note title: ')
-    if title ~= '' then MakeNote(false, title) end
+    if title ~= '' then MakeNote('personal', title) end
   end, { desc = "New Note" })
 
   vim.keymap.set('n', '<leader>nwn', function()
     local title = vim.fn.input('Work note title: ')
-    if title ~= '' then MakeNote(true, title) end
+    if title ~= '' then MakeNote('work', title) end
   end, { desc = "New Work Note" })
+
+  vim.keymap.set('n', '<leader>nwt', function()
+    local title = vim.fn.input('Ticket ID: ')
+    if title ~= '' then MakeNote('ticket', title) end
+  end, { desc = "New Ticket Note" })
 end
 
 return M
