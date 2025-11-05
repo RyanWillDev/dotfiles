@@ -38,42 +38,118 @@ local function toggle_checkbox()
   vim.fn.setline('.', line)
 end
 
+-- Helper function to normalize heading text to anchor format
+-- "My Heading!" -> "my-heading"
+local function normalize_to_anchor(text)
+  local normalized = text:lower()
+  -- Replace spaces with hyphens
+  normalized = normalized:gsub("%s+", "-")
+  -- Remove special characters except hyphens
+  normalized = normalized:gsub("[^%w%-]", "")
+  -- Remove multiple consecutive hyphens
+  normalized = normalized:gsub("%-+", "-")
+  -- Remove leading/trailing hyphens
+  normalized = normalized:gsub("^%-+", ""):gsub("%-+$", "")
+  return normalized
+end
+
+-- Helper function to extract heading text from a markdown heading line
+-- "## My Heading" -> "My Heading", 2
+-- Returns: heading_text, heading_level (or nil if not a heading)
+local function extract_heading(line)
+  -- Match markdown headings: one or more # at start, followed by space, then text
+  local hashes, text = line:match("^(#+)%s+(.+)$")
+  if hashes then
+    return text, #hashes
+  end
+  return nil, nil
+end
 
 -- Goto Heading considered helpful
 local function goto_heading_from_anchor()
   local line = vim.api.nvim_get_current_line()
   local cursor = vim.api.nvim_win_get_cursor(0)
   local line_num, col = unpack(cursor)
-  local link_start, link_end, link_match = string.find(line, "%[[^%]]*%](%(#[%w_-]*)%)")
-  print('link_start: ', link_start, 'link_end: ', link_end, 'link_match: ', link_match)
 
-  local cursor_in_link = col >= link_start - 1 and col <= link_end - 1 -- handle lua's 1-based indexing
+  -- Updated pattern to capture everything after # (including multiple # separators)
+  local link_start, link_end, link_match = string.find(line, "%[[^%]]*%]%(#([^%)]+)%)")
 
-  if link_match and cursor_in_link then
-    local heading_reference = link_match:match("#(.*)")
-    -- print('heading_reference: &', heading_reference)
+  if not link_match then
+    return
+  end
 
-    local heading_pattern = "#*\\s*" .. heading_reference:gsub("[ %-]", "[ \\-]")
-    -- print('heading_pattern: ', heading_pattern)
+  local cursor_in_link = col >= link_start - 1 and col <= link_end - 1
 
-    -- prevent matches on the current line
-    local skip_pattern = "line('.') == " .. line_num
+  if not cursor_in_link then
+    return
+  end
 
-    -- flags:
-    -- - s: set cursor jump position
-    -- - c: case insensitive
-    local search_result = vim.fn.search(heading_pattern, "sc", nil, nil, skip_pattern)
-    -- print('search_result: ', search_result)
+  -- Split anchor by # to handle nested headings like "first#second"
+  local anchors = {}
+  for anchor in link_match:gmatch("[^#]+") do
+    table.insert(anchors, anchor)
+  end
 
-    if search_result == line_num then
-      -- print('jump to anchor failed to find heading')
+  if #anchors == 0 then
+    return
+  end
+
+  -- Save current position to jump list using 's' flag in search
+  -- Start searching from the beginning of the file for the first anchor
+  local search_start_line = 1
+  local last_found_line = nil
+  local last_found_level = 0
+
+  -- Search for each anchor in the path
+  for i, anchor in ipairs(anchors) do
+    local found = false
+
+    -- Search from search_start_line to end of file
+    for lnum = search_start_line, vim.fn.line('$') do
+      local target_line = vim.fn.getline(lnum)
+      local heading_text, heading_level = extract_heading(target_line)
+
+      if heading_text then
+        local normalized = normalize_to_anchor(heading_text)
+
+        -- Check if normalized heading starts with the anchor (prefix matching)
+        local matches = normalized:sub(1, #anchor) == anchor
+
+        -- For nested anchors, ensure we're going deeper in the hierarchy
+        if i == 1 then
+          -- First anchor: match any level
+          if matches then
+            last_found_line = lnum
+            last_found_level = heading_level
+            search_start_line = lnum + 1
+            found = true
+            break
+          end
+        else
+          -- Nested anchor: must be at a deeper level than the previous
+          if matches and heading_level > last_found_level then
+            last_found_line = lnum
+            last_found_level = heading_level
+            search_start_line = lnum + 1
+            found = true
+            break
+          end
+        end
+      end
+    end
+
+    -- If we didn't find this anchor in the chain, abort
+    if not found then
+      vim.notify("Heading not found: #" .. table.concat(anchors, "#"), vim.log.levels.WARN)
       return
     end
+  end
 
-    if search_result ~= 0 then
-      local buffer = vim.api.nvim_get_current_buf()
-      vim.api.nvim_win_set_cursor(0, { search_result, 0 })
-    end
+  -- Jump to the final heading found
+  if last_found_line and last_found_line ~= line_num then
+    -- Add current position to jump list (enables <C-o> and <C-i> navigation)
+    vim.cmd("normal! m'")
+    vim.api.nvim_win_set_cursor(0, { last_found_line, 0 })
   end
 end
 
