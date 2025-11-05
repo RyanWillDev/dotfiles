@@ -97,6 +97,255 @@ local function MakeNote(type, title)
   vim.cmd('e ' .. escaped_path)
 end
 
+local company_name = os.getenv("COMPANY_NAME")
+
+local search_presets = {
+  {
+    name = "Follow Up",
+    description = "Show followup Tags",
+    -- Sorts least recently modified first
+    args = "-t followup --sort modified+",
+  },
+  {
+    name = "Open Tickets",
+    description = "Show all open tickets",
+    -- Sorts least recently modified first
+    args = company_name .. "/tickets -t ' -done' --sort modified+",
+  },
+  {
+    name = "Tickets In Review",
+    description = "Show all open tickets",
+    -- Sorts least recently modified first
+    args = company_name .. "/tickets -t 'review' --sort modified+",
+  },
+  {
+    name = "Last Week's Tickets",
+    description = "Show all tickets updated this week",
+    -- Sorts most recently modified first
+    args = company_name .. "/tickets --modified-after 'last monday' --sort modified",
+  },
+  {
+    name = "Daily Review",
+    description = "Show all notes updated today",
+    -- Sorts most recently modified first
+    args = "--modified-after '8am' --sort modified",
+  },
+  {
+    name = "Weekly Review",
+    description = "Show all notes updated this week",
+    -- Sorts most recently modified first
+    args = "--modified-after 'last monday' --sort modified",
+  },
+  {
+    name = "Done Tickets",
+    description = "Show all completed tickets",
+    -- Sorts most recently modified first
+    args = company_name .. "/tickets -t 'done' --sort modified",
+  },
+  {
+    name = "Daily Notes",
+    description = "Show daily journal entries",
+    -- Sorts most recently created first
+    args = company_name .. "/daily --sort created"
+  },
+  {
+    name = "Meeting Notes",
+    description = "Show meeting notes",
+    args = "-t meeting --sort modified",
+  },
+  {
+    name = "Custom Query",
+    description = "Enter custom zk list arguments",
+    args = nil, -- Will prompt for input
+  },
+}
+
+local function zk_picker(args, prompt_title)
+  local fzf = require('fzf-lua')
+
+  local cmd = 'zk list -f json ' .. (args or '')
+  local handle = io.popen(cmd)
+  local result = handle:read("*a")
+  handle:close()
+
+  -- Handle empty result
+  if not result or result == "" or result:match("^%s*$") then
+    vim.notify("No notes found", vim.log.levels.INFO)
+    return
+  end
+
+  -- Try to decode JSON, handle errors
+  local ok, notes = pcall(vim.json.decode, result)
+  if not ok then
+    vim.notify("Failed to parse zk output: " .. tostring(notes), vim.log.levels.ERROR)
+    return
+  end
+
+  if not notes or #notes == 0 then
+    vim.notify("No notes found", vim.log.levels.INFO)
+    return
+  end
+
+  -- Rest of the function remains the same...
+  local entries = {}
+  local note_map = {}
+
+  for _, note in ipairs(notes) do
+    local tags = ""
+    if note.tags and #note.tags > 0 then
+      tags = " [" .. table.concat(note.tags, ", ") .. "]"
+    end
+
+    local display = string.format("%-50s %-30s%s",
+      note.title or note.path,
+      vim.fn.fnamemodify(note.path, ':~:.'),
+      tags
+    )
+    table.insert(entries, display)
+    note_map[display] = note
+  end
+
+  -- Define default action separately so ctrl-a can reuse it
+  local default_action = function(selected)
+    if #selected == 0 then return end
+
+    -- We have at least one note we'll open it
+    local note = note_map[selected[1]]
+    vim.cmd('edit ' .. vim.fn.fnameescape(note.absPath))
+
+    if #selected > 1 then
+      -- Build quickfix list from all selected items
+      local qf_list = {}
+      for _, sel in ipairs(selected) do
+        local note = note_map[sel]
+        if note then
+          table.insert(qf_list, {
+            filename = note.absPath,
+            text = note.title or note.path,
+          })
+        end
+      end
+
+      -- Populate quickfix and open
+      vim.fn.setqflist(qf_list, 'r')
+      vim.cmd('copen')
+
+      vim.notify(string.format("Opened %d notes in quickfix", #qf_list), vim.log.levels.INFO)
+    end
+  end
+
+  fzf.fzf_exec(entries, {
+    fzf_opts = {
+      ['--multi'] = ''
+    },
+    prompt = (prompt_title or "Notes") .. "> ",
+    preview = function(selected)
+      if not selected or #selected == 0 then return "" end
+      local note = note_map[selected[1]]
+      if note and note.absPath then
+        return vim.fn.system(
+          string.format('bat --style=plain --color=always "%s" 2>/dev/null || cat "%s"',
+            note.absPath, note.absPath)
+        )
+      end
+      return ""
+    end,
+    actions = {
+      ['default'] = default_action,
+      ['ctrl-v'] = function(selected)
+        if #selected > 0 then
+          local note = note_map[selected[1]]
+          if note then
+            vim.cmd('vsplit ' .. vim.fn.fnameescape(note.absPath))
+          end
+        end
+      end,
+      ['ctrl-s'] = function(selected)
+        if #selected > 0 then
+          local note = note_map[selected[1]]
+          if note then
+            vim.cmd('split ' .. vim.fn.fnameescape(note.absPath))
+          end
+        end
+      end,
+      ['ctrl-t'] = function(selected)
+        if #selected > 0 then
+          local note = note_map[selected[1]]
+          if note then
+            vim.cmd('tabnew ' .. vim.fn.fnameescape(note.absPath))
+          end
+        end
+      end,
+      ['ctrl-a'] = function()
+        -- Pass all entries to the default action
+        default_action(entries)
+      end,
+    },
+    winopts = {
+      height = 0.85,
+      width = 0.90,
+      preview = {
+        layout = 'vertical',
+        vertical = 'down:50%',
+      }
+    }
+  })
+end
+
+local function note_search_menu()
+  local fzf = require('fzf-lua')
+
+  local entries = {}
+  local preset_map = {} -- Add this map
+
+  for _, preset in ipairs(search_presets) do
+    local entry = string.format("%-20s %s", preset.name, preset.description)
+    table.insert(entries, entry)
+    preset_map[entry] = preset -- Map the full entry to the preset
+  end
+
+  fzf.fzf_exec(entries, {
+    prompt = 'Search Type> ',
+    winopts = {
+      height = 0.4,
+      width = 0.6,
+    },
+    actions = {
+      ['default'] = function(selected)
+        if not selected or #selected == 0 then return end
+
+        local preset = preset_map[selected[1]] -- Direct lookup
+        if not preset then return end
+
+        -- Handle custom query
+        if preset.args == nil then
+          require('fzf-lua').fzf_exec({}, {
+            prompt = 'Custom Query> ',
+            fzf_opts = {
+              ['--print-query'] = '', -- Print the query even if no selection
+            },
+            winopts = {
+              height = 0.4,
+              width = 0.7,
+            },
+            actions = {
+              ['default'] = function(selected, opts)
+                -- If user typed something, it's in opts.last_query
+                local query = opts.last_query or (selected and selected[1]) or ""
+                if query ~= "" then
+                  zk_picker(query, "Custom")
+                end
+              end,
+            },
+          })
+        else
+          zk_picker(preset.args, preset.name)
+        end
+      end,
+    },
+  })
+end
+
 function M.keymaps()
   vim.keymap.set("n", "<leader>ge", goto_heading_from_anchor, { desc = "Go to Heading from Anchor" })
   vim.keymap.set('n', '<leader>tt', toggle_checkbox, { noremap = true, silent = true })
@@ -115,6 +364,20 @@ function M.keymaps()
     local title = vim.fn.input('Ticket ID: ')
     if title ~= '' then MakeNote('ticket', title) end
   end, { desc = "New Ticket Note" })
+
+  vim.keymap.set('n', '<leader>ns', note_search_menu, { desc = 'Note Search Menu' })
+  vim.keymap.set('n', '<leader>ni', function()
+    vim.notify("Indexing notes...", vim.log.levels.INFO)
+    vim.fn.jobstart('zk index', {
+      on_exit = function(_, exit_code)
+        if exit_code == 0 then
+          vim.notify("zk index complete", vim.log.levels.INFO)
+        else
+          vim.notify("zk index failed", vim.log.levels.ERROR)
+        end
+      end
+    })
+  end, { desc = 'Run zk index' })
 end
 
 return M
