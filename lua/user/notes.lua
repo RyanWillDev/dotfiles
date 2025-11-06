@@ -190,9 +190,15 @@ local search_presets = {
   },
   {
     name = "Tickets In Review",
-    description = "Show all open tickets",
+    description = "Show all tickets In Review",
     -- Sorts least recently modified first
     args = company_name .. "/tickets -t 'review' --sort modified+",
+  },
+  {
+    name = "Tickets In QA",
+    description = "Show all tickets In QA",
+    -- Sorts least recently modified first
+    args = company_name .. "/tickets -t 'qa' --sort modified+",
   },
   {
     name = "Last Week's Tickets",
