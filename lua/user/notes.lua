@@ -153,6 +153,44 @@ local function goto_heading_from_anchor()
   end
 end
 
+-- Convert visually selected text into a markdown anchor link
+local function create_anchor_link()
+  -- Save the current register content
+  local save_reg = vim.fn.getreg('"')
+  local save_regtype = vim.fn.getregtype('"')
+
+  -- Yank the visual selection
+  vim.cmd('normal! ""y')
+
+  -- Get the yanked text
+  local selected_text = vim.fn.getreg('"')
+
+  -- Restore the original register
+  vim.fn.setreg('"', save_reg, save_regtype)
+
+  -- Handle multi-line selections
+  if selected_text:find('\n') then
+    vim.notify("Multi-line selections not supported", vim.log.levels.WARN)
+    return
+  end
+
+  -- Normalize the text to anchor format
+  local anchor = normalize_to_anchor(selected_text)
+
+  -- Create the markdown link
+  local link = "[" .. selected_text .. "](#" .. anchor .. ")"
+
+  -- Replace the visual selection with the link
+  -- Save current register again for the paste
+  local save_reg2 = vim.fn.getreg('"')
+  local save_regtype2 = vim.fn.getregtype('"')
+
+  vim.fn.setreg('"', link, 'v')
+  vim.cmd('normal! gvp')
+
+  -- Restore register
+  vim.fn.setreg('"', save_reg2, save_regtype2)
+end
 
 local function MakeNote(type, title)
   local file_name = title -- Use the title argument directly
@@ -430,6 +468,7 @@ end
 
 function M.keymaps()
   vim.keymap.set("n", "<leader>ge", goto_heading_from_anchor, { desc = "Go to Heading from Anchor" })
+  vim.keymap.set('v', '<leader>ca', create_anchor_link, { desc = "Create Anchor Link", noremap = true, silent = true })
   vim.keymap.set('n', '<leader>tt', toggle_checkbox, { noremap = true, silent = true })
 
   vim.keymap.set('n', '<leader>nn', function()
