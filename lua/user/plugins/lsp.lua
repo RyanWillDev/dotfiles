@@ -148,7 +148,7 @@ function M.config()
       }
 
       local settings = {
-        settings = vim.tbl_deep_extend("force", client.config.settings, {
+        settings = vim.tbl_deep_extend("force", client.config.settings or {}, {
           typescript = { format = formatting },
           javascript = { format = formatting },
         })
