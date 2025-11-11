@@ -221,6 +221,16 @@ gsap () {
   git checkout -p stash@{$1} "${@:2}"
 }
 
+# Worktrees
+alias gwl='git worktree list'
+alias gwr='git worktree remove'
+
+gwn () {
+  local branch=$1
+  local directory=${2:-$branch}
+  git worktree add $directory $branch
+}
+
 # Remote Repo
 alias gpush='git push -u origin HEAD'
 alias gp='gpush'
