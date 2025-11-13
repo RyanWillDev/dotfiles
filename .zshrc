@@ -226,9 +226,14 @@ gsap () {
 alias gwl='git worktree list'
 alias gwr='git worktree remove'
 
-gwn () {
-  local branch=$1
-  local directory=${2:-$branch}
+gwa () {
+  local directory=${1:-$branch}
+  local branch=$2
+
+  if [[ "${1}" == "" ]] || [[ "${2}" == "" ]]; then
+    echo "Required arguments: directory or branch not provided"
+    return 1
+  fi
   git worktree add $directory $branch
 }
 
