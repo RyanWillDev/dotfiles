@@ -227,15 +227,15 @@ alias gwl='git worktree list'
 alias gwr='git worktree remove'
 
 gwa () {
-  local directory=${1:-$branch}
-  local branch=$2
+  local branch=$1
+  local directory=${2}
 
-  if [[ "${1}" == "" ]] || [[ "${2}" == "" ]]; then
-    echo "Required arguments: directory or branch not provided"
+  if [[ "${branch}" == "" ]] || [[ "${directory}" == "" ]]; then
+    echo "Required arguments: branch or directory not provided"
     return 1
   fi
   # -b create branch if it doesn't exist
-  git worktree add -b $directory $branch
+  git worktree add -b $branch $directory
 }
 
 # Remote Repo
