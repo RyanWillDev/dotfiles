@@ -68,6 +68,7 @@ source $ZSH/oh-my-zsh.sh
 
 # User configuration
 setopt extendedglob
+PROMPT='%{$fg_bold[cyan]%}%2~%{$reset_color%} $(git_prompt_info)'
 
 
 # export MANPATH="/usr/local/man:$MANPATH"
