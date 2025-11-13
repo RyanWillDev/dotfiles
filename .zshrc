@@ -234,7 +234,8 @@ gwa () {
     echo "Required arguments: directory or branch not provided"
     return 1
   fi
-  git worktree add $directory $branch
+  # -b create branch if it doesn't exist
+  git worktree add -b $directory $branch
 }
 
 # Remote Repo
