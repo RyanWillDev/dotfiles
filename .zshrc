@@ -242,8 +242,14 @@ alias gpush='git push -u origin HEAD'
 alias gp='gpush'
 alias gpf='gpush --force'
 alias gpull='git pull origin --no-rebase'
-alias gpu='gpull'
 alias gf='git fetch origin'
+
+gpu () {
+  local current_branch=$(gb --show-current)
+  local branch=${1:-$current_branch}
+
+  gpull $branch
+}
 
 # Log
 alias glog='git log --decorate --graph --abbrev-commit'
