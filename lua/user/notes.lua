@@ -2,40 +2,49 @@ local vim = _G.vim -- Let lua lsp know that vim is global
 
 local M = {}
 
-local function toggle_checkbox()
-  local line = vim.fn.getline('.')
+local function toggle_checkbox(start_line, end_line)
+  -- If no range provided, use current line
+  if not start_line then
+    start_line = vim.fn.line('.')
+    end_line = start_line
+  end
+
   local states = { ' ', 'x', '-' }
   local checkbox_pattern = '%[.%]'
 
-  if string.find(line, checkbox_pattern) then
-    -- table.insert(states, states[1])
-    local pattern
+  -- Process each line in the range
+  for lnum = start_line, end_line do
+    local line = vim.fn.getline(lnum)
 
-    for i, state in ipairs(states) do
-      if state == '-' then
-        -- Need to escape the `-` state since that has meaning in the pattern
-        pattern = '%[%' .. state .. '%]'
-      else
-        pattern = '%[' .. state .. '%]'
-      end
+    if string.find(line, checkbox_pattern) then
+      local pattern
 
-      if string.find(line, pattern) then
-        local next_i = math.fmod(i, 3) + 1 -- lua starts at 1
-        local next_state = states[next_i]
-        line = string.gsub(line, checkbox_pattern, '[' .. next_state .. ']', 1)
-        break
+      for i, state in ipairs(states) do
+        if state == '-' then
+          -- Need to escape the `-` state since that has meaning in the pattern
+          pattern = '%[%' .. state .. '%]'
+        else
+          pattern = '%[' .. state .. '%]'
+        end
+
+        if string.find(line, pattern) then
+          local next_i = math.fmod(i, 3) + 1 -- lua starts at 1
+          local next_state = states[next_i]
+          line = string.gsub(line, checkbox_pattern, '[' .. next_state .. ']', 1)
+          break
+        end
       end
+    else
+      -- Capture the leading whitespace
+      local leading_space = string.match(line, "^(%s*)") or ""
+      -- Remove the leading hyphens and any subsequent whitespace
+      line = string.gsub(line, "^%s*-%s*", "", 1)
+      -- Preserve leading whitespace
+      line = leading_space .. '- [ ] ' .. line
     end
-  else
-    -- Capture the leading whitespace
-    local leading_space = string.match(line, "^(%s*)") or ""
-    -- Remove the leading hyphens and any subsequent whitespace
-    line = string.gsub(line, "^%s*-%s*", "", 1)
-    -- Preserve leading whitespace
-    line = leading_space .. '- [ ] ' .. line
-  end
 
-  vim.fn.setline('.', line)
+    vim.fn.setline(lnum, line)
+  end
 end
 
 -- Helper function to normalize heading text to anchor format
@@ -469,7 +478,15 @@ end
 function M.keymaps()
   vim.keymap.set("n", "<leader>ge", goto_heading_from_anchor, { desc = "Go to Heading from Anchor" })
   vim.keymap.set('v', '<leader>ca', create_anchor_link, { desc = "Create Anchor Link", noremap = true, silent = true })
+  -- Normal mode: current line only
   vim.keymap.set('n', '<leader>tt', toggle_checkbox, { noremap = true, silent = true })
+
+  -- Visual mode: use visual selection range
+  vim.keymap.set('v', '<leader>tt', function()
+    local start_line = vim.fn.line("'<")
+    local end_line = vim.fn.line("'>")
+    toggle_checkbox(start_line, end_line)
+  end, { noremap = true, silent = true })
 
   vim.keymap.set('n', '<leader>nn', function()
     local title = vim.fn.input('Note title: ')
