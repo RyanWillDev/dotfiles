@@ -182,6 +182,18 @@ alias gcop='git checkout -p'
 alias gm='git merge'
 alias lg='lazygit'
 
+# Git Review Reset:
+# Resets the current branch to the point at which it diverged from the base
+# with all changes shown as unstaged changes.
+grr() {
+  if [[ "$1" == "" ]]; then
+    echo "merge base not provided"
+    return 1
+  fi
+
+  git reset $(git merge-base HEAD $1)
+}
+
 # Commit
 alias ga='git add'
 alias gap='git add -p'
