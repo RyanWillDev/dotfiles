@@ -62,7 +62,7 @@ SPACESHIP_EXEC_TIME_SHOW=false
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=()
+plugins=(zsh-vi-mode)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -70,6 +70,28 @@ source $ZSH/oh-my-zsh.sh
 setopt extendedglob
 PROMPT='%{$fg_bold[cyan]%}%2~%{$reset_color%} $(git_prompt_info)'
 
+# zsh-vi-mode
+ZVM_VI_INSERT_ESCAPE_BINDKEY=jk
+# The prompt cursor in normal mode
+ZVM_NORMAL_MODE_CURSOR=$ZVM_CURSOR_BLINKING_BLOCK
+
+# The prompt cursor in insert mode
+ZVM_INSERT_MODE_CURSOR=$ZVM_CURSOR_BLINKING_BEAM
+
+# The prompt cursor in visual mode
+ZVM_VISUAL_MODE_CURSOR=$ZVM_CURSOR_BLOCK
+
+# The prompt cursor in visual line mode
+ZVM_VISUAL_LINE_MODE_CURSOR=$ZVM_CURSOR_BLOCK
+
+ZVM_VI_HIGHLIGHT_BACKGROUND='#5fffff'
+ZVM_VI_HIGHLIGHT_FOREGROUND='#000000'
+
+ZVM_SYSTEM_CLIPBOARD_ENABLED=true
+
+
+# The prompt cursor in operator pending mode
+#ZVM_OPPEND_MODE_CURSOR=
 
 # export MANPATH="/usr/local/man:$MANPATH"
 
