@@ -68,7 +68,6 @@ source $ZSH/oh-my-zsh.sh
 
 # User configuration
 setopt extendedglob
-PROMPT='%{$fg_bold[cyan]%}%2~%{$reset_color%} $(git_prompt_info)'
 
 # zsh-vi-mode
 ZVM_VI_INSERT_ESCAPE_BINDKEY=jk
