@@ -88,6 +88,10 @@ ZVM_VI_HIGHLIGHT_FOREGROUND='#000000'
 
 ZVM_SYSTEM_CLIPBOARD_ENABLED=true
 
+# Fix fzf.zsh bindings
+zvm_after_init() {
+  [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+}
 
 # The prompt cursor in operator pending mode
 #ZVM_OPPEND_MODE_CURSOR=
