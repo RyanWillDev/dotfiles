@@ -4,9 +4,18 @@ local vim = _G.vim -- Let lua lsp know that vim is global
 function M.config(_plugin, opts)
   local fzf = require('fzf-lua')
 
+  local ignore_patterns = [[-g "!.git" -g "!_build" -g "!deps" -g "!node_modules" -g "!.elixir_ls"]]
+
   fzf.setup({
     grep = {
-      hidden = true
+      hidden    = true,
+      no_ignore = true,
+      rg_opts   = [[--column --line-number --no-heading --color=always --smart-case --max-columns=4096 ]] .. ignore_patterns,
+    },
+    files = {
+      hidden    = true,
+      no_ignore = true,
+      rg_opts   = [[--color=never --hidden --files ]] .. ignore_patterns,
     }
   })
 end
