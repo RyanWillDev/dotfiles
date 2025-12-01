@@ -88,8 +88,8 @@ ZVM_VI_HIGHLIGHT_FOREGROUND='#000000'
 
 ZVM_SYSTEM_CLIPBOARD_ENABLED=true
 
-# Fix fzf.zsh bindings
 zvm_after_init() {
+  # Fix fzf.zsh bindings
   [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 }
 
@@ -166,9 +166,6 @@ fi
 if [[ ! "$PATH" == */Users/${USER}/.cache/rebar3/bin:$PATH* ]]; then
   export PATH=/Users/${USER}/.cache/rebar3/bin:$PATH
 fi
-
-##### FZF #####
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 ##### BAT #####
 export BAT_THEME=Nord
