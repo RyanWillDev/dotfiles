@@ -476,17 +476,18 @@ local function note_search_menu()
 end
 
 function M.keymaps()
+  -- Create a user command that receives the range automatically
+  vim.api.nvim_create_user_command('ToggleCheckbox', function(opts)
+    toggle_checkbox(opts.line1, opts.line2)
+  end, { range = true })
+
   vim.keymap.set("n", "<leader>ge", goto_heading_from_anchor, { desc = "Go to Heading from Anchor" })
   vim.keymap.set('v', '<leader>ca', create_anchor_link, { desc = "Create Anchor Link", noremap = true, silent = true })
   -- Normal mode: current line only
   vim.keymap.set('n', '<leader>tt', toggle_checkbox, { noremap = true, silent = true })
 
-  -- Visual mode: use visual selection range
-  vim.keymap.set('v', '<leader>tt', function()
-    local start_line = vim.fn.line("'<")
-    local end_line = vim.fn.line("'>")
-    toggle_checkbox(start_line, end_line)
-  end, { noremap = true, silent = true })
+  -- Visual mode: use the command which gets the range automatically
+  vim.keymap.set('v', '<leader>tt', ':ToggleCheckbox<CR>', { noremap = true, silent = true })
 
   vim.keymap.set('n', '<leader>nn', function()
     local title = vim.fn.input('Note title: ')
