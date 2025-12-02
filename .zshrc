@@ -147,6 +147,10 @@ if [[ ! "$PATH" == */Users/${USER}/.dotnet/tools* ]]; then
   export PATH=":$PATH:/Users/${USER}/.dotnet/tools"
 fi
 
+
+# Fix fzf.zsh bindings
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
 ##### Homebrew #####
 if [[ ! "$PATH" == */opt/homebrew/bin/* ]]; then
   export PATH="/opt/homebrew/bin/:$PATH"
