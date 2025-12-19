@@ -13,7 +13,7 @@ if [ ! $TMUX ]; then
       tmux attach
     else
       tmux new -c "/Users/${USER}/notes/zett/${COMPANY_NAME}" -n "notes" \;\
-        send-keys -t 0 "zk daily" Enter \;\
+        send-keys -t 0 "zk weekly" Enter \;\
         send-keys -t 0 ",aft" \;\
         new-window -d -c "/Users/${USER}/Projects"
     fi
