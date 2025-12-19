@@ -112,6 +112,7 @@ local function goto_heading_from_anchor()
   -- Search for each anchor in the path
   for i, anchor in ipairs(anchors) do
     local found = false
+    local normalized_anchor = normalize_to_anchor(anchor)
 
     -- Search from search_start_line to end of file
     for lnum = search_start_line, vim.fn.line('$') do
@@ -122,7 +123,7 @@ local function goto_heading_from_anchor()
         local normalized = normalize_to_anchor(heading_text)
 
         -- Check if normalized heading starts with the anchor (prefix matching)
-        local matches = normalized:sub(1, #anchor) == anchor
+        local matches = normalized:sub(1, #normalized_anchor) == normalized_anchor
 
         -- For nested anchors, ensure we're going deeper in the hierarchy
         if i == 1 then
