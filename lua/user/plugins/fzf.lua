@@ -26,7 +26,7 @@ function M.keymaps()
   vim.keymap.set('n', '<leader>fp', fzf.files, { desc = "Find files", noremap = true })
   vim.keymap.set('n', '<leader>fs', fzf.live_grep, { desc = "Live grep", noremap = true })
   vim.keymap.set('n', '<leader>ft', function()
-    require('fzf-lua').grep('TODO')
+    require('fzf-lua').grep({ search = 'TODO' })
   end, { desc = "Find TODO comments", noremap = true })
 
   -- Vim related searches
