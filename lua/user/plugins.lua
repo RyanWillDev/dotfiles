@@ -22,32 +22,9 @@ require("lazy").setup({
   -- Essential plugins
   "nvim-lua/plenary.nvim", -- Utility functions (dependency for many plugins)
 
-  -- Notes
-  'jkramer/vim-checkbox', -- Toggle checkboxes in markdown files
-
   -- General Code Plugins
   'jiangmiao/auto-pairs',
   'tpope/vim-endwise',
-  {
-    'prettier/vim-prettier',
-    build = 'yarn install --frozen-lockfile --production',
-    ft = {
-      'javascript',
-      'typescript',
-      'javascriptreact',
-      'typescriptreact',
-      'css',
-      'less',
-      'scss',
-      'json',
-      'graphql',
-      'markdown',
-      'vue',
-      'svelte',
-      'yaml',
-      'html'
-    }
-  },
   -- Elixir
   'elixir-tools/elixir-tools.nvim',
   -- Rust
@@ -119,6 +96,7 @@ require("lazy").setup({
     lazy = false
   },
 
+  -- Notes
   -- Markdown Rendering
   {
     'MeanderingProgrammer/render-markdown.nvim',

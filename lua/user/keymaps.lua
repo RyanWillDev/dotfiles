@@ -7,6 +7,30 @@ vim.keymap.set('i', 'jk', '<esc>', { noremap = true, silent = true })
 
 -- Formatting
 vim.keymap.set("n", "<leader>q", "gqip")
+vim.keymap.set("n", "<leader>p", function()
+  vim.cmd("write")
+  local filepath = vim.fn.expand("%:p")
+  local bufnr = vim.api.nvim_get_current_buf()
+  local stderr_output = {}
+
+  vim.fn.jobstart({ "prettier", "--write", filepath }, {
+    stderr_buffered = true,
+    on_stderr = function(_, data)
+      stderr_output = data
+    end,
+    on_exit = function(_, exit_code)
+      vim.schedule(function()
+        if exit_code == 0 then
+          vim.api.nvim_buf_call(bufnr, function() vim.cmd("edit") end)
+          vim.notify("Prettier: formatted successfully", vim.log.levels.INFO)
+        else
+          local err_msg = table.concat(stderr_output, "\n")
+          vim.notify("Prettier failed: " .. err_msg, vim.log.levels.ERROR)
+        end
+      end)
+    end,
+  })
+end, { desc = "Format file with Prettier" })
 
 -- Time Tracking
 vim.keymap.set("n", "<leader>td", "<esc>:execute 'normal! i'.strftime('%m-%d-%Y')<CR>")
@@ -26,9 +50,9 @@ vim.keymap.set("n", "<leader>yrf", ':let @" = expand("%:.")<CR>:let @*=@"<CR>')
 -- Move up/down editor lines
 vim.keymap.set("n", "j", "gj")
 vim.keymap.set("n", "k", "gk")
--- Since , is the leader key use ,; to replace , for going
+-- Since , is the leader key use g; to replace , for going
 -- back to last result of f or t
-vim.keymap.set("n", "<leader>;", ",")
+vim.keymap.set("n", "g;", ",")
 
 -- Window Management
 vim.keymap.set("n", "<C-w>.", "15<C-w>>")
