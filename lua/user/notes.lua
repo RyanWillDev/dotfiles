@@ -202,6 +202,35 @@ local function create_anchor_link()
   vim.fn.setreg('"', save_reg2, save_regtype2)
 end
 
+-- Convert visually selected text into a markdown link [text](url)
+-- Leaves cursor in insert mode inside the parentheses
+local function create_markdown_link()
+  local save_reg = vim.fn.getreg('"')
+  local save_regtype = vim.fn.getregtype('"')
+
+  vim.cmd('normal! ""y')
+  local selected_text = vim.fn.getreg('"')
+  vim.fn.setreg('"', save_reg, save_regtype)
+
+  if selected_text:find('\n') then
+    vim.notify("Multi-line selections not supported", vim.log.levels.WARN)
+    return
+  end
+
+  local link = "[" .. selected_text .. "]()"
+
+  local save_reg2 = vim.fn.getreg('"')
+  local save_regtype2 = vim.fn.getregtype('"')
+
+  vim.fn.setreg('"', link, 'v')
+  vim.cmd('normal! gvp')
+
+  vim.fn.setreg('"', save_reg2, save_regtype2)
+
+  -- Cursor lands on ), enter insert mode before it (inside the parens)
+  vim.cmd('startinsert')
+end
+
 local function MakeNote(type, title)
   local file_name = title -- Use the title argument directly
 
@@ -272,12 +301,12 @@ local search_presets = {
     -- Sorts most recently modified first
     args = company_name .. "/tickets -t 'done' --sort modified",
   },
-  {
-    name = "Daily Notes",
-    description = "Show daily journal entries",
-    -- Sorts most recently created first
-    args = company_name .. "/daily --sort created"
-  },
+  --{
+  --  name = "Daily Notes",
+  --  description = "Show daily journal entries",
+  --  -- Sorts most recently created first
+  --  args = company_name .. "/daily --sort created"
+  --},
   {
     name = "Meeting Notes",
     description = "Show meeting notes",
@@ -484,6 +513,7 @@ function M.keymaps()
 
   vim.keymap.set("n", "<leader>ge", goto_heading_from_anchor, { desc = "Go to Heading from Anchor" })
   vim.keymap.set('v', '<leader>ca', create_anchor_link, { desc = "Create Anchor Link", noremap = true, silent = true })
+  vim.keymap.set('v', '<leader>cl', create_markdown_link, { desc = "Create Markdown Link", noremap = true, silent = true })
   -- Normal mode: current line only
   vim.keymap.set('n', '<leader>tt', toggle_checkbox, { noremap = true, silent = true })
 
@@ -518,6 +548,18 @@ function M.keymaps()
       end
     })
   end, { desc = 'Run zk index' })
+end
+
+function M.options()
+  vim.api.nvim_create_autocmd("FileType", {
+    pattern = "markdown",
+    callback = function()
+        vim.opt.tabstop = 2
+        vim.opt.shiftwidth = 2
+        -- Ensure expandtab is set (use spaces instead of tabs)
+        vim.opt.expandtab = true
+    end,
+})
 end
 
 return M

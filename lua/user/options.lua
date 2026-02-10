@@ -71,3 +71,5 @@ vim.cmd [[
 vim.cmd [[
   command! Wqa wqa
 ]]
+
+require('user.notes').options()
