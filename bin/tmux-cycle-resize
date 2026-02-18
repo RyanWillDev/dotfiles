@@ -1,0 +1,39 @@
+#!/bin/bash
+# Cycles a tmux pane through proportions: 67%, 33%, 50%
+# Usage: tmux-cycle-resize width|height
+
+axis="$1"
+pane_id="#{pane_id}"
+pane_id=$(tmux display-message -p "#{pane_id}")
+key="@cycle_${axis}_${pane_id}"
+timeout_key="@cycle_${axis}_time_${pane_id}"
+
+now=$(date +%s)
+last=$(tmux show-environment -g "$timeout_key" 2>/dev/null | cut -d= -f2)
+idx=$(tmux show-environment -g "$key" 2>/dev/null | cut -d= -f2)
+
+# Reset cycle if more than 2 seconds since last press
+if [ -z "$last" ] || [ -z "$idx" ] || [ $((now - last)) -gt 2 ]; then
+  idx=0
+fi
+
+idx=$(( (idx % 4) + 1 ))
+tmux set-environment -g "$key" "$idx"
+tmux set-environment -g "$timeout_key" "$now"
+
+case $idx in
+  1) pct=67 ;;
+  2) pct=33 ;;
+  3) pct=10 ;;
+  4) pct=50 ;;
+esac
+
+if [ "$axis" = "width" ]; then
+  total=$(tmux display-message -p "#{window_width}")
+  size=$(( total * pct / 100 ))
+  tmux resize-pane -x "$size"
+else
+  total=$(tmux display-message -p "#{window_height}")
+  size=$(( total * pct / 100 ))
+  tmux resize-pane -y "$size"
+fi
