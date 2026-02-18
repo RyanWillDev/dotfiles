@@ -55,10 +55,47 @@ vim.keymap.set("n", "k", "gk")
 vim.keymap.set("n", "g;", ",")
 
 -- Window Management
-vim.keymap.set("n", "<C-w>.", "15<C-w>>")
-vim.keymap.set("n", "<C-w>,", "15<C-w><")
-vim.keymap.set("n", "<C-w>+", "15<C-w>+")
-vim.keymap.set("n", "<C-w>-", "15<C-w>-")
+local resize_cycle = { idx = 0, axis = nil, win = nil, timer = nil }
+local proportions = { 0.67, 0.33, 0.5 }
+
+local function cycle_resize(axis)
+  return function()
+    local win = vim.api.nvim_get_current_win()
+    local cur_nr = vim.fn.winnr()
+    local has_neighbor = (axis == "width")
+      and (vim.fn.winnr('h') ~= cur_nr or vim.fn.winnr('l') ~= cur_nr)
+      or (vim.fn.winnr('j') ~= cur_nr or vim.fn.winnr('k') ~= cur_nr)
+
+    if not has_neighbor then return end
+
+    if resize_cycle.axis == axis and resize_cycle.win == win then
+      resize_cycle.idx = (resize_cycle.idx % #proportions) + 1
+    else
+      resize_cycle.axis = axis
+      resize_cycle.win = win
+      resize_cycle.idx = 1
+    end
+
+    if resize_cycle.timer then
+      resize_cycle.timer:stop()
+    end
+    resize_cycle.timer = vim.defer_fn(function()
+      resize_cycle.axis = nil
+    end, 2000)
+
+    local proportion = proportions[resize_cycle.idx]
+    if axis == "width" then
+      local total = vim.o.columns
+      vim.api.nvim_win_set_width(win, math.floor(total * proportion))
+    else
+      local total = vim.o.lines - vim.o.cmdheight - 1
+      vim.api.nvim_win_set_height(win, math.floor(total * proportion))
+    end
+  end
+end
+
+vim.keymap.set("n", "<leader>w", cycle_resize("width"), { desc = "Cycle split width: 1/2 → 2/3 → 1/3" })
+vim.keymap.set("n", "<leader>W", cycle_resize("height"), { desc = "Cycle split height: 1/2 → 2/3 → 1/3" })
 vim.keymap.set("n", "<C-w>V", "<C-w>H")
 vim.keymap.set("n", "<C-w>S", "<C-w>K")
 vim.keymap.set("n", "<C-w>0", "<C-w>=")
