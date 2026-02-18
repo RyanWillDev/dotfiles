@@ -34,6 +34,12 @@ function M.keymaps()
   vim.keymap.set('n', '<leader>fh', fzf.helptags, { desc = "Help tags", noremap = true })
   vim.keymap.set('n', '<leader>fk', fzf.keymaps, { desc = "Keymaps", noremap = true })
 
+  -- Visual mode: grep selected text
+  vim.keymap.set('v', '<leader>fs', function()
+    local selection = vim.fn.getregion(vim.fn.getpos('v'), vim.fn.getpos('.'), { type = vim.fn.mode() })
+    fzf.live_grep({ search = table.concat(selection, '\n') })
+  end, { desc = "Live grep selection", noremap = true })
+
   -- Git related searches
   vim.keymap.set('n', '<leader>fg', fzf.git_commits, { desc = "Keymaps", noremap = true })
 
