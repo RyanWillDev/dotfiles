@@ -263,7 +263,16 @@ local search_presets = {
     name = "Open Tickets",
     description = "Show all open tickets",
     -- Sorts least recently modified first
-    args = company_name .. "/tickets -t ' -done' --sort modified+",
+    -- Excludes done, pr-review, research ticket tags
+    args = company_name .. "/tickets -t ' -done' -t ' -pr-review' -t ' -research' --sort modified+",
+  },
+  {
+
+    name = "PR Reviews",
+    description = "Open PR Reviews",
+    -- Sorts least recently modified first
+    -- Excludes done, pr-review, research ticket tags
+    args = company_name .. "/tickets -t ' -done' -t 'pr-review' --sort modified+",
   },
   {
     name = "Tickets In Review",
