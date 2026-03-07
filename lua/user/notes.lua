@@ -564,12 +564,12 @@ function M.options()
   vim.api.nvim_create_autocmd("FileType", {
     pattern = "markdown",
     callback = function()
-        vim.opt.tabstop = 2
-        vim.opt.shiftwidth = 2
-        -- Ensure expandtab is set (use spaces instead of tabs)
-        vim.opt.expandtab = true
+      vim.opt.tabstop = 2
+      vim.opt.shiftwidth = 2
+      -- Ensure expandtab is set (use spaces instead of tabs)
+      vim.opt.expandtab = true
     end,
-})
+  })
 end
 
 return M
