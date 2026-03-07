@@ -13,6 +13,7 @@ This skill provides expert guidance for Elixir development in this codebase, fol
 **This skill MUST be invoked before ANY work on .ex or .exs files.**
 
 ### Invoke IMMEDIATELY when:
+
 - Reading .ex or .exs files with intent to modify them
 - Writing new .ex or .exs files
 - Debugging Elixir code
@@ -24,22 +25,27 @@ This skill provides expert guidance for Elixir development in this codebase, fol
 ### Examples of Required Invocation:
 
 **Example 1:**
+
 - User: "Fix the bug in partners.ex"
 - **MUST invoke elixir skill first**
 
 **Example 2:**
+
 - User: "Add a new function to token.ex"
 - **MUST invoke elixir skill first**
 
 **Example 3:**
+
 - User: "Refactor the Partner module"
 - **MUST invoke elixir skill first**
 
 **Example 4:**
+
 - User: "Create a new ApplicationScope schema"
 - **MUST invoke elixir skill first**
 
 **Example 5:**
+
 - User: "Update the tests in token_test.exs"
 - **MUST invoke elixir skill first**
 
@@ -51,14 +57,16 @@ This skill provides expert guidance for Elixir development in this codebase, fol
 
 Use the Read tool to access `style.md` in these situations:
 
-| Task | Read These Sections |
-|------|---------------------|
-| Writing new functions | "Function Organization", "Variable Naming" |
-| Adding metrics/logging | "Metrics & Observability", "Logging" |
-| Writing tests | "Testing Patterns", "Pattern Matching in Assertions" |
-| Refactoring code | Relevant sections for the code area |
-| Adding comments | "Comments & Documentation" |
-| Unsure about a pattern | Search for keywords in style.md |
+| Task                        | Read This File                       |
+| --------------------------- | ------------------------------------ |
+| Writing new functions       | `style/naming-and-organization.md`   |
+| Using pipes, maps, patterns | `style/expression-patterns.md`       |
+| Writing or modifying tests  | `style/testing.md`                   |
+| Adding metrics/logging      | `style/observability.md`             |
+| Adding comments             | `style/comments.md`                  |
+| Working with Ecto schemas   | `style/ecto.md`                      |
+| Fixing dialyzer warnings    | `style/dialyzer.md`                  |
+| Unsure about a pattern      | Check `style.md` index for the right file |
 
 ### Workflow
 
@@ -84,6 +92,7 @@ If you discover a new pattern worth documenting, suggest adding it to style.md
 - Pin operator `^` references value bound BEFORE the pattern match
 
 Example from style.md:
+
 ```elixir
 # Validate structure, check known values, extract unknowns
 event_payload_id = "test-123"
@@ -113,27 +122,19 @@ assert String.match?(event_id, ~r/uuid-pattern/)
 **Always check style.md before adding metrics or logging.**
 
 Metrics:
+
 - Use tagged metrics with status/result (not separate metric names)
 - Include relevant context in tags (partner_id, location_id, event_type, status)
 - Emit metrics for both success and failure paths
 
 Logging:
+
 - Include structured metadata with log messages
 - Inline simple logging calls (don't create helper functions)
 - Use appropriate log levels
 
-## Project Context
-
-### Stack
-- **Oban**: Background job processing
-- **Ecto**: Database interactions
-- **Phoenix**: Web layer
-- **Warp**: Event streaming
-- **ExUnit**: Testing with async support
-
 ### Common Tasks
-- Implementing webhook handlers (EventHandler pattern)
-- Creating Oban workers for async processing
+
 - Writing Ecto queries and schemas
 - Adding metrics and observability
 - Writing comprehensive tests
@@ -141,6 +142,7 @@ Logging:
 ## Elixir Idioms
 
 ### Prefer
+
 - Pipeline operator `|>` for data transformations
 - Pattern matching over conditionals
 - With statements for happy path sequences
@@ -149,6 +151,7 @@ Logging:
 - Behaviours for contracts
 
 ### Avoid
+
 - Deeply nested conditionals
 - Mutating data structures
 - Long parameter lists (use maps/structs)
@@ -213,29 +216,31 @@ Claude's training includes Elixir code from many sources, which may differ from 
 
 Claude's natural tendencies vs this project's preferences:
 
-| Claude's Default | This Project Prefers | Document In |
-|-----------------|---------------------|-------------|
-| Multiple separate assertions | Pattern matching in single assertion | style.md - Testing Patterns |
-| `Map.has_key?()` checks | Pattern matching with implicit key validation | style.md - Testing Patterns |
-| Separate metric names per outcome | Tagged metrics with status | style.md - Metrics & Observability |
-| Helper functions for logging | Inline logging calls | style.md - Logging |
-| Sorting for unordered comparisons | MapSet for semantic clarity | style.md - Unordered Collections |
-| Piping queries to Repo | Wrapping queries directly in Repo | style.md - Query Organization |
-| `@impl true` on behaviour callbacks | `@impl BehaviourModule` for explicit attribution | style.md - Behaviour Implementations |
-| Banner/divider comments before describe blocks | No dividers; describe blocks are self-documenting | style.md - Section Dividers in Tests |
-| Naming maps by value type (`patients`) | Name by key structure (`patients_by_pims_id`) | style.md - Variable Naming |
-| Multi-pass `map \|> reject \|> uniq` for unique sets | Single-pass `Enum.reduce(MapSet.new(), ...)` | style.md - Building Unique Collections |
-| Chained field access with upstream nil filtering | `get_in` with `Access.key/1` for safe nested access | style.md - Safe Nested Struct Access |
-| Suppressing dialyzer warnings (ignore files, `@dialyzer`) | Trace cascading errors to root cause and fix the types | style.md - Dialyzer & Type Specs |
+| Claude's Default                                          | This Project Prefers                                   | Document In                            |
+| --------------------------------------------------------- | ------------------------------------------------------ | -------------------------------------- |
+| Multiple separate assertions                              | Pattern matching in single assertion                   | style.md - Testing Patterns            |
+| `Map.has_key?()` checks                                   | Pattern matching with implicit key validation          | style.md - Testing Patterns            |
+| Separate metric names per outcome                         | Tagged metrics with status                             | style.md - Metrics & Observability     |
+| Helper functions for logging                              | Inline logging calls                                   | style.md - Logging                     |
+| Sorting for unordered comparisons                         | MapSet for semantic clarity                            | style.md - Unordered Collections       |
+| Piping queries to Repo                                    | Wrapping queries directly in Repo                      | style.md - Query Organization          |
+| `@impl true` on behaviour callbacks                       | `@impl BehaviourModule` for explicit attribution       | style.md - Behaviour Implementations   |
+| Banner/divider comments before describe blocks            | No dividers; describe blocks are self-documenting      | style.md - Section Dividers in Tests   |
+| Naming maps by value type (`patients`)                    | Name by key structure (`patients_by_pims_id`)          | style.md - Variable Naming             |
+| Multi-pass `map \|> reject \|> uniq` for unique sets      | Single-pass `Enum.reduce(MapSet.new(), ...)`           | style.md - Building Unique Collections |
+| Chained field access with upstream nil filtering          | `get_in` with `Access.key/1` for safe nested access    | style.md - Safe Nested Struct Access   |
+| Suppressing dialyzer warnings (ignore files, `@dialyzer`) | Trace cascading errors to root cause and fix the types | style.md - Dialyzer & Type Specs       |
 
 ### When Mismatches Occur
 
 **Recognition Pattern:**
+
 1. You implement code following your learned patterns
 2. User provides feedback: "I prefer X instead of Y"
 3. This is a learning opportunity
 
 **Response Process:**
+
 1. **Acknowledge the divergence** - "I used [pattern] which is common in Elixir, but I see you prefer [pattern]"
 2. **Understand the reasoning** - Ask why if not clear from context
 3. **Update style.md** - Add the pattern to the appropriate section with Good/Bad examples
@@ -273,18 +278,21 @@ Response:
 ### Maintenance Workflow
 
 **When writing new Elixir code:**
+
 1. Read style.md for existing patterns
 2. If no guidance exists, use your best judgment
 3. Be prepared to learn the user's preference
 4. Document the preference when revealed
 
 **When receiving feedback:**
+
 1. Recognize it as a preference signal
 2. Ask clarifying questions if the reasoning isn't clear
 3. Update style.md immediately with the pattern
 4. Reference the new style.md section in your revision
 
 **Periodic review:**
+
 - The "Common Divergences" table should grow as patterns are discovered
 - When a divergence appears 3+ times, it should be documented in style.md
 - This skill file should be updated to reflect major pattern categories
@@ -307,14 +315,14 @@ Watch for these signs that maintenance is needed:
 
 ## Style Guide Reference
 
-The complete project style guide is located at `style.md` in the same directory as this skill file.
+The style guide lives in the `style/` subdirectory, indexed by `style.md`. Each file covers a focused topic:
 
-Use the Read tool to access it whenever you need guidance on specific patterns or conventions. The style guide contains:
+- `style/naming-and-organization.md` — variables, functions, modules, aliases
+- `style/expression-patterns.md` — pipes, maps, collections, conditionals
+- `style/testing.md` — test setup, factories, assertions, examples
+- `style/observability.md` — metrics, logging
+- `style/comments.md` — documentation, rationale, error handling comments
+- `style/ecto.md` — schemas, embedded schemas
+- `style/dialyzer.md` — type specs, changeset signatures, cascading errors
 
-- General Code Style (variable naming, function organization, module organization)
-- Metrics & Observability patterns
-- Testing patterns with examples
-- Comments & Documentation standards
-- Specific patterns with good/bad examples
-
-Remember: Progressive disclosure means you load this information as needed, not all at once.
+**Read only the file relevant to your current task.** Do not load all files at once.
