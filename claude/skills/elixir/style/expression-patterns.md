@@ -10,6 +10,11 @@
   - ❌ `NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)`
   - A single pipe doesn't add clarity; direct wrapping is more concise
 
+- **If piping, pipe from the start** — don't mix function-wrapping and piping in the same chain
+  - ✅ `query |> Repo.all() |> Map.new(&{&1.key, &1})`
+  - ❌ `Repo.all(query) |> Map.new(&{&1.key, &1})`
+  - The first form makes the data flow uniform; the second hides the starting value inside a function call
+
 - **DO NOT pipe into case statements**
   - ✅ Assign to variable, then use case
   - ❌ `results |> case do`
@@ -68,6 +73,12 @@
   - Short-circuits to `nil` at any level without requiring upstream `Enum.reject(&is_nil/1)`
   - ✅ `get_in(record, [Access.key(:association), Access.key(:field)])`
   - ❌ Chaining `record.association.field` after filtering nils with `Enum.reject`
+
+## Collection Pipeline Visibility
+- **Keep `Enum` pipelines at the call site** — don't wrap them in single-use named functions
+  - `Enum.filter |> Enum.map` already describes the transformation
+  - ✅ Inline the pipeline where it's used
+  - ❌ `defp extract_provider_ids(items), do: items |> Enum.filter(...) |> Enum.map(...)`
 
 ## Conditional Simplification
 - **Omit explicit `else: nil`** in if/unless statements (nil is the default)

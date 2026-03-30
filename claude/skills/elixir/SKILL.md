@@ -1,6 +1,6 @@
 ---
 name: elixir-development
-description: **CRITICAL - This skill MUST be invoked before ANY work on .ex or .exs files.** Expert guidance for Elixir development following project-specific style conventions. Invoke IMMEDIATELY when reading .ex or .exs files with intent to modify them, writing new .ex or .exs files, debugging Elixir code, reviewing Elixir code, or ANY task that involves Elixir code changes. Do NOT proceed with Elixir file modifications without invoking this skill first. Uses progressive disclosure by referencing style.md for on-demand pattern guidance.
+description: **CRITICAL - This skill MUST be invoked before ANY work on or review of .ex or .exs files.** Expert guidance for Elixir development following project-specific style conventions. Invoke IMMEDIATELY when reading .ex or .exs files with intent to modify them, writing new .ex or .exs files, debugging Elixir code, reviewing Elixir code, or ANY task that involves Elixir code changes. Do NOT proceed with Elixir file modifications without invoking this skill first. Uses progressive disclosure by referencing style.md for on-demand pattern guidance.
 allowed-tools: Bash(mix:*)
 ---
 

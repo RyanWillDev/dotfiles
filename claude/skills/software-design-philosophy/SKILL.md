@@ -70,7 +70,18 @@ This applies to naming conventions, error handling patterns, test structure, abs
 
 The exception is when the existing pattern is actively harmful (security issues, correctness bugs, unmaintainable complexity). In that case, refactor broadly rather than introducing a second pattern in one place.
 
-### 4. Find the Golden Mean of Type Specificity
+### 4. Simplest Sufficient Return Type
+
+Don't add structure that doesn't carry information. If an atom conveys the meaning, don't wrap it in a tuple.
+
+- ✅ `:ok | :duplicate`
+- ❌ `{:ok, :no_duplicate} | {:skip, :duplicate_appointment}`
+
+The tagged tuple adds two names (`:no_duplicate`, `:duplicate_appointment`) that restate what the caller already knows from the tag. The simpler form is easier to match on and harder to get wrong.
+
+This is a corollary of Principle 1 — the extra structure is something you can subtract.
+
+### 5. Find the Golden Mean of Type Specificity
 
 Types and specs should be specific enough to communicate intent but general enough to remain useful. Think Postel's Law: be liberal in what you accept, conservative in what you produce — but don't be so liberal that your types say nothing.
 
