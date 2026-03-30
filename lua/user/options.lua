@@ -43,12 +43,16 @@ vim.o.visualbell = true
 vim.o.wrap = true
 
 -- Spell check
-vim.api.nvim_set_option_value('spelllang', 'en_us', { scope = 'local' })
-vim.api.nvim_set_option_value('complete', vim.api.nvim_get_option_value('complete', {}) .. ',kspell', { scope = 'local' })
-
-vim.cmd [[
-  autocmd BufReadPost * setlocal spell spelllang=en_us complete+=kspell
-]]
+vim.api.nvim_create_augroup('SpellCheck', { clear = true })
+vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufNewFile' }, {
+  group = 'SpellCheck',
+  pattern = '*',
+  callback = function()
+    vim.opt_local.spell = true
+    vim.opt_local.spelllang = 'en_us'
+    vim.opt_local.complete:append('kspell')
+  end,
+})
 
 -- Fix common mistypes
 -- Set :W to just execute w
