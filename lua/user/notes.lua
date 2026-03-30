@@ -260,11 +260,37 @@ local search_presets = {
     args = "-t followup --sort modified+",
   },
   {
+    name = "Open Research",
+    description = "Show all open research notes",
+    -- Sorts least recently modified first
+    -- Excludes done
+    args = " -t ' -done' -t research --sort modified+",
+  },
+  {
     name = "Open Tickets",
     description = "Show all open tickets",
     -- Sorts least recently modified first
     -- Excludes done, pr-review, research ticket tags
     args = company_name .. "/tickets -t ' -done' -t ' -pr-review' -t ' -research' --sort modified+",
+  },
+  {
+    name = "WIP Projects",
+    description = "Show all work in progress projects (planning)",
+    -- Sorts least recently modified first
+    -- Excludes done, pr-review, research ticket tags
+    args = company_name .. " -t ' -done' -t ' -onhold' -t project --sort modified+",
+  },
+  {
+    name = "On Deck Projects",
+    description = "Show all projects ready for action",
+    -- sorts least recently modified first
+    args = company_name .. " -t 'ondeck' -t project --sort modified+",
+  },
+  {
+    name = "Paused Projects",
+    description = "Show all projects that have been deprioritized",
+    -- sorts least recently modified first
+    args = company_name .. " -t 'onhold' -t project --sort modified+",
   },
   {
 
@@ -287,22 +313,9 @@ local search_presets = {
     args = company_name .. "/tickets -t 'qa' --sort modified+",
   },
   {
-    name = "Last Week's Tickets",
-    description = "Show all tickets updated this week",
-    -- Sorts most recently modified first
-    args = company_name .. "/tickets --modified-after 'last monday' --sort modified",
-  },
-  {
-    name = "Daily Review",
-    description = "Show all notes updated today",
-    -- Sorts most recently modified first
-    args = "--modified-after '8am' --sort modified",
-  },
-  {
-    name = "Weekly Review",
-    description = "Show all notes updated this week",
-    -- Sorts most recently modified first
-    args = "--modified-after 'last monday' --sort modified",
+    name = "Custom Query",
+    description = "Enter custom zk list arguments",
+    args = nil, -- Will prompt for input
   },
   {
     name = "Done Tickets",
@@ -310,22 +323,35 @@ local search_presets = {
     -- Sorts most recently modified first
     args = company_name .. "/tickets -t 'done' --sort modified",
   },
+  {
+    name = "Daily Review",
+    description = "Show all notes updated today",
+    -- Sorts most recently modified first
+    args = "--modified-after '8am' --sort modified",
+  },
+  --{
+  --  name = "Last Week's Tickets",
+  --  description = "Show all tickets updated this week",
+  --  -- Sorts most recently modified first
+  --  args = company_name .. "/tickets --modified-after 'last monday' --sort modified",
+  --},
+  --{
+  --  name = "Weekly Review",
+  --  description = "Show all notes updated this week",
+  --  -- Sorts most recently modified first
+  --  args = "--modified-after 'last monday' --sort modified",
+  --},
   --{
   --  name = "Daily Notes",
   --  description = "Show daily journal entries",
   --  -- Sorts most recently created first
   --  args = company_name .. "/daily --sort created"
   --},
-  {
-    name = "Meeting Notes",
-    description = "Show meeting notes",
-    args = "-t meeting --sort modified",
-  },
-  {
-    name = "Custom Query",
-    description = "Enter custom zk list arguments",
-    args = nil, -- Will prompt for input
-  },
+  --{
+  --  name = "Meeting Notes",
+  --  description = "Show meeting notes",
+  --  args = "-t meeting --sort modified",
+  --},
 }
 
 local function zk_picker(args, prompt_title)
