@@ -1,0 +1,9 @@
+#!/bin/bash
+urls=$(tmux capture-pane -pS -100 | grep -oE 'https?://[^ >"]+' | sort -u)
+
+if [ -z "$urls" ]; then
+  tmux display-message "No URLs found in pane"
+  exit 0
+fi
+
+tmux split-window -l 12 "echo '$urls' | fzf --multi | xargs -I{} open '{}'"
