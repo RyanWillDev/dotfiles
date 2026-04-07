@@ -12,4 +12,5 @@ This document is an index into focused style guides. **Read only the file releva
 | [style/observability.md](style/observability.md) | Adding metrics, logging, or instrumentation |
 | [style/comments.md](style/comments.md) | Adding comments, documenting decisions, writing error handling rationale |
 | [style/ecto.md](style/ecto.md) | Working with Ecto schemas, embedded schemas |
+| [style/state-management.md](style/state-management.md) | Managing state, process dictionary, dependency injection, test overrides |
 | [style/dialyzer.md](style/dialyzer.md) | Fixing dialyzer warnings, writing type specs, changeset function signatures |

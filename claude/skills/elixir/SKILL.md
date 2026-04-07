@@ -65,6 +65,7 @@ Use the Read tool to access `style.md` in these situations:
 | Adding metrics/logging      | `style/observability.md`             |
 | Adding comments             | `style/comments.md`                  |
 | Working with Ecto schemas   | `style/ecto.md`                      |
+| Managing state, DI, overrides | `style/state-management.md`        |
 | Fixing dialyzer warnings    | `style/dialyzer.md`                  |
 | Unsure about a pattern      | Check `style.md` index for the right file |
 
@@ -230,6 +231,7 @@ Claude's natural tendencies vs this project's preferences:
 | Multi-pass `map \|> reject \|> uniq` for unique sets      | Single-pass `Enum.reduce(MapSet.new(), ...)`           | style.md - Building Unique Collections |
 | Chained field access with upstream nil filtering          | `get_in` with `Access.key/1` for safe nested access    | style.md - Safe Nested Struct Access   |
 | Suppressing dialyzer warnings (ignore files, `@dialyzer`) | Trace cascading errors to root cause and fix the types | style.md - Dialyzer & Type Specs       |
+| Process dictionary for test overrides                      | Dependency injection via opts/keyword args              | style.md - State Management            |
 
 ### When Mismatches Occur
 

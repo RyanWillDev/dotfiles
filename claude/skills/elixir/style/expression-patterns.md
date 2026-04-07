@@ -36,6 +36,19 @@
   end
   ```
 
+## Expression Density
+- **Break apart dense lines** — when a line packs too many operations together, extract intermediate steps by shadowing
+  - ✅ Separate the transformation:
+  ```elixir
+  flags = flags |> Enum.flat_map(&expand_flag/1) |> MapSet.new()
+  {positional, flags}
+  ```
+  - ❌ Everything on one line:
+  ```elixir
+  {positional, flags |> Enum.flat_map(&expand_flag/1) |> MapSet.new()}
+  ```
+  - Shadowing the variable is fine — it keeps each line doing one thing
+
 ## Map Construction
 - **Use `Map.new/2` instead of `Enum.into/3`** when building maps from enumerables
   - ✅ `Map.new(list, fn {k, v} -> {k, v} end)`
