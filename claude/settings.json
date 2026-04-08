@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(*)"
+    ]
+  },
+  "env": {
+    "ENABLE_LSP_TOOL": "true"
+  },
+  "enabledPlugins": {
+    "typescript-lsp@claude-plugins-official": true,
+    "lua-lsp@claude-plugins-official": true
+  },
+  "alwaysThinkingEnabled": true,
+  "effortLevel": "high"
+}
