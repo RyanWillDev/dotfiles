@@ -43,9 +43,6 @@ function M.config()
     }, {
       { name = 'spell' },
       { name = 'buffer' },
-      per_filetype = {
-        codecompanion = { "codecompanion" },
-      },
     }),
     snippet = {
       -- https://github.com/hrsh7th/nvim-cmp/wiki/Example-mappings#no-snippet-plugin

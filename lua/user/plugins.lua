@@ -104,7 +104,7 @@ require("lazy").setup({
     ---@module 'render-markdown'
     ---@type render.md.UserConfig
     opts = {},
-    ft = { "markdown", "codecompanion" },
+    ft = { "markdown" },
   },
   {
     "toppair/peek.nvim",
@@ -122,21 +122,6 @@ require("lazy").setup({
     ft = { "markdown" }
   },
 
-  -- LLM Stuff
-  {
-    'olimorris/codecompanion.nvim',
-    cond = function(_) return vim.env.WORK_ENV == 'true' end,
-    config = require('user.plugins.codecompanion').config,
-    --keys = {
-    --  { "<leader>ai", "<cmd>CodeCompanionChat<cr>", mode = "n", desc = "Stuff"}
-    --}
-  },
-  {
-    'nvim-telescope/telescope.nvim',
-    tag = '0.1.8',
-    dependencies = { 'nvim-lua/plenary.nvim' },
-    ft = { "codecompanion" }
-  },
 })
 
 require('user.plugins.lsp')
