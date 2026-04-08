@@ -54,22 +54,16 @@ function M.config()
     },
   })
 
-  -- Codecompanion's nvim-cmp setup overrides my existing sources.
-  -- In order to use the buffer source, I have to reconfigure after the other sources have been added.
-  -- Snippet below pulled from https://github.com/olimorris/codecompanion.nvim/blob/88111765a8d7d1f9b359f74bb6ec44e4c0f5f0b2/plugin/codecompanion.lua#L89-L97
-  cmp.setup.filetype("codecompanion", {
-    enabled = true,
-    sources = vim.list_extend({
-      { name = "codecompanion_models" },
-      { name = "codecompanion_slash_commands" },
-      { name = "codecompanion_tools" },
-      { name = "codecompanion_variables" },
-    }, cmp.get_config().sources),
-  })
-
   -- Language Servers
   local capabilities = require('cmp_nvim_lsp').default_capabilities()
   capabilities.textDocument.completion.completionItem.snippetSupport = true
+
+  vim.lsp.config('expert', {
+    on_attach = on_attach,
+    capabilities = capabilities
+  })
+
+  vim.lsp.enable('expert')
 
   -- require("elixir").setup({
   --   nextls = {
@@ -91,15 +85,15 @@ function M.config()
   --   elixirls = {enable = false},
   -- })
 
-  vim.lsp.config('elixirls', {
-    cmd = { vim.env.HOME .. "/elixir-ls/release/language_server.sh" },
-    on_attach = on_attach,
-    capabilities = capabilities,
-    settings = {
-      --dialyzerEnabled = false
-    }
-  })
-  vim.lsp.enable('elixirls')
+  --vim.lsp.config('elixirls', {
+  --  cmd = { vim.env.HOME .. "/elixir-ls/release/language_server.sh" },
+  --  on_attach = on_attach,
+  --  capabilities = capabilities,
+  --  settings = {
+  --    --dialyzerEnabled = false
+  --  }
+  --})
+  --vim.lsp.enable('elixirls')
 
 
   vim.lsp.config('pylsp', {
