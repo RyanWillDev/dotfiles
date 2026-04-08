@@ -1,0 +1,4 @@
+interface:
+  display_name: "Jira ACLI"
+  short_description: "Use acli for Jira work"
+  default_prompt: "Use $jira-acli to look up or update the relevant Jira ticket with the `acli` command-line tool."

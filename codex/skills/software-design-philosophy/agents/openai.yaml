@@ -1,0 +1,4 @@
+interface:
+  display_name: "Design Philosophy"
+  short_description: "Cross-language design principles"
+  default_prompt: "Use $software-design-philosophy to evaluate the implementation approach and push toward the simplest sound design."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Postgres"
+  short_description: "PostgreSQL design guidance"
+  default_prompt: "Use $postgres to review this migration, index choice, or query plan before we change the database."

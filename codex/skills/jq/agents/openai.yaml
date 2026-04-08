@@ -1,0 +1,4 @@
+interface:
+  display_name: "jq"
+  short_description: "Parse and transform JSON"
+  default_prompt: "Use $jq to extract, validate, or reshape this JSON with concise `jq` filters."

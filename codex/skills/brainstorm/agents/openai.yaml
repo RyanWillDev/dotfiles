@@ -1,0 +1,4 @@
+interface:
+  display_name: "Brainstorm"
+  short_description: "Collaborative technical planning"
+  default_prompt: "Use $brainstorm to think through options and challenge the framing before we commit to an approach."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Elixir"
+  short_description: "Project-specific Elixir guidance"
+  default_prompt: "Use $elixir before modifying these `.ex` or `.exs` files so we follow the project's Elixir conventions."
