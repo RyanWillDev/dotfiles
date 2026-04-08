@@ -115,6 +115,7 @@ vim.keymap.set("n", "<leader>gl", "<cmd>Gclog<CR><CR><C-w>j")
 
 require('user.autosave').keymaps()
 require('user.notes').keymaps()
+require('user.notes.redact').keymaps()
 require('user.windows').keymaps()
 
 -- Plugins
