@@ -137,6 +137,10 @@ if [[ ! "$PATH" == *${HOME}/zk* ]]; then
 export PATH=$PATH:$HOME/zk
 fi
 
+if [[ ! "$PATH" == *${HOME}/.local/bin* ]]; then
+  export PATH="$HOME/.local/bin:$PATH"
+fi
+
 ##### ASDF #####
 # The recommendation of using brew to get the prefix is slow
 . /opt/homebrew/opt/asdf/libexec/asdf.sh
