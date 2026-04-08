@@ -1,0 +1,11 @@
+#!/bin/bash
+# Create a session with the given name, or switch to it if it exists.
+name="$1"
+path="$2"
+
+if tmux has-session -t "=$name" 2>/dev/null; then
+  tmux switch-client -t "$name"
+else
+  tmux new-session -d -s "$name" -c "$path"
+  tmux switch-client -t "$name"
+fi

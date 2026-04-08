@@ -1,0 +1,19 @@
+#!/bin/bash
+# Fuzzy-pick a directory, then create/switch to a session named after it.
+
+dir=$(find ~ -maxdepth 3 -type d \
+  -not -path '*/\.*' \
+  -not -path '*/node_modules/*' \
+  -not -path '*/_build/*' \
+  -not -path '*/deps/*' \
+  2>/dev/null | fzf --prompt="New session: ")
+[ -z "$dir" ] && exit 0
+
+name=$(cd "$dir" && basename "$(git rev-parse --show-toplevel 2>/dev/null || pwd)")
+
+if tmux has-session -t "=$name" 2>/dev/null; then
+  tmux switch-client -t "$name"
+else
+  tmux new-session -d -s "$name" -c "$dir"
+  tmux switch-client -t "$name"
+fi
