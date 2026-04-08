@@ -62,7 +62,7 @@ SPACESHIP_EXEC_TIME_SHOW=false
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(zsh-vi-mode)
+plugins=(zsh-vi-mode jj)
 
 source $ZSH/oh-my-zsh.sh
 
