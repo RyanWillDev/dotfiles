@@ -2,7 +2,6 @@ local vim = _G.vim
 local M = {}
 
 local ns = vim.api.nvim_create_namespace('redact')
-local state = { redacted = true }
 
 local function setup_highlights()
   local normal_hl = vim.api.nvim_get_hl(0, { name = 'Normal', link = false })
@@ -59,8 +58,6 @@ local function apply(bufnr)
   bufnr = bufnr or vim.api.nvim_get_current_buf()
   vim.api.nvim_buf_clear_namespace(bufnr, ns, 0, -1)
 
-  if not state.redacted then return end
-
   for _, r in ipairs(find_regions(bufnr)) do
     if not revealed_regions[region_key(r)] then
       local sl, sc, el, ec = r[1], r[2], r[3], r[4]
@@ -83,18 +80,6 @@ local function apply(bufnr)
       end
     end
   end
-end
-
-local function toggle_visibility()
-  state.redacted = not state.redacted
-
-  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-    if vim.api.nvim_buf_is_loaded(buf) then
-      apply(buf)
-    end
-  end
-
-  vim.notify(state.redacted and 'Redaction: ON' or 'Redaction: OFF')
 end
 
 -- Reveal/hide the redacted region under the cursor.
@@ -169,11 +154,18 @@ setup_highlights()
 
 vim.api.nvim_create_autocmd('ColorScheme', { callback = setup_highlights })
 
-vim.api.nvim_create_autocmd({ 'BufEnter', 'TextChanged', 'InsertLeave' }, {
+vim.api.nvim_create_autocmd({ 'BufReadPost', 'TextChanged', 'InsertLeave' }, {
+  pattern = '*.md',
   callback = function(ev) apply(ev.buf) end,
 })
 
-vim.api.nvim_create_user_command('RedactToggle', toggle_visibility, {})
+vim.api.nvim_create_autocmd({'BufLeave', 'FocusLost'}, {
+  pattern = '*.md',
+  callback = function(ev)
+    revealed_regions = {}
+    apply(ev.buf)
+  end,
+})
 
 function M.keymaps()
   vim.keymap.set('n', '<leader>R', reveal_at_cursor, { desc = 'Reveal/hide redacted region at cursor' })
