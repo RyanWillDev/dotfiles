@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Skill(*)"
+      "Skill(*)",
+      "Read(skills/**)"
     ]
   },
   "env": {
