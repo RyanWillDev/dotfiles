@@ -548,8 +548,10 @@ function M.keymaps()
 
   vim.keymap.set("n", "<leader>ge", goto_heading_from_anchor, { desc = "Go to Heading from Anchor" })
   vim.keymap.set('v', '<leader>ca', create_anchor_link, { desc = "Create Anchor Link", noremap = true, silent = true })
+  vim.keymap.set('n', '<leader>ca', 'viw<leader>ca', { desc = "Create Anchor Link (word)", remap = true, silent = true })
   vim.keymap.set('v', '<leader>cl', create_markdown_link,
     { desc = "Create Markdown Link", noremap = true, silent = true })
+  vim.keymap.set('n', '<leader>cl', 'viw<leader>cl', { desc = "Create Markdown Link (word)", remap = true, silent = true })
   -- Normal mode: current line only
   vim.keymap.set('n', '<leader>tt', toggle_checkbox, { noremap = true, silent = true })
 
