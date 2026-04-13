@@ -132,6 +132,8 @@ alias v="vim"
 alias v.="vim ."
 alias rg="rg -i"
 
+# Dedupes the PATH, allegedly
+typeset -U path PATH
 
 if [[ ! "$PATH" == *${HOME}/zk* ]]; then
 export PATH=$PATH:$HOME/zk
