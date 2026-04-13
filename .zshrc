@@ -275,6 +275,11 @@ gwa () {
   # Strips prefix eg: feature/<TICKET_ID>
   local directory=${2:-${branch##*/}}
 
+  if [ -d ".worktrees/$directory" ]; then
+    cd ".worktrees/$directory"
+    return
+  fi
+
   if git show-ref --verify --quiet "refs/heads/$branch"; then
     git worktree add ".worktrees/$directory" "$branch"
   else
