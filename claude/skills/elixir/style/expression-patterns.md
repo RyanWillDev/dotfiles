@@ -87,11 +87,33 @@
   - ✅ `get_in(record, [Access.key(:association), Access.key(:field)])`
   - ❌ Chaining `record.association.field` after filtering nils with `Enum.reject`
 
+- **Don't add defensive defaults at intermediate lookup steps** — `get_in` short-circuits to `nil` on any miss, so `|| %{}` or `Map.get/3` with an empty-map default are unnecessary. Handle `nil` once, at the point where it actually matters.
+  ```elixir
+  # GOOD: nil is handled once by the caller
+  get_in(outer, [:inner_map, key, Access.key(:field)])
+
+  # BAD: defensive default exists only to prevent a crash on the next lookup
+  inner = outer[:inner_map] || %{}
+  get_in(inner, [key, Access.key(:field)])
+  ```
+
 ## Collection Pipeline Visibility
 - **Keep `Enum` pipelines at the call site** — don't wrap them in single-use named functions
   - `Enum.filter |> Enum.map` already describes the transformation
   - ✅ Inline the pipeline where it's used
   - ❌ `defp extract_provider_ids(items), do: items |> Enum.filter(...) |> Enum.map(...)`
+
+## `||` Priority Waterfall
+
+When resolving a value through a sequence of fallback strategies, chain nil-returning helpers with `||` to express the priority order directly:
+
+```elixir
+from_cache(key) ||
+  from_database(key) ||
+  default_value
+```
+
+Each helper returns the resolved value or `nil` on a miss. The chain terminates at the first non-nil result, and the final term is the guaranteed fallback. This pairs naturally with naming helpers by their strategy rather than their return type — the call site reads as a prioritized list of approaches.
 
 ## Conditional Simplification
 - **Omit explicit `else: nil`** in if/unless statements (nil is the default)

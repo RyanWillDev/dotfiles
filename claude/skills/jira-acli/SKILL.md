@@ -88,8 +88,8 @@ acli jira workitem create \
   --description "Add OAuth2 authentication flow" \
   --label "security,auth"
 
-# Create and assign to self
-acli jira workitem create --summary "Review PR" --project "PROJ" --type "Task" --assignee "@me"
+# Create and assign to self — use the user's email address, never "@me"
+acli jira workitem create --summary "Review PR" --project "PROJ" --type "Task" --assignee "user@example.com"
 
 # Create with parent (for subtasks)
 acli jira workitem create --summary "Write unit tests" --project "PROJ" --type "Subtask" --parent "PROJ-123"
@@ -115,7 +115,7 @@ acli jira workitem edit --key "KEY-1" --summary "Updated summary"
 acli jira workitem edit --key "KEY-1,KEY-2" --assignee "user@example.com"
 
 # Edit by JQL query
-acli jira workitem edit --jql "project = TEAM AND status = 'To Do'" --assignee "@me"
+acli jira workitem edit --jql "project = TEAM AND status = 'To Do'" --assignee "user@example.com"
 
 # Edit description from file
 acli jira workitem edit --key "KEY-1" --description-file "updated-desc.txt"
@@ -145,6 +145,8 @@ acli jira workitem edit --from-json "update.json"
 - **ADF** is a JSON structure that preserves headings, lists, bold text, and other formatting
 
 ### Creating Tickets with ADF Descriptions
+
+**IMPORTANT: Always verify the expected JSON schema with `acli jira workitem create --generate-json` before constructing a `--from-json` payload.** The correct top-level field names are `projectKey` (not `project`) and `parentIssueId` (not `parent`). Do NOT use Python or other tools to inspect the schema — use `--generate-json` directly.
 
 **Always use `--from-json` with proper ADF structure for descriptions:**
 
@@ -305,10 +307,10 @@ Use this structure for all tickets:
 ```json
 {
   "summary": "Implement feature X",
-  "project": "PROJ",
+  "projectKey": "PROJ",
   "type": "Story",
-  "parent": "PROJ-123",
-  "assignee": "@me",
+  "parentIssueId": "PROJ-123",
+  "assignee": "user@example.com",
   "description": {
     "type": "doc",
     "version": 1,
@@ -677,7 +679,7 @@ Most commands support multiple output formats:
 2. **Paginate large result sets** to get all items: `--paginate`
 3. **Filter fields** to reduce output: `--fields "key,summary,status"`
 4. **Use JQL** for complex queries instead of filtering after fetch
-5. **Self-assign with**: `--assignee "@me"`
+5. **Self-assign**: use the user's email address — never `"@me"` as it does not work and falls back to the project default assignee
 6. **Default assignee**: `--assignee "default"`
 7. **Read from files** for long descriptions: `--description-file` or `--from-file`
 8. **Generate templates** with: `--generate-json`

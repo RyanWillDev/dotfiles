@@ -50,6 +50,28 @@ The subtractive solution had less code than any workaround and left the module b
 
 **Corollary — earn your abstractions.** The additive bias also shows up as premature extraction. Before creating a helper, wrapper, or utility, ask "why is this needed?" Simple inline code is often clearer than an abstraction with a name to learn. Only extract when there's clear reuse or the abstraction genuinely clarifies. Three similar lines of code is better than a premature abstraction.
 
+### 1a. Explicit Branching Is Not Noise
+
+A corollary to Principle 1: resist refactoring explicit branching into indirection just to eliminate a `case` or `if`. Keeping a decision's arms together — in one `case` statement — is almost always clearer than distributing them across function clauses or helpers that must be read in combination to understand the decision.
+
+```elixir
+# GOOD: the decision and its outcomes are co-located
+case items do
+  [item] -> resolve(item) || default
+  _      -> default   # zero or multiple: always fall back
+end
+
+# LESS GOOD: looks simpler, but hides the branching across two clauses
+defp try_resolve([item]), do: resolve(item)
+defp try_resolve(_),      do: nil
+
+try_resolve(items) || default
+```
+
+The second form appears to eliminate the `case`, but it has only moved the branching — a reader now has to hold two function clauses in mind to understand a single decision. The `case` was not the problem; it was the honest expression of the logic.
+
+**The signal that you've over-refactored:** a helper whose only purpose is to return `nil` for the uninteresting case, so the caller can use `||` to reach a default. That nil is doing the work the `case` arm was already doing explicitly.
+
 ### 2. Comments Mean "Why", Not "How"
 
 Follow the *Philosophy of Software Design* approach: comments should explain things that aren't obvious from reading the code — the reasoning, constraints, and design decisions.
