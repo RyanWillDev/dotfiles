@@ -5,7 +5,7 @@ function M.config(_plugin, opts)
   local fzf = require('fzf-lua')
 
   local ignore_patterns =
-  [[-g "!.git" -g "!.worktrees/**/*" -g "!_build" -g "!deps" -g "!node_modules" -g "!.elixir_ls" -g "!cover/**/*" -g "!python/venv/**/*"]]
+  [[-g "!.git" -g "!.worktrees/**/*" -g "!_build" -g "!deps" -g "!node_modules" -g "!.elixir_ls/**" -g "!.expert/**" -g "!**/*.beam" -g "!cover/**/*" -g "!python/venv/**/*"]]
 
   fzf.setup({
     grep = {
