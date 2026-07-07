@@ -49,6 +49,24 @@
   ```
   - Shadowing the variable is fine — it keeps each line doing one thing
 
+## List Literals for Strings and Atoms
+- **Use explicit list literals — never `~w()` sigils — when declaring lists of strings or atoms.** Readability over keystrokes; the user wants to see the actual quoted/atom values at the point of declaration.
+  - ✅ Strings:
+  ```elixir
+  @allowed_statuses ["pending", "active", "archived"]
+  ```
+  - ✅ Atoms:
+  ```elixir
+  @required_fields [:name, :email]
+  ```
+  - ❌ Sigil form:
+  ```elixir
+  @required_fields ~w(name email)a
+  @allowed_statuses ~w(pending active archived)
+  ```
+  - Applies to module attributes, function bodies, and anywhere else a literal list is constructed — including the common `cast(..., @required_fields ++ @optional_fields)` pattern.
+  - Exception: nothing — even one- or two-element lists go through the literal form. Consistency matters more than the keystrokes saved on a short list.
+
 ## Map Construction
 - **Use `Map.new/2` instead of `Enum.into/3`** when building maps from enumerables
   - ✅ `Map.new(list, fn {k, v} -> {k, v} end)`

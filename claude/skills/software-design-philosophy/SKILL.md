@@ -1,6 +1,6 @@
 ---
 name: software-design-philosophy
-description: Guiding principles for software design decisions. Invoke when writing new code, refactoring existing code, choosing between implementation approaches, adding abstractions or workarounds, encountering friction with existing code, or fixing errors and warnings. Any time you're deciding HOW to respond to a problem — not just WHAT to build — these principles apply. This skill applies to ALL languages and codebases.
+description: Guiding principles for software design decisions. Load this proactively — whenever writing or refactoring code, reviewing code or a diff/PR (yours or someone else's), choosing between implementation approaches, adding abstractions or workarounds, encountering friction with existing code, or fixing errors, warnings, or test failures. Any time you're deciding HOW to respond to a problem — not just WHAT to build — or judging whether code is the right shape, these principles apply. When in doubt, load it: the cost is low and it catches design mistakes (and softened review feedback) early. This skill applies to ALL languages and codebases.
 ---
 
 # Software Design Philosophy
@@ -22,6 +22,12 @@ Principles that guide how to think about code, not what syntax to use. These are
 **Planning & debugging** — understanding before acting:
 - Debugging a chain of failures — trace to the root cause before deciding on a fix
 - Weighing whether to fix locally or address an upstream design issue
+- For diagnosis *method* — isolating causes, simplifying repros, verifying hypotheses — see the `debugging` skill; this skill covers the design decisions a diagnosis surfaces (how to fix, what shape), not how to find the bug.
+
+**Reviewing** — judging code, not just writing it:
+- Reviewing a diff, PR, or change — judge the *shape*, not just whether it's correct within the structure as given
+- Reviewing your own change before presenting it
+- Catching yourself about to call a finding "tidiness"/"minor" or to offer an "option A or B" menu (see Principle 6)
 
 ## Principles
 
@@ -48,7 +54,13 @@ The subtractive solution had less code than any workaround and left the module b
 - "Is the existing abstraction doing too much?" before "What do I add on top?"
 - "Can I solve this by splitting or removing something?" before reaching for new code
 
+This is the keystone principle. Three corollaries follow from it — *earn your abstractions* and *the minimal change carries information* (both below), plus **1a** (promoted to its own numbered subsection because it's referenced by anchor elsewhere and carries a code example). Principles 4 and 6 are also applications of it.
+
 **Corollary — earn your abstractions.** The additive bias also shows up as premature extraction. Before creating a helper, wrapper, or utility, ask "why is this needed?" Simple inline code is often clearer than an abstraction with a name to learn. Only extract when there's clear reuse or the abstraction genuinely clarifies. Three similar lines of code is better than a premature abstraction.
+
+The mirror image is just as real: when a block reappears with only the nouns swapped — same operation, different field/source/label — that is earned reuse, and copying it instead of collapsing it is the additive mistake. When you do collapse it, parameterize over the **values that differ** (pass the extracted list, the lookup source, the label), not over a **discriminator you branch on inside the helper**. A `case kind do …` inside the "shared" function hasn't removed the branch, only relocated it (see 1a) — the values are what vary, so the values are what you pass.
+
+**Corollary — the minimal change carries information; extra is misinformation.** A change should include only what the job demonstrably needs. A diff is read as a *claim about what mattered* — a reviewer, a `git bisect`, and a future debugger all trust that the change *is* the change. Every incidental edit (a drive-by rename, an unrelated reformat, a "while I'm here" tweak, a defensive guard you never proved necessary) is a false signal: it tells the next reader "this was required," when it wasn't, and it buries the load-bearing edit in noise. So narrow the change to what you can show is essential — if you can remove a line and the goal still holds, it was never part of the job. Work that's genuinely worth doing but isn't part of *this* job belongs in its own change.
 
 ### 1a. Explicit Branching Is Not Noise
 
@@ -116,3 +128,16 @@ An untyped dictionary as a parameter tells the caller nothing about what a funct
 This also applies to function behavior. Don't hide decisions inside a function that the caller should own. If a behavior is sometimes desired and sometimes not (e.g., setting a timestamp, activating a flag), make it an explicit argument — don't default it internally. Let the caller state their intent; let the function do the work.
 
 Clojure's spec library is a good reference point: describe the shape of data at boundaries without creating rigid types that couple everything together. Specs live at the edges, not in the core.
+
+### 6. Name the Design Smell; Don't Soften It
+
+When reviewing code — yours or someone else's — judge whether the structure is the right *shape*, not just whether the change is correct within the structure as given. The trap is anchoring on what's in front of you ("is this diff correct?") instead of questioning the frame ("is this the right shape?").
+
+Two signals in your own writing mean you've spotted a design problem and are softening it into a style note:
+
+- **Calling something "tidiness," "minor," or "nitpick."** You're usually treating a symptom while ignoring the root cause it points to. Example: flagging a repeated `to_string(value)` conversion as "tidiness to DRY up" — when the real issue is that `value` shouldn't be that type at all if every consumer converts it. The fix isn't to hide the conversion in a helper; it's to subtract the wrong representation (Principle 1).
+- **Offering "option A or option B."** You usually already have an opinion on which is better and are offloading the decision to avoid committing. A menu reads as thorough but is weaker review — say which one and why.
+
+When you catch either phrase forming, stop and ask whether you've found a design issue. If so, name it directly and recommend.
+
+This is Principle 1 applied to review: "tidiness" is the additive instinct (hide the symptom) where subtraction (fix the representation) is the better answer.

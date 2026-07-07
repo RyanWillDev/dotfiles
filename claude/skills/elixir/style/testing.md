@@ -137,6 +137,15 @@ describe "partner filtering" do
 end
 ```
 
+### Don't Test the Factory Itself
+- **Never write a dedicated `describe "factory"` block** asserting that `build(:thing)` returns a struct, accepts overrides, or persists via `Repo.insert!`.
+  - Factories are test infrastructure. Every downstream test that calls `build(:thing)` exercises the factory; if it's broken, those tests fail.
+  - A dedicated factory describe block duplicates that signal without adding coverage and mostly exercises ExMachina + Ecto, not anything you wrote.
+- **Schema tests should use direct struct construction**, not `build(:x)`, when the goal is to exercise the schema's own changeset/insert behavior — keep the factory and the schema-under-test independent.
+  - ✅ `%Widget{} |> Widget.changeset(attrs) |> Repo.insert()`
+  - ❌ `build(:widget) |> Repo.insert!()` (in a schema test — fine in feature/integration tests)
+- The factory's existence as a ticket acceptance criterion is satisfied by writing it. It doesn't need a test to prove it works.
+
 ## Pattern Matching in Assertions
 - **Combine assertions with pattern matching** for cleaner, more idiomatic tests
   - ✅ `assert [job] = all_enqueued(worker: Worker)` - asserts count AND binds result
@@ -240,4 +249,46 @@ from(s in LocationPartnerSubscription,
   where: s.location_partner_id == ^partner_id and s.event_type == "test_event"
 )
 |> Repo.delete_all()
+```
+
+## Async and Global State
+
+- **Use `async: false` when a test mutates process-global / VM-wide shared state.**
+  The Ecto sandbox isolates DB writes per test, but it does **not** isolate global
+  state. With `async: true`, ExUnit runs that module concurrently with others, so a
+  mutated global value can bleed into — or be clobbered by — tests in another module.
+- State that requires `async: false` when mutated:
+  - `Application.put_env/3` / `Application.delete_env/2` (app config)
+  - `System.put_env/2` (environment variables)
+  - `Application.put_env`-backed feature flags, `:persistent_term`, `:ets` tables you own
+  - Mox in `:global` mode, or any named process whose state you swap
+- **Always restore the original value** in `setup` via `on_exit/1`, even with `async: false`
+  — otherwise the mutation leaks forward to later tests in the same module/run.
+- `async: false` is about *what you mutate*, not *whether another module happens to read it
+  today*. Don't reason from "only this module reads this key" — that coupling is invisible and
+  can change. If you mutate global state, the module is `async: false`.
+
+### Good: `async: false` + restore for an Application config override
+```elixir
+defmodule MyApp.TokenTest do
+  use ExUnit.Case, async: false
+
+  describe "generate/1 with a missing secret" do
+    setup do
+      original = Application.get_env(:my_app, Token)
+      Application.put_env(:my_app, Token, secret: nil)
+      on_exit(fn -> Application.put_env(:my_app, Token, original) end)
+      :ok
+    end
+  end
+end
+```
+
+### Bad: mutating Application state under `async: true`
+```elixir
+use ExUnit.Case, async: true  # ❌ concurrent modules race on the same global key
+
+setup do
+  Application.put_env(:my_app, Token, secret: nil)  # ❌ no restore, leaks forward
+end
 ```
