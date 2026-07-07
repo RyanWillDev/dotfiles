@@ -1,12 +1,22 @@
 #!/bin/bash
 # Fuzzy-pick a directory, then create/switch to a session named after it.
 
-dir=$(find ~ -maxdepth 3 -type d \
-  -not -path '*/\.*' \
-  -not -path '*/node_modules/*' \
-  -not -path '*/_build/*' \
-  -not -path '*/deps/*' \
-  2>/dev/null | fzf --prompt="New session: ")
+_filter() {
+  grep -v '/\.' | grep -Ev 'node_modules|/_build/|/deps/'
+}
+
+_sortlen() {
+  awk '{ print length" "$0 }' | sort -n | cut -d' ' -f2-
+}
+
+dir=$( {
+  find ~/Projects       -mindepth 1 -maxdepth 1 -type d 2>/dev/null | _filter | _sortlen
+  find ~/Projects/tools -mindepth 1 -maxdepth 1 -type d 2>/dev/null | _filter | _sortlen
+  find ~/Learning       -mindepth 1 -maxdepth 1 -type d 2>/dev/null | _filter | _sortlen
+  find ~/scratchpad     -mindepth 1 -maxdepth 1 -type d 2>/dev/null | _filter | _sortlen
+  find ~/Research       -mindepth 1 -maxdepth 1 -type d 2>/dev/null | _filter | _sortlen
+  find ~                -mindepth 1 -maxdepth 2 -type d 2>/dev/null | _filter | _sortlen
+} | awk '!seen[$0]++' | fzf --prompt="New session: " --no-sort)
 [ -z "$dir" ] && exit 0
 
 name=$(cd "$dir" && basename "$(git rev-parse --show-toplevel 2>/dev/null || pwd)")
