@@ -5,15 +5,30 @@
   "permissions": {
     "allow": [
       "Skill(*)",
-      "Read(skills/**)"
-    ]
+      "Read(skills/**)",
+      "Bash(gh *)",
+      "Bash(acli *)",
+      "Bash(mix *)"
+    ],
+    "defaultMode": "default"
   },
   "enabledPlugins": {
     "typescript-lsp@claude-plugins-official": true,
-    "lua-lsp@claude-plugins-official": true
+    "lua-lsp@claude-plugins-official": true,
+    "learning-opportunities@learning-opportunities": true
+  },
+  "extraKnownMarketplaces": {
+    "learning-opportunities": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/DrCatHicks/learning-opportunities.git"
+      }
+    }
   },
   "alwaysThinkingEnabled": true,
   "effortLevel": "high",
   "theme": "dark-daltonized",
-  "editorMode": "vim"
+  "editorMode": "vim",
+  "skipAutoPermissionPrompt": true,
+  "tui": "fullscreen"
 }
