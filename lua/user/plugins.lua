@@ -37,6 +37,7 @@ require("lazy").setup({
   -- Treesitter for syntax highlighting (load early)
   {
     "nvim-treesitter/nvim-treesitter",
+    branch = "main",
     build = ":TSUpdate",
     config = require('user.plugins.treesitter').config,
     priority = 100, -- Load early
