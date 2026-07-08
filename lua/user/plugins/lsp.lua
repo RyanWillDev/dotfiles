@@ -167,7 +167,7 @@ function M.config()
   vim.lsp.config('zk', {
     on_attach = on_attach,
     cmd = { 'zk', 'lsp' },
-    filetypes = { 'markdown' },
+    filetpickypes = { 'markdown' },
     capabilities = capabilities,
   })
   vim.lsp.enable('zk')
