@@ -17,7 +17,7 @@ function M.config(_plugin, opts)
     files = {
       hidden    = true,
       no_ignore = true,
-      rg_opts   = [[--color=never --hidden --files ]] .. ignore_patterns,
+      cmd       = "rg --color=never --hidden --files " .. ignore_patterns,
     }
   })
 end
@@ -43,7 +43,7 @@ function M.keymaps()
   end, { desc = "Live grep selection", noremap = true })
 
   -- Git related searches
-  vim.keymap.set('n', '<leader>fg', fzf.git_commits, { desc = "Keymaps", noremap = true })
+  vim.keymap.set('n', '<leader>fg', fzf.git_diff, { desc = "Search git diff files", noremap = true })
 
   -- LSP-related searches
   vim.keymap.set('n', 'gd', fzf.lsp_definitions, { desc = "Find definitions", noremap = true })
