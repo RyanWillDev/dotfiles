@@ -102,20 +102,14 @@ require("lazy").setup({
   {
     'MeanderingProgrammer/render-markdown.nvim',
     dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
-    ---@module 'render-markdown'
-    ---@type render.md.UserConfig
-    opts = {},
+    config = require('user.plugins.markdown').render_markdown_config,
     ft = { "markdown" },
   },
   {
     "toppair/peek.nvim",
     event = { "VeryLazy" },
     build = "deno task --quiet build:fast",
-    config = function()
-      require("peek").setup()
-      vim.api.nvim_create_user_command("PeekOpen", require("peek").open, {})
-      vim.api.nvim_create_user_command("PeekClose", require("peek").close, {})
-    end,
+    config = require('user.plugins.markdown').peek_config,
     keys = {
       { "<leader>po", "<cmd>PeekOpen<cr>", mode = "n", desc = "Open Markdown previewer"},
       { "<leader>pc", "<cmd>PeekClose<cr>", mode = "n", desc = "Close Markdown previewer"}
