@@ -237,15 +237,11 @@ function M.config()
   })
   vim.lsp.enable('lua_ls')
 
-  -- diagnostics seem to show with or without this
-  -- Enable diagnostics
-  vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-    vim.lsp.diagnostic.on_publish_diagnostics, {
-      virtual_text = true,
-      signs = true,
-      update_in_insert = true,
-    }
-  )
+  vim.diagnostic.config({
+    virtual_text = true,
+    signs = true,
+    update_in_insert = true,
+  })
 end
 
 return M
