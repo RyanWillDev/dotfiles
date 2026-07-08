@@ -33,6 +33,16 @@ require("lazy").setup({
     version = '^6', -- Recommended
     lazy = false,   -- This plugin is already lazy
   },
+  -- Alloy
+  {
+    dir = vim.fn.expand("~/dotfiles/plugins/alloy.nvim"),
+    name = "alloy.nvim",
+    ft = "alloy",
+    cmd = { "AlloyRun", "AlloyCheck", "AlloyStop", "AlloyOpenGui" },
+    config = function()
+      require("alloy").setup({})
+    end,
+  },
 
   -- Treesitter for syntax highlighting (load early)
   {

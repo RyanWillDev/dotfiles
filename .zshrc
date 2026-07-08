@@ -153,6 +153,10 @@ if [[ ! "$PATH" == */Users/${USER}/.dotnet/tools* ]]; then
   export PATH=":$PATH:/Users/${USER}/.dotnet/tools"
 fi
 
+#### Alloy ####
+# For NVIM Plugin
+export ALLOY_JAR=$HOME/.local/share/alloy/alloy.jar
+
 
 # Fix fzf.zsh bindings
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

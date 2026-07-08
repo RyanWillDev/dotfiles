@@ -172,6 +172,22 @@ function M.config()
   })
   vim.lsp.enable('zk')
 
+  if vim.env.ALLOY_JAR and vim.env.ALLOY_JAR ~= '' then
+    vim.lsp.config('alloy', {
+      on_attach = on_attach,
+      cmd = {
+        'java',
+        '--enable-native-access=ALL-UNNAMED',
+        '-jar', vim.env.ALLOY_JAR,
+        'lsp',
+      },
+      filetypes = { 'alloy' },
+      root_markers = { '.git' },
+      capabilities = capabilities,
+    })
+    vim.lsp.enable('alloy')
+  end
+
   --require('lspconfig').rust_analyzer.setup({
   --  on_attach = on_attach,
   --})

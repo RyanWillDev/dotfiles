@@ -76,3 +76,26 @@ compile, and create release inside `release` directory
 
 Install and build [zk](https://github.com/zk-org/zk?tab=readme-ov-file#build-from-scratch) for notes
 
+### Alloy
+
+The `alloy.nvim` plugin (in `plugins/alloy.nvim/`) runs the Alloy analyzer
+against `.als` files. Two pieces are needed on a fresh machine:
+
+1. **JDK 11+** — Temurin via Homebrew cask:
+   ```
+   brew install --cask temurin
+   ```
+   If `brew install --cask` hangs silently with no download progress, it's
+   stuck on a Spotlight query for Xcode — clear it with
+   `pkill -f "mdfind.*Xcode"` and brew will continue.
+
+2. **Alloy jar** — pulled by the plugin's Makefile (no sudo needed):
+   ```
+   cd ~/dotfiles/plugins/alloy.nvim && make install-jar
+   ```
+   This downloads `org.alloytools.alloy.dist.jar` to
+   `~/.local/share/alloy/alloy.jar`.
+
+The `ALLOY_JAR` env var is already exported in `.zshrc`. Verify with
+`make check` from the plugin dir; `make doctor` runs the analyzer's help
+output as a smoke test. Tree-sitter grammar is built via `make parser`.

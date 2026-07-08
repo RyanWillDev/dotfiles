@@ -1,0 +1,22 @@
+{
+  "name": "tree-sitter-alloy",
+  "version": "0.1.0",
+  "description": "Tree-sitter grammar for the Alloy 6 modeling language",
+  "main": "bindings/node",
+  "keywords": ["parser", "tree-sitter", "alloy"],
+  "license": "MIT",
+  "dependencies": {
+    "node-addon-api": "^7.1.0",
+    "node-gyp-build": "^4.8.0"
+  },
+  "devDependencies": {
+    "tree-sitter-cli": "^0.22.0"
+  },
+  "tree-sitter": [
+    {
+      "scope": "source.alloy",
+      "file-types": ["als"],
+      "highlights": "queries/highlights.scm"
+    }
+  ]
+}
