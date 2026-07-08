@@ -32,6 +32,11 @@ Use asdf plugin to install neovim nightly
 
 ## Requirements
 
+### Neovim
+
+Install [tree-sitter-cli](https://github.com/tree-sitter/tree-sitter/tree/master/cli) — required by nvim-treesitter (main branch) to compile parsers from source:
+`brew install tree-sitter-cli`
+
 ### Vim
 
 Install [ripgrep](https://github.com/BurntSushi/ripgrep) for [fzf.vim](https://github.com/junegunn/fzf.vim)
