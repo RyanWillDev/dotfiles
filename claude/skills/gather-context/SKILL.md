@@ -44,8 +44,8 @@ Invoke the `jira-acli` skill. Extract:
 
 Invoke the `gh-cli` skill. Extract based on ref type:
 
-**PR:** title, description, changed files (list), review comments with decisions, CI status  
-**Issue:** description, labels, comments with decisions  
+**PR:** title, description, changed files (list), review comments with decisions, CI status
+**Issue:** description, labels, comments with decisions
 **Repo:** README summary, key directory structure if the task is architectural
 
 ### Web page
