@@ -112,7 +112,7 @@ Present the proposed glossary entries for review. For each:
 - Ask: "Is there a scenario where this definition would give the wrong answer?"
 - Ask: "Is there a better term for this?"
 
-Do not proceed until Ryan confirms each definition or proposes a revision.
+Do not proceed until the user confirms each definition or proposes a revision.
 If a definition is revised, update it and ask again.
 
 The glossary is the ground truth for the rest of the task. If a term's meaning shifts
@@ -170,13 +170,8 @@ graph TD
 *Relationships: [brief legend if arrows need explanation]*
 ```
 
-### Publishing Artifacts
-
-After writing both files, publish the concept map as a visual artifact using the Artifact tool.
-This makes it available as a reference during the rest of the session — both you and Ryan
-can point to it. Use the file at `artifacts/concept-map.md` as the content source.
-
-If the task brief (Stage 3) references concepts from the glossary, link to the glossary entries.
+Both files are written to `artifacts/` and persist for the rest of the task. The user can
+open them in any markdown viewer that renders mermaid.
 
 ---
 

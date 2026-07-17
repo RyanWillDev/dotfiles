@@ -49,7 +49,7 @@ and produces:
 - `artifacts/concept-map.md` — mermaid diagram of concept relationships
 
 **Do not skip this stage.** Plans built on misaligned vocabulary are wrong before
-implementation begins. If Ryan and Claude are using the same word for different things,
+implementation begins. If the user and Claude are using the same word for different things,
 the plan will encode that disagreement invisibly.
 
 **Checkpoint:** Write one sentence describing the task using only glossary terms. If it
@@ -140,7 +140,7 @@ Present `artifacts/plan.md` alongside the task brief. Ask:
 
 If revision is needed: update `artifacts/plan.md`, re-read it, and repeat this stage.
 
-**Do not proceed until Ryan explicitly signs off.** "Looks good" or "let's go" is
+**Do not proceed until the user explicitly signs off.** "Looks good" or "let's go" is
 sufficient. If there's hesitation, that's a signal to go back to Stage 4.
 
 After sign-off: update `status.md` to reflect that planning is complete and list the
