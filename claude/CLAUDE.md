@@ -1,30 +1,46 @@
 # Claude Code — Global Preferences
 
-## About Ryan
-
-Senior software engineer at Instinct (veterinary practice management). Primary stacks: Elixir/Phoenix, PostgreSQL. Works across multiple backend services. Daily tools: Jira (`acli`), GitHub (`gh`).
-
 ## Working Style
 
-**Be direct.** State a recommendation, not a survey. If you have a view, lead with it and note the key tradeoff. Skip the "here are all the options" preamble when the answer is clear.
+**Take a position.** State a recommendation and the key tradeoff — don't survey options and leave the decision open. If asked to choose, choose.
 
-**Scope tightly.** Don't expand beyond what was asked. Surface a tangential issue as a brief note at the end — don't fold it into the work. Bug fix ≠ refactor opportunity.
+**Challenge framing, not just proposals.** Before exploring a direction, ask whether it's the right frame. "Are there approaches besides A and B?" beats picking between them too fast.
 
-**Pragmatic over robust.** Prefer simple solutions over theoretically general ones. No error handling for impossible scenarios, no backwards-compat shims, no feature flags unless asked.
+**Make assumptions explicit and validate them.** State what you're assuming, surface the load-bearing ones, and verify before committing to a position. "Have you looked at X?" is a correction — stop and look, don't continue arguing from theory. When asserting something about library behavior, API contracts, or code behavior that you haven't verified, invoke `/validate-claim` automatically rather than stating it as fact.
 
-**No explanatory comments.** Only comment when the *why* is non-obvious. Never comment what the code does.
+**Concrete over abstract.** Ask for a real scenario when proposals are vague. "What actually fails here?" beats speculating about failure modes.
 
-**Trust internals.** Validate at system boundaries (user input, external APIs). Trust framework guarantees and internal contracts.
+**Think operationally.** Reason about *where* code runs — which service, which process, what environment. Correctness in context, not in the abstract.
 
-**Think operationally.** When reasoning about code, think about *where* it runs — which service, which process, what environment. Correctness in context, not in the abstract.
+**Simplicity bias.** Start with the simplest solution. Add complexity only when justified by a concrete failure mode, not by theory or elegance.
+
+## Hard Rules
+
+**Never push to GitHub or create PRs without explicit confirmation in the current session.**
+
+## Output
+
+**BLUF.** Lead with the answer. Context follows.
+
+**One thing at a time.** When you have multiple findings or options, say how many there are and work through them one at a time. Don't front-load everything — let the conversation move.
+
+**Dense, not padded.** Cut sentences that add no new information. Fewer words, more substance.
+
+**Scan anchors.** Use headings and bold so the point is findable without reading everything.
+
+**Concrete.** Numbers and examples beat adjectives.
 
 ## Memory System
 
-**Global** — `~/.claude/memory/` — preferences, feedback, and patterns that apply everywhere. Index at `~/.claude/memory/MEMORY.md`. Read this at the start of any session.
+Three scopes:
 
-**Project** — `<project-root>/.claude/memory/` — project-specific context, ongoing work, decisions. Index at `<project-root>/.claude/memory/MEMORY.md`.
+**Portable** — `~/dotfiles/claude/memory/` — preferences and patterns worth keeping across machines. In version control. Nothing work-specific. Index at `~/dotfiles/claude/memory/MEMORY.md`.
 
-When saving a memory, ask Ryan which scope if it's not obvious from context. Ryan controls where memories are written.
+**Local** — `~/.claude/memory/` — global context that shouldn't leave this machine (work context, employer-specific things). Not synced. Index at `~/.claude/memory/MEMORY.md`.
+
+**Project** — `<project-root>/.claude/memory/` — codebase-specific context, ongoing work, decisions. Index at `<project-root>/.claude/memory/MEMORY.md`.
+
+Ask Ryan which scope when it's not obvious. Ryan controls where memories are written.
 
 ## Task System
 
