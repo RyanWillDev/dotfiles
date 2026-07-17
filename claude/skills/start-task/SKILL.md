@@ -1,36 +1,24 @@
 ---
 name: start-task
-description: Start a new long-running task. Creates a persistent task directory, then runs five pre-implementation stages — gather context, align shared language, build artifacts, construct a plan, review — before any code is written.
+description: Start a new long-running task — sets up a task directory and worktree, then runs five pre-implementation stages before any code is written.
 ---
 
 # Start Task
 
-Creates a persistent task directory and runs five staged preparation phases before
-implementation begins.
-
-**One stage at a time.** After each stage, ask the checkpoint question and stop. Do not
-start the next stage until the user responds. A response of "continue", "looks good", or
-similar is sufficient — but silence is not. Never run two stages without a human response
-between them.
+Five ordered stages, each ending at a hard gate. After each STOP, wait for an explicit user response before proceeding — any acknowledgment clears the gate; silence does not.
 
 ## Setup
 
-1. Derive a short kebab-case slug. If a ticket number appears (e.g. `PLATENG-1234`),
-   prefix it: `plateng-1234-auth-refactor`.
-2. Create `~/.claude/tasks/active/<slug>/` with:
-   - `context.md` — populated from the user's description
-   - `status.md` — initialized as shown below
-   - `artifacts/` — empty directory for stage outputs
-3. Populate `context.md` from what the user provided.
-4. **Create a git worktree** (if in a git repo):
-   - Find the repo root: `git rev-parse --show-toplevel`
-   - Create: `git worktree add <repo-root>/.worktrees/<slug>`
-   - Record the worktree path in `context.md` under a `## Worktree` heading
-   - Write a `.claude-task` file in the worktree root containing the task directory path (`~/.claude/tasks/active/<slug>/`) so the link is discoverable from either side
-   - If not in a git repo, skip silently
-5. Declare the task environment — output these lines exactly:
-
-   > **Task environment:** `~/.claude/tasks/active/<slug>/`  
+1. Derive a kebab-case slug. Prefix any ticket number: `plateng-1234-auth-refactor`.
+2. Create `~/.claude/tasks/active/<slug>/` with `context.md`, `status.md`, and `artifacts/` (templates in Reference below).
+3. Populate `context.md` from the user's description.
+4. If in a git repo:
+   - Run `git rev-parse --show-toplevel` to find the repo root.
+   - Run `git worktree add <repo-root>/.worktrees/<slug>`.
+   - Record the worktree path in `context.md` under `## Worktree`.
+   - Write `<worktree-root>/.claude-task` containing the task directory path.
+5. Declare the environment:
+   > **Task:** `~/.claude/tasks/active/<slug>/`
    > **Worktree:** `<repo-root>/.worktrees/<slug>/` *(or "no worktree — not in a git repo")*
 
 Then proceed through the stages in order.
@@ -39,52 +27,77 @@ Then proceed through the stages in order.
 
 ## Stage 1 — Gather Context
 
-*Goal: bring in everything known before forming opinions.*
+Invoke the `gather-context` skill. It pulls from Jira tickets, GitHub refs, URLs, and local code paths mentioned in the task description, and writes `artifacts/context-gathered.md`.
 
-Invoke the `gather-context` skill. It pulls from any Jira tickets, GitHub refs, URLs, or
-local code paths mentioned in the task description and writes to `artifacts/context-gathered.md`.
-
-**STOP.** Summarize what was gathered in 2–3 sentences. Ask: "Are there other sources I should query before we move on?" Wait for a response before starting Stage 2.
+**STOP.** Summarize what was gathered in 2–3 sentences. Ask: "Are there other sources to query before we move on?"
 
 ---
 
 ## Stage 2 — Align Understanding
 
-*Goal: shared language before shared plans.*
-
-Invoke the `align-understanding` skill. It discovers domain terms, applies conceptual
-engineering to examine and revise them, structures core design concepts (Jackson-style),
-and produces:
+Invoke the `align-understanding` skill. It discovers domain terms, applies conceptual engineering to examine and revise them, and produces:
 
 - `artifacts/glossary.md` — agreed definitions for every term used in the plan
 - `artifacts/concept-map.md` — mermaid diagram of concept relationships
 
-**Do not skip this stage.** Plans built on misaligned vocabulary are wrong before
-implementation begins. If the user and Claude are using the same word for different things,
-the plan will encode that disagreement invisibly.
-
-**STOP.** Write one sentence describing the task using only glossary terms. If it requires a word not in the glossary, go back and add it. Ask: "Does the glossary cover everything? Any term that still feels imprecise?" Wait for a response before starting Stage 3.
+**STOP.** Write one sentence describing the task using only glossary terms. If a required word is absent from the glossary, add it before proceeding. Ask: "Does the glossary cover everything? Any term that still feels imprecise?"
 
 ---
 
-## Stage 3 — Build Artifacts
+## Stage 3 — Build Brief
 
-*Goal: make the context tangible.*
+Write `artifacts/task-brief.md` using the template in Reference. Apply `writing-for-humans` style. For spatially complex domains, add a system diagram or data-flow diagram in mermaid.
 
-Produce a task brief in `artifacts/task-brief.md`: a 1-page structured summary combining
-context, shared vocabulary, and any diagrams. Apply `writing-for-humans` conventions.
+Ask whether to publish the brief as an Artifact and await confirmation before doing so.
+
+**STOP.** Ask: "Does the brief accurately represent the task? Anything missing or wrong?"
+
+---
+
+## Stage 4 — Construct Plan
+
+Write `artifacts/plan.md`. Every step must name its dependency and its output. Use only glossary terms.
+
+```markdown
+### Step N: <name>
+**Depends on:** <step, or "nothing">
+**Produces:** <artifact or observable change>
+<description>
+```
+
+**STOP.** Present the plan. Ask: "Does the ordering make sense? Any step vague enough to mean multiple things?"
+
+---
+
+## Stage 5 — Review
+
+Present `artifacts/plan.md` alongside the task brief. Ask:
+
+1. Does the plan reflect the actual goal?
+2. Is any step ordered wrong or missing a dependency?
+3. Is any step vague enough to mean multiple things in the glossary?
+
+Iterate on Stage 4 until the user explicitly signs off ("looks good", "let's go", or equivalent).
+
+After sign-off, update `status.md`: mark planning complete, set the first implementation step as Next Steps.
+
+---
+
+## Reference
+
+### task-brief.md template
 
 ```markdown
 # Task Brief: <Task Name>
 
 ## What We're Building
-<one paragraph: the goal, in plain language>
+<one paragraph: goal in plain language>
 
 ## Why It Matters
 <motivation, constraints, deadline if any>
 
 ## Key Concepts
-<link to glossary or inline the 2-3 most important terms>
+<link to glossary or inline 2–3 most important terms>
 
 ## Scope
 **In:** <what this task changes>
@@ -94,84 +107,7 @@ context, shared vocabulary, and any diagrams. Apply `writing-for-humans` convent
 <unresolved questions that don't block planning>
 ```
 
-Optionally, if the domain is complex or spatial, add:
-- **System diagram** — key components and their relationships (mermaid)
-- **Data flow** — how information moves through the system
-
-Ask whether to publish the task brief as an Artifact for easy visual reference during the session. Do not publish without confirmation.
-
-**STOP.** Ask: "Does the brief accurately represent the task? Anything missing or wrong?" Wait for a response before starting Stage 4.
-
----
-
-## Stage 4 — Construct Plan
-
-*Goal: a sequential breakdown with explicit dependencies.*
-
-Use the Plan agent or reason through the plan inline. Every step must:
-
-- Be discrete and independently verifiable
-- Name its dependency (what must be true before this step begins)
-- Name its output (the artifact or observable change it produces)
-
-```markdown
-## Plan
-
-### Step 1: <name>
-**Depends on:** nothing
-**Produces:** <artifact or observable>
-<description>
-
-### Step 2: <name>
-**Depends on:** Step 1
-**Produces:** <artifact or observable>
-<description>
-```
-
-Write to `artifacts/plan.md`. Use only glossary terms when naming steps and describing
-what they produce.
-
-**STOP.** Present the plan. Ask: "Does the ordering make sense? Any step that's vague or could mean multiple things?" Wait for a response before starting Stage 5.
-
----
-
-## Stage 5 — Review
-
-*Goal: explicit sign-off before any implementation.*
-
-Present `artifacts/plan.md` alongside the task brief. Ask:
-
-1. Does the plan reflect the actual goal?
-2. Is any step ordered wrong or missing a dependency?
-3. Is any step vague enough that it could mean multiple things in the glossary?
-
-If revision is needed: update `artifacts/plan.md`, re-read it, and repeat this stage.
-
-**Do not proceed until the user explicitly signs off.** "Looks good" or "let's go" is
-sufficient. If there's hesitation, that's a signal to go back to Stage 4.
-
-After sign-off: update `status.md` to reflect that planning is complete and list the
-first implementation step as Next Steps.
-
----
-
-## Implementation (Stage 6)
-
-Implementation begins in the normal workflow, not inside this skill. The pattern:
-
-1. Take one step from `artifacts/plan.md`
-2. Do the work
-3. Run `/verify` to confirm the step produced what was promised
-4. Pause and align: does the next step still make sense, or did this step reveal
-   something that changes the plan?
-5. Update `status.md`
-6. Move to the next step
-
-Use `/resume-task <slug>` to re-enter the task in a new session.
-
----
-
-## context.md template
+### context.md template
 
 ```markdown
 # <Task Name>
@@ -192,7 +128,7 @@ Use `/resume-task <slug>` to re-enter the task in a new session.
 (none yet)
 ```
 
-## status.md template
+### status.md template
 
 ```markdown
 # Status: In Progress
