@@ -6,7 +6,12 @@ description: Start a new long-running task. Creates a persistent task directory,
 # Start Task
 
 Creates a persistent task directory and runs five staged preparation phases before
-implementation begins. Each stage has a human checkpoint; do not advance without it.
+implementation begins.
+
+**One stage at a time.** After each stage, ask the checkpoint question and stop. Do not
+start the next stage until the user responds. A response of "continue", "looks good", or
+similar is sufficient — but silence is not. Never run two stages without a human response
+between them.
 
 ## Setup
 
@@ -39,8 +44,7 @@ Then proceed through the stages in order.
 Invoke the `gather-context` skill. It pulls from any Jira tickets, GitHub refs, URLs, or
 local code paths mentioned in the task description and writes to `artifacts/context-gathered.md`.
 
-**Checkpoint:** Summarize what was gathered in 2–3 sentences. Ask: "Are there other
-sources I should query before we move on?"
+**STOP.** Summarize what was gathered in 2–3 sentences. Ask: "Are there other sources I should query before we move on?" Wait for a response before starting Stage 2.
 
 ---
 
@@ -59,9 +63,7 @@ and produces:
 implementation begins. If the user and Claude are using the same word for different things,
 the plan will encode that disagreement invisibly.
 
-**Checkpoint:** Write one sentence describing the task using only glossary terms. If it
-requires a word not in the glossary, go back and add it. Ask: "Does the glossary cover
-everything? Any term that still feels imprecise?"
+**STOP.** Write one sentence describing the task using only glossary terms. If it requires a word not in the glossary, go back and add it. Ask: "Does the glossary cover everything? Any term that still feels imprecise?" Wait for a response before starting Stage 3.
 
 ---
 
@@ -98,7 +100,7 @@ Optionally, if the domain is complex or spatial, add:
 
 Ask whether to publish the task brief as an Artifact for easy visual reference during the session. Do not publish without confirmation.
 
-**Checkpoint:** Ask: "Does the brief accurately represent the task? Anything missing or wrong?"
+**STOP.** Ask: "Does the brief accurately represent the task? Anything missing or wrong?" Wait for a response before starting Stage 4.
 
 ---
 
@@ -129,8 +131,7 @@ Use the Plan agent or reason through the plan inline. Every step must:
 Write to `artifacts/plan.md`. Use only glossary terms when naming steps and describing
 what they produce.
 
-**Checkpoint:** Present the plan. Ask: "Does the ordering make sense? Any step that's
-vague or could mean multiple things?"
+**STOP.** Present the plan. Ask: "Does the ordering make sense? Any step that's vague or could mean multiple things?" Wait for a response before starting Stage 5.
 
 ---
 
