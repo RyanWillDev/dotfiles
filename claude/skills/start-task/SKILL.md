@@ -96,8 +96,7 @@ Optionally, if the domain is complex or spatial, add:
 - **System diagram** — key components and their relationships (mermaid)
 - **Data flow** — how information moves through the system
 
-Publish the task brief using the Artifact tool so it's available as a visual reference
-during the session.
+Ask whether to publish the task brief as an Artifact for easy visual reference during the session. Do not publish without confirmation.
 
 **Checkpoint:** Ask: "Does the brief accurately represent the task? Anything missing or wrong?"
 

@@ -18,6 +18,8 @@
 
 **Never push to GitHub or create PRs without explicit confirmation in the current session.**
 
+**Never publish artifacts to Anthropic (via the Artifact tool) unless explicitly asked to in the current session.**
+
 ## Output
 
 **BLUF.** Lead with the answer. Context follows.
