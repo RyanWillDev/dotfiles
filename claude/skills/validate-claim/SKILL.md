@@ -1,50 +1,46 @@
 ---
 name: validate-claim
-description: Validate a factual claim by dispatching a background agent. The agent searches source code, docs, or the web depending on the claim type. Invoked explicitly by the user or automatically by Claude when asserting something that should be verified. Findings are written to the active task's artifacts/ if a task environment is set for this session; otherwise reported inline.
+description: Verify a factual claim via a background agent. Fire autonomously when asserting something about library behavior, API contracts, or code behavior without direct evidence.
 ---
 
 # Validate Claim
 
-Dispatches a background agent to verify a claim. Used explicitly or automatically when Claude makes an assertion worth checking.
+## Mode
 
-## Invocation Modes
+**Explicit** (`/validate-claim <claim>`): Present source options below, confirm choice, then launch.
 
-**Explicit** (`/validate-claim <claim>`): Present source options first, confirm with the user, then launch.
+**Autonomous**: Pick the best strategy, note the choice, launch immediately.
 
-**Autonomous** (Claude-initiated): Skip the source selection step. Pick the most appropriate strategy based on the claim, note what was chosen, and launch immediately. Don't interrupt the current work.
+## Source options (explicit mode)
 
-## Explicit Mode: Source Selection
+Surface only those that fit the claim:
 
-Present options based on what the claim is about. Not all options apply to every claim — surface the ones that do:
+- **Dependency source** — library or framework source directly
+- **Official docs** — the relevant documentation page
+- **Web search** — changelogs, known issues, broader behavior
+- **Local codebase** — how this is actually used or implemented here
 
-- **Dependency source** — read the library or framework source code directly
-- **Official docs** — fetch the relevant documentation page
-- **Web search** — broader search for behavior, changelogs, known issues
-- **Local codebase** — check how this is actually used or implemented here
+## Agent prompt
 
-Ask which to use (or which to try first if multiple apply). Then launch.
-
-## Agent Prompt
-
-Pass the agent:
+Send:
 
 1. The claim verbatim
-2. The chosen strategy and any specific sources (file paths, URLs, search terms)
-3. Instructions to approach skeptically — the goal is to find out if the claim is wrong, not to confirm it
+2. Chosen strategy with specific sources (paths, URLs, search terms)
+3. Objective: falsify — treat the claim as a hypothesis to disprove, not confirm
 
-The agent should return:
+Agent returns:
 - **Verdict**: Confirmed / Refuted / Partial / Inconclusive
 - **Evidence**: what was found and where
-- **Confidence**: high / medium / low, with a reason if low
+- **Confidence**: high / medium / low, with reason if low
 
-## Output Destination
+## Output
 
-Check whether a task environment was declared in this session (look for a `**Task environment:**` line in the conversation context).
+Check for `**Task environment:**` in conversation context.
 
-- **Task environment present**: write findings to `<task-path>/artifacts/validated-claims.md`, appending if the file exists.
-- **No task environment**: report findings inline.
+- **Present**: append findings to `<task-path>/artifacts/validated-claims.md`
+- **Absent**: report inline
 
-## Artifact Format
+### Artifact format
 
 ```markdown
 ## <short claim summary> — <verdict>
