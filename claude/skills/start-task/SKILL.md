@@ -17,9 +17,16 @@ implementation begins. Each stage has a human checkpoint; do not advance without
    - `status.md` — initialized as shown below
    - `artifacts/` — empty directory for stage outputs
 3. Populate `context.md` from what the user provided.
-4. Declare the task environment — output this line exactly:
+4. **Create a git worktree** (if in a git repo):
+   - Find the repo root: `git rev-parse --show-toplevel`
+   - Create: `git worktree add <repo-root>/.worktrees/<slug>`
+   - Record the worktree path in `context.md` under a `## Worktree` heading
+   - Write a `.claude-task` file in the worktree root containing the task directory path (`~/.claude/tasks/active/<slug>/`) so the link is discoverable from either side
+   - If not in a git repo, skip silently
+5. Declare the task environment — output these lines exactly:
 
-   > **Task environment:** `~/.claude/tasks/active/<slug>/`
+   > **Task environment:** `~/.claude/tasks/active/<slug>/`  
+   > **Worktree:** `<repo-root>/.worktrees/<slug>/` *(or "no worktree — not in a git repo")*
 
 Then proceed through the stages in order.
 
@@ -174,6 +181,9 @@ Use `/resume-task <slug>` to re-enter the task in a new session.
 
 ## Background
 <constraints, relevant tickets, links, prior decisions>
+
+## Worktree
+<repo-root>/.worktrees/<slug>/
 
 ## Key Files
 <paths to important code, configs, or docs>
