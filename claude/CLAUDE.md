@@ -46,17 +46,19 @@ Ask Ryan which scope when it's not obvious. Ryan controls where memories are wri
 
 ## Task System
 
-Long-running tasks that span sessions live at `~/.claude/tasks/active/<slug>/`:
+Long-running tasks that span sessions live inside the task's git worktree at `<worktree-root>/.claude/`:
 
 ```
-~/.claude/tasks/active/<slug>/
+<worktree-root>/.claude/
   context.md    # background, goal, constraints, key files/links
   status.md     # current state, decisions made, next steps, blockers
   artifacts/    # outputs: code, notes, queries, scratch files
 ```
 
-Use `/start-task` to create this structure for a new task.
-Use `/resume-task` to pick up an existing task by slug.
-Completed tasks move to `~/.claude/tasks/archive/`.
+Worktrees live at `<repo-root>/.worktrees/<slug>/`. Fallback when not in a git repo: `~/.claude/tasks/active/<slug>/`.
+
+Use `/start-task` to create a new task and its worktree.
+Use `/resume-task` to pick up an existing task — it scans `<repo-root>/.worktrees/` for active tasks.
+When a task is complete, run `git worktree remove <root>/.worktrees/<slug>` once the branch is merged or no longer needed.
 
 When resuming a task, read `context.md` and `status.md` before doing anything else, then restate where things stand in one sentence before asking what to do next.

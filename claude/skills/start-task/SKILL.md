@@ -1,89 +1,215 @@
 ---
 name: start-task
-description: Start a new long-running task — sets up a task directory and worktree, then runs five pre-implementation stages before any code is written.
+description: Start a new long-running task — sets up a task directory and worktree, then runs interactive pre-implementation stages to establish invariants and a verified plan before any code is written. Supports lite mode for simpler tasks.
 ---
 
 # Start Task
 
-Five ordered stages, each ending at a hard gate. After each STOP, wait for an explicit user response before proceeding — any acknowledgment clears the gate; silence does not.
+## Modes
+
+| Mode | When | Stages |
+|------|------|--------|
+| **lite** | "lite" in the invocation | Gather → Invariants → Plan → Implement |
+| **standard** | default | Gather → Align → Brief → Invariants → Plan → Implement |
+
+## Pattern
+
+**Elicit, don't propose.** Each stage builds agreement through short exchanges, then writes a record. Ask one narrow question, get an answer, propose something specific, confirm, move on. Write artifacts last — they record what was settled, not something to review.
+
+---
 
 ## Setup
 
 1. Derive a kebab-case slug. Prefix any ticket number: `plateng-1234-auth-refactor`.
-2. Create `~/.claude/tasks/active/<slug>/` with `context.md`, `status.md`, and `artifacts/` (templates in Reference below).
-3. Populate `context.md` from the user's description.
-4. If in a git repo:
-   - Run `git rev-parse --show-toplevel` to find the repo root.
-   - Run `git worktree add <repo-root>/.worktrees/<slug>`.
-   - Record the worktree path in `context.md` under `## Worktree`.
-   - Write `<worktree-root>/.claude-task` containing the task directory path.
-5. Declare the environment:
-   > **Task:** `~/.claude/tasks/active/<slug>/`
-   > **Worktree:** `<repo-root>/.worktrees/<slug>/` *(or "no worktree — not in a git repo")*
-
-Then proceed through the stages in order.
-
----
-
-## Stage 1 — Gather Context
-
-Invoke the `gather-context` skill. It pulls from Jira tickets, GitHub refs, URLs, and local code paths mentioned in the task description, and writes `artifacts/context-gathered.md`.
-
-**STOP.** Summarize what was gathered in 2–3 sentences. Ask: "Are there other sources to query before we move on?"
+2. **In a git repo:**
+   - `git rev-parse --show-toplevel` → repo root
+   - `git worktree add <root>/.worktrees/<TICKET_NUMBER|SLUG>`; name branch `feature/<TICKET_NUMBER>` if given a ticket
+   - Create `<worktree-root>/.claude/` with `context.md`, `status.md`, and `artifacts/` (templates in Reference)
+   - Populate `context.md` from the user's description
+   - Declare:
+     > **Task:** `<worktree-root>/.claude/`
+     > **Worktree:** `<root>/.worktrees/<slug>/`
+     > **Mode:** lite *or* standard
+3. **Not in a git repo (fallback):**
+   - Create `~/.claude/tasks/active/<slug>/` with `context.md`, `status.md`, and `artifacts/`
+   - Populate `context.md` from the user's description
+   - Declare:
+     > **Task:** `~/.claude/tasks/active/<slug>/`
+     > **Worktree:** none
+     > **Mode:** lite *or* standard
 
 ---
 
-## Stage 2 — Align Understanding
+## Stage 1 — Gather Context *(both modes)*
 
-Invoke the `align-understanding` skill. It discovers domain terms, applies conceptual engineering to examine and revise them, and produces:
+1. Name every source detected in the task description — Jira tickets, GitHub refs, URLs, local paths. Ask: "Anything else to pull before I start?"
 
-- `artifacts/glossary.md` — agreed definitions for every term used in the plan
-- `artifacts/concept-map.md` — mermaid diagram of concept relationships
+   *Proceed only after the user confirms the source list.*
 
-**STOP.** Write one sentence describing the task using only glossary terms. If a required word is absent from the glossary, add it before proceeding. Ask: "Does the glossary cover everything? Any term that still feels imprecise?"
+2. Invoke the `gather-context` skill to retrieve.
 
----
+3. After each source: surface one key finding as a statement, then ask one confirmation question. "The ticket says the main constraint is X — is that still accurate?" Adjust if corrected.
 
-## Stage 3 — Build Brief
+   *Proceed to the next source only after the user confirms or corrects the finding.*
 
-Write `artifacts/task-brief.md` using the template in Reference. Apply `writing-for-humans` style. For spatially complex domains, add a system diagram or data-flow diagram in mermaid.
+4. Write `artifacts/context-gathered.md` — a record of confirmed findings, not a raw dump.
 
-Ask whether to publish the brief as an Artifact and await confirmation before doing so.
-
-**STOP.** Ask: "Does the brief accurately represent the task? Anything missing or wrong?"
+**STOP.** "Anything missing before we move on?"
 
 ---
 
-## Stage 4 — Construct Plan
+## Stage 2 — Align Understanding *(standard only)*
 
-Write `artifacts/plan.md`. Every step must name its dependency and its output. Use only glossary terms.
+Invoke `align-understanding`. It surfaces ambiguous terms one at a time, proposes definitions, and records the glossary as agreement is reached.
 
-```markdown
-### Step N: <name>
-**Depends on:** <step, or "nothing">
-**Produces:** <artifact or observable change>
-<description>
+**STOP.** Write one sentence describing the task using only glossary terms. Every word in that sentence must be in the glossary. Ask: "Any term that still feels imprecise?"
+
+---
+
+## Stage 3 — Build Brief *(standard only)*
+
+Ask these four questions in order. Write only after all four are answered.
+
+1. "What's the main thing we're building?" *(becomes the lede)*
+2. "What's driving it — deadline, constraint, business reason?" *(if none, say so)*
+3. "What's explicitly out of scope?"
+4. "Any open questions that don't block planning?"
+
+Write `artifacts/task-brief.md` from the answers. Apply `writing-for-humans` style.
+
+Ask whether to publish the brief as an Artifact. Await confirmation before publishing.
+
+**STOP.** "Anything missing or wrong in the brief?"
+
+---
+
+## Stage 4 — Invariants & Verification *(both modes)*
+
+**Anchor** what must not break and how done is verified — before any code is written.
+
+**Invariants:**
+
+Ask: "What must remain true throughout this work?" Seed with the obvious ones:
+- Existing test suite passes
+- Public API surface unchanged *(if applicable)*
+
+Per invariant named: propose a check. "I'd verify that with `<command>`. Right check?" Confirm before moving on.
+
+*Every invariant has a confirmed check command before proceeding.*
+
+**Acceptance criteria:**
+
+Ask: "What needs to be true when this is finished?" Per criterion, propose a concrete check. Push back on vague criteria — if it can't be checked, it goes in Open Questions, not criteria.
+
+*Every acceptance criterion has a runnable check before proceeding.*
+
+Write `artifacts/invariants.md` (template in Reference).
+
+**STOP.** "Any invariant we'd feel bad about breaking that isn't listed?"
+
+---
+
+## Stage 5 — Construct Plan *(both modes)*
+
+Propose steps in batches of 2–3. Confirm each batch before continuing. Write `artifacts/plan.md` only after all steps are agreed.
+
+Each step:
+
+```
+Step N: <name>
+Depends on: <step, or "nothing">
+Produces: <artifact or observable change>
+Verify: <command from invariants.md — what a passing result looks like>
 ```
 
-**STOP.** Present the plan. Ask: "Does the ordering make sense? Any step vague enough to mean multiple things?"
+A step without `Verify` is incomplete. Either identify the check or note explicitly that it's verified only at the end and why.
+
+After each batch: "Does this ordering make sense? Anything that should come first?"
+
+**STOP.** Write `artifacts/plan.md`. Update `status.md`: planning complete, first step as Next Steps. Ask: "Any step vague enough to mean two different things?"
 
 ---
 
-## Stage 5 — Review
+## Stage 6 — Implementation *(both modes)*
 
-Present `artifacts/plan.md` alongside the task brief. Ask:
+Execute one step at a time. No pause between steps unless something breaks.
 
-1. Does the plan reflect the actual goal?
-2. Is any step ordered wrong or missing a dependency?
-3. Is any step vague enough to mean multiple things in the glossary?
+Per step:
 
-Iterate on Stage 4 until the user explicitly signs off ("looks good", "let's go", or equivalent).
+1. **Announce.** One sentence: what it is, what it produces.
+2. **Implement.** Only what this step describes — nothing from later steps.
+3. **Verify.** Run the step's `Verify` command and any invariants in `artifacts/invariants.md` that apply. Report: passed / failed / skipped and why.
+4. **Update `status.md`.** Step to Done, next step to Next Steps. After every step, not batched.
+5. Proceed immediately.
 
-After sign-off, update `status.md`: mark planning complete, set the first implementation step as Next Steps.
+**On failure:** Fix before advancing. If the fix changes the plan, update `artifacts/plan.md` inline before continuing.
+
+No git commits without explicit user confirmation. When all steps are done, update `status.md` as complete.
+
+**STOP.** Summarize: what was built, which steps passed verification, anything adjusted. "Does everything look right? Ready to commit?"
+
+---
+
+## Session Maintenance
+
+- Update `status.md` whenever the session ends mid-task: decisions made, current state, next steps, blockers.
+- To close a task: set `status.md` to `Status: Complete` with a brief summary. Run `git worktree remove <root>/.worktrees/<slug>` once the branch is merged or no longer needed.
 
 ---
 
 ## Reference
+
+### invariants.md template
+
+```markdown
+# Invariants & Verification
+
+## Invariants
+
+| What must not break | Check | When |
+|---------------------|-------|------|
+| <invariant> | `<command>` | each step / end only |
+
+## Acceptance Criteria
+
+| Done when | Check |
+|-----------|-------|
+| <criterion> | `<command>` |
+
+## Open Questions
+<criteria that can't yet be checked — resolve before implementation>
+```
+
+### context.md template
+
+```markdown
+# <Task Name>
+
+## Goal
+<what we're trying to achieve and why>
+
+## Why It Matters
+<motivation, constraints, deadline if any>
+
+## Scope
+**In:** <what this task changes>
+**Out:** <what this task deliberately does not change>
+
+## Background
+<constraints, relevant tickets, links, prior decisions>
+
+## Worktree
+<repo-root>/.worktrees/<slug>/
+
+## Key Files
+<paths to important code, configs, or docs>
+
+## Open Questions
+<unresolved questions that don't block planning>
+
+## Decisions
+(none yet)
+```
 
 ### task-brief.md template
 
@@ -105,27 +231,6 @@ After sign-off, update `status.md`: mark planning complete, set the first implem
 
 ## Open Questions
 <unresolved questions that don't block planning>
-```
-
-### context.md template
-
-```markdown
-# <Task Name>
-
-## Goal
-<what we're trying to achieve and why>
-
-## Background
-<constraints, relevant tickets, links, prior decisions>
-
-## Worktree
-<repo-root>/.worktrees/<slug>/
-
-## Key Files
-<paths to important code, configs, or docs>
-
-## Decisions
-(none yet)
 ```
 
 ### status.md template
