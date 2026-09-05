@@ -27,6 +27,45 @@ Use asdf plugin to install neovim nightly
 3. Download [Plug](https://github.com/junegunn/vim-plug)
 4. Regenerate spell check files [this](https://thoughtbot.com/blog/vim-spell-checking) will help
 
+### Claude Code
+
+Everything lives in `claude/` and gets symlinked into `~/.claude/`:
+
+```
+ln -s ~/dotfiles/claude/CLAUDE.md ~/.claude/CLAUDE.md
+ln -s ~/dotfiles/claude/settings.json ~/.claude/settings.json
+```
+
+Skills and plugins are symlinked individually (one link per directory, not the
+whole `skills/` dir, so machine-local skills can coexist):
+
+```
+for s in ~/dotfiles/claude/skills/*/; do
+  ln -s "${s%/}" ~/.claude/skills/"$(basename "$s")"
+done
+```
+
+The `expert-lsp` entry in `claude/skills/` is a Claude Code plugin, not a
+skill — it registers [Expert](https://expert-lsp.org) as the Elixir language
+server. Claude Code auto-loads any directory under `~/.claude/skills/` that
+contains `.claude-plugin/plugin.json` (shows up as `expert-lsp@skills-dir` in
+`/plugin list`). It needs the binary on `$PATH`:
+
+```
+brew install expert
+```
+
+Claude Code's LSP client never answers `client/registerCapability`
+([claude-code#32595](https://github.com/anthropics/claude-code/issues/32595),
+closed not-planned), and Expert blocks on it before starting — so the plugin
+launches Expert through `expert-shim` (in the plugin dir), a stdio proxy that
+answers those requests on the client's behalf. It must be symlinked onto
+`$PATH`:
+
+```
+ln -s ~/dotfiles/claude/skills/expert-lsp/expert-shim ~/.local/bin/expert-shim
+```
+
 ###
 `cp .gitconfig ~/.gitconfig`
 
