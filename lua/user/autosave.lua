@@ -24,9 +24,10 @@ end
 
 local function auto_save_and_format()
   if can_modify_file() then
-    -- Strip trailing whitespace
-    -- Uses string literal to avoid having to figure out escaping
+    local cursor = vim.api.nvim_win_get_cursor(0)
     vim.cmd([[:%s/\s\+$//e]])
+    cursor[1] = math.min(cursor[1], vim.api.nvim_buf_line_count(0))
+    vim.api.nvim_win_set_cursor(0, cursor)
   end
 
   format_file()

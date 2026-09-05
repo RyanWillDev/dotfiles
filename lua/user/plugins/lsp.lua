@@ -253,6 +253,22 @@ function M.config()
   })
   vim.lsp.enable('lua_ls')
 
+  vim.lsp.handlers["textDocument/formatting"] = function(err, result, ctx, _config)
+    if err ~= nil or result == nil then return end
+    local client = vim.lsp.get_client_by_id(ctx.client_id)
+    local offset_encoding = client and client.offset_encoding or "utf-16"
+    local bufnr = ctx.bufnr
+    local win = vim.api.nvim_get_current_win()
+    if vim.api.nvim_win_get_buf(win) == bufnr then
+      local cursor = vim.api.nvim_win_get_cursor(win)
+      vim.lsp.util.apply_text_edits(result, bufnr, offset_encoding)
+      cursor[1] = math.min(cursor[1], vim.api.nvim_buf_line_count(bufnr))
+      vim.api.nvim_win_set_cursor(win, cursor)
+    else
+      vim.lsp.util.apply_text_edits(result, bufnr, offset_encoding)
+    end
+  end
+
   vim.diagnostic.config({
     virtual_text = true,
     signs = true,
