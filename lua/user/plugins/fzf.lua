@@ -11,13 +11,14 @@ function M.config(_plugin, opts)
     grep = {
       hidden    = true,
       no_ignore = true,
-      rg_opts   = [[--column --line-number --no-heading --color=always --smart-case --max-columns=4096 ]] ..
-          ignore_patterns,
+      rg_opts   = [[--column --line-number --no-heading --color=always --smart-case --max-columns=4096 -P ]] ..
+      ignore_patterns,
+
     },
     files = {
       hidden    = true,
       no_ignore = true,
-      cmd       = "rg --color=never --hidden --files " .. ignore_patterns,
+      cmd       = "rg --color=never --hidden --files -P " .. ignore_patterns,
     }
   })
 end
