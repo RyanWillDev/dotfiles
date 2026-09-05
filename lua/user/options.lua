@@ -32,7 +32,8 @@ vim.o.number = true
 vim.o.relativenumber = true
 vim.o.scrolloff = 3
 vim.o.shiftwidth = 2
-vim.o.shortmess = vim.o.shortmess .. "c"
+-- c: no completion messages, W: no "written", a: abbreviate, T: truncate long messages (avoids hit-enter prompt)
+vim.o.shortmess = vim.o.shortmess .. "cWaT"
 vim.o.showcmd = true
 vim.o.showmatch = true
 vim.o.showmode = true
