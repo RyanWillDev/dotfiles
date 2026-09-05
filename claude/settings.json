@@ -10,8 +10,16 @@
       "Bash(acli *)",
       "Bash(mix *)"
     ],
-    "defaultMode": "default"
+    "ask": [
+      "Bash(git commit *)",
+      "Bash(git push *)"
+    ],
+    "defaultMode": "auto"
   },
+  "worktree": {
+    "baseRef": "fresh"
+  },
+  "enableArtifact": false,
   "statusLine": {
     "type": "command",
     "command": "bash ~/.claude/statusline-command.sh"
@@ -31,8 +39,19 @@
   },
   "alwaysThinkingEnabled": true,
   "effortLevel": "high",
+  "modelSettings": {
+    "claude-sonnet-5": {
+      "effortLevel": "xhigh"
+    }
+  },
+  "promptSuggestionEnabled": false,
+  "tui": "fullscreen",
+  "skipWorkflowUsageWarning": true,
   "theme": "dark-daltonized",
   "editorMode": "vim",
-  "skipAutoPermissionPrompt": true,
-  "tui": "fullscreen"
+  "preferredNotifChannel": "ghostty",
+  "switchModelsOnFlag": true,
+  "inputNeededNotifEnabled": true,
+  "agentPushNotifEnabled": true,
+  "skipAutoPermissionPrompt": true
 }
