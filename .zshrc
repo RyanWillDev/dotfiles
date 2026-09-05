@@ -136,7 +136,7 @@ alias rg="rg -i"
 typeset -U path PATH
 
 if [[ ! "$PATH" == *${HOME}/zk* ]]; then
-export PATH=$PATH:$HOME/zk
+  export PATH=$PATH:$HOME/zk
 fi
 
 if [[ ! "$PATH" == *${HOME}/.local/bin* ]]; then
