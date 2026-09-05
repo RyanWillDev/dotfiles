@@ -11,6 +11,29 @@ Before adding any comment, ask: **"Does this comment convey information that can
 - ❌ Skip: Restates what the code already clearly says
 - ❌ Skip: Repeats the name of a describe block, function, or module
 
+## Moduledoc Scope: No Cross-Module Implementation Claims
+
+`@moduledoc` and `@doc` strings should document the contract of *this* module — not assert what happens inside other modules. Referencing another module's type or function by name is fine; claiming what it does or doesn't do internally is not. Those claims rot silently when the other module changes, and the reader has no reason to trust them without reading that module anyway.
+
+```elixir
+# ✅ Documents the contract this type participates in
+@moduledoc """
+Success type returned by `Parser.parse/1`.
+
+Holds a validated, normalised `%Schema{}`. Accepted by `Builder.build/2`.
+"""
+
+# ❌ Asserts an implementation detail of a different module
+@moduledoc """
+Success type returned by `Parser.parse/1`.
+
+Holds a validated, normalised `%Schema{}`. `Builder.build/2` accepts this type
+and is infallible by construction — no further validation runs inside it.
+"""
+```
+
+The claim "no further validation runs inside it" belongs in `Builder.build/2`'s own `@doc`, or not at all.
+
 ## Section Dividers in Tests
 
 - **Do not use banner/divider comments** that duplicate what describe blocks already communicate

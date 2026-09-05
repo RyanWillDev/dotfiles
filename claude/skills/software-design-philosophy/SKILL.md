@@ -1,6 +1,6 @@
 ---
 name: software-design-philosophy
-description: Guiding principles for software design decisions. Load this proactively — whenever writing or refactoring code, reviewing code or a diff/PR (yours or someone else's), choosing between implementation approaches, adding abstractions or workarounds, encountering friction with existing code, or fixing errors, warnings, or test failures. Any time you're deciding HOW to respond to a problem — not just WHAT to build — or judging whether code is the right shape, these principles apply. When in doubt, load it: the cost is low and it catches design mistakes (and softened review feedback) early. This skill applies to ALL languages and codebases.
+description: Guiding principles for software design decisions. Load this proactively — whenever you open, read, write, edit, or review a code file in any language. Also load when choosing between implementation approaches, adding abstractions or workarounds, encountering friction with existing code, or fixing errors, warnings, or test failures. Any time you're deciding HOW to respond to a problem — not just WHAT to build — or judging whether code is the right shape, these principles apply. When in doubt, load it: the cost is low and it catches design mistakes (and softened review feedback) early. This skill applies to ALL languages and codebases.
 ---
 
 # Software Design Philosophy
@@ -8,6 +8,11 @@ description: Guiding principles for software design decisions. Load this proacti
 Principles that guide how to think about code, not what syntax to use. These are language-agnostic and apply whenever you're making a design decision.
 
 ## When to Consult This Skill
+
+**Always** — reading or writing code in any language:
+- Opening, reading, or exploring a code file
+- Writing new code or editing existing code
+- Any task where code appears in the context
 
 **Proactive** — building or changing code:
 - Choosing between two implementation approaches
@@ -96,6 +101,12 @@ Follow the *Philosophy of Software Design* approach: comments should explain thi
 
 Good comments explain the forces that shaped the code — why this approach over an alternative, what constraint makes this necessary, what would break if you changed it. Bad comments narrate what the code does, which the reader can already see.
 
+**Writing a comment well:**
+
+- **Name the subject explicitly.** Don't use pronouns or vague references. "retry_budget is also decremented here" is immediately parseable; "also decremented here" leaves the reader guessing what "it" is.
+- **Put volatile context in parentheticals.** When a comment references current implementation state that could change, parenthesize it. The invariant — the *why* — should stand on its own; the parenthetical gives orientation without making the comment load-bearing on details that may rot.
+- **Clarity is not the same as brevity.** Trimming a comment until the subject is ambiguous is not an improvement. A comment that's slightly longer but unambiguous is better than one that's terse but forces the reader to infer what's being said.
+
 ### 3. Consistency Over Personal Preference
 
 When working in an existing codebase, match what's there. Introducing a different style — even a "better" one — creates two patterns where there was one, and every reader now has to understand both.
@@ -141,3 +152,110 @@ Two signals in your own writing mean you've spotted a design problem and are sof
 When you catch either phrase forming, stop and ask whether you've found a design issue. If so, name it directly and recommend.
 
 This is Principle 1 applied to review: "tidiness" is the additive instinct (hide the symptom) where subtraction (fix the representation) is the better answer.
+
+### 7. Name the Nothing (Active Nothing)
+
+The nothing in your domain is already there — a real participant that reveals its presence by the absence of code. When you write a nil-check, you aren't guarding against an edge case; you're encountering a concept that doesn't have a name yet. Zero didn't exist for most of human history. Before we named it, there were things we couldn't do. Your domain has zeros — absences that are actually something once named.
+
+A nil-check at a call site is how an unnamed concept announces itself. (Sandi Metz, RailsConf 2015; Bruce Anderson, "Active Nothing".)
+
+**Conditions breed.** One nil-check means there will be more — scattered across every caller, every future caller, every path through the system. The fix: don't check for nothing; give nothing a representation that participates in the same operations as something. Call sites stop branching because both paths behave the same way.
+
+**This is not OOP-specific.** Every paradigm has the same problem and a native form of the fix:
+
+- **OOP (Null Object pattern):** Make "nothing" an object with the same interface as the real thing. `NullDuck` implements `quack`; callers never branch.
+
+  ```ruby
+  find_duck || NullDuck.new  # .quack is unconditional — NullDuck owns its behavior
+  ```
+
+- **FP (same-type value):** Return a value of the *same type* that participates in the same operations — not a wrapper that requires unwrapping. `Maybe`/`Option` defers the branch to the edge (`or_else`, `unwrap_or`); it doesn't eliminate it.
+
+  When "nothing" should be transparent, return the **identity element** for the operation (`fn x -> x end`, `0`, `[]`). When it has domain-specific behavior, return a concrete value with the right defaults.
+
+  ```elixir
+  # Transparent: a discount that changes nothing (identity)
+  find_discount(order) || &Function.identity/1
+
+  # Domain-specific: a missing animal with defined behavior
+  find_animal(id) || %Animal{sound: "...", name: "Unknown"}
+  ```
+
+  The empty list is the canonical case — `map`/`filter`/`reduce` over `[]` produce correct results with no guard; returning `[]` instead of `nil` eliminates every empty-check at call sites.
+
+**When the nil comes from an external API you don't control:** wrap the API in your own adapter — catch the message, make the external call, handle the nil there, and return a domain object. Callers talk to your adapter; they never touch the external API or see a nil. One place owns the condition.
+
+```ruby
+# OOP — adapter calls the external API and returns a real domain object
+class AnimalService
+  def find(id)
+    ExternalApi.find_animal(id) || NullAnimal.new
+  end
+end
+# callers: AnimalService.new.find(id).name — never a branch
+```
+
+```elixir
+# FP — one function owns the external call and the nil case
+defmodule AnimalService do
+  def find(id) do
+    case ExternalApi.find_animal(id) do
+      nil    -> missing_animal()
+      animal -> animal
+    end
+  end
+end
+```
+
+**When to apply it:**
+
+- A nil-check (or `present?`, `exists?`, empty-guard) exists at a call site — even one is the concept announcing itself
+- A function returns `nil`/`null`/`None` to mean "no result" and callers branch on it
+- A collection can be empty and every consumer has a separate empty-guard
+- An external API is untrustworthy and callers scatter guards around every call to it
+
+**The design insight:** the named nothing is not a workaround — it is the concept that was missing. This is Principle 1 applied to the case where what's being checked is absence itself.
+
+### 8. Specialization Is by Definition at Least Two Things
+
+The urge to subclass is a signal, not a solution. When you feel it, you've already found two things: the variant *and* the default — even if the default "looks like nothing." Both are real. The mistake is to name only the variant and hide the default inside the parent class, where it becomes invisible.
+
+Metz's lesson from the House that Jack Built: once you have Random House and Echo House as subclasses, you can't combine them. Inheritance worked for one specialization, then broke at two. The failure was in assuming the thing that varied (order, formatting) belonged *inside* the class rather than *outside* it as an injectable role.
+
+**The move:** isolate what varies → name it → define a role → inject the players.
+
+**OOP:** the role becomes an interface; players are objects injected at construction or call time.
+
+```ruby
+# Before: House subclassed for ordering; can't compose ordering + formatting
+class RandomHouse < House
+  def data = super.shuffle
+end
+
+# After: ordering is a named role, injected — composes freely
+House.new(order: RandomOrder.new, format: EchoFormat.new).recite
+```
+
+**FP:** the role is a function parameter; players are functions passed as arguments. Branching on a variant *inside* a function is the FP equivalent of subclassing — the fix is the same.
+
+```elixir
+# Before: dispatch on a variant — ordering hidden inside the function
+def recite(data, :random),   do: data |> Enum.shuffle() |> build_lines()
+def recite(data, :in_order), do: data |> build_lines()
+# can't combine :random with :echo — same problem as inheritance
+
+# After: order is a named parameter (a function); players are just functions
+def recite(data, order \\ &Function.identity/1, format \\ &identity_format/1) do
+  data |> order.() |> format.() |> build_lines()
+end
+
+recite(data, &Enum.shuffle/1, &echo/1)  # random + echo — free composition
+```
+
+The naming discipline is the same across paradigms: what you name, you can vary independently.
+
+The subclass felt easy because the *name* (Random House) seemed to describe a thing. The name was misleading — what actually varied was *order*, a role that any house could accept. Naming it correctly made the combination obvious and free.
+
+**The signal:** you subclass to specialize one thing and immediately realize you need another subclass for a second thing, and can't combine them. That's the moment to find what varies, name it, and inject it.
+
+**The connection:** Principle 7 (Active Nothing) is a specific case of this. The null object *is* the default specialization — the one that "looks like nothing." Before you name it, you compensate with conditions. After you name it, you inject it like any other player. Both patterns are the same idea: unnamed roles breed conditions; named roles enable composition.
