@@ -32,33 +32,3 @@
 
 **Concrete.** Numbers and examples beat adjectives.
 
-## Memory System
-
-Three scopes:
-
-**Portable** — `~/dotfiles/claude/memory/` — preferences and patterns worth keeping across machines. In version control. Nothing work-specific. Index at `~/dotfiles/claude/memory/MEMORY.md`.
-
-**Local** — `~/.claude/memory/` — global context that shouldn't leave this machine (work context, employer-specific things). Not synced. Index at `~/.claude/memory/MEMORY.md`.
-
-**Project** — `<project-root>/.claude/memory/` — codebase-specific context, ongoing work, decisions. Index at `<project-root>/.claude/memory/MEMORY.md`.
-
-Ask Ryan which scope when it's not obvious. Ryan controls where memories are written.
-
-## Task System
-
-Long-running tasks that span sessions live inside the task's git worktree at `<worktree-root>/.claude/`:
-
-```
-<worktree-root>/.claude/
-  context.md    # background, goal, constraints, key files/links
-  status.md     # current state, decisions made, next steps, blockers
-  artifacts/    # outputs: code, notes, queries, scratch files
-```
-
-Worktrees live at `<repo-root>/.worktrees/<slug>/`. Fallback when not in a git repo: `~/.claude/tasks/active/<slug>/`.
-
-Use `/start-task` to create a new task and its worktree.
-Use `/resume-task` to pick up an existing task — it scans `<repo-root>/.worktrees/` for active tasks.
-When a task is complete, run `git worktree remove <root>/.worktrees/<slug>` once the branch is merged or no longer needed.
-
-When resuming a task, read `context.md` and `status.md` before doing anything else, then restate where things stand in one sentence before asking what to do next.
