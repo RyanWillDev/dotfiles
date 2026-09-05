@@ -53,6 +53,12 @@ function M.config(_plugin, _opts)
       vim.keymap.set("n", "y", api.fs.copy.node, opts("Copy node"))
       vim.keymap.set("n", "<leader>v", api.node.open.vertical, opts("Open vertical split"))
       vim.keymap.set("n", "<leader>s", api.node.open.horizontal, opts("Open horizontal split"))
+      vim.keymap.set("n", "<leader>f", function()
+        local node = api.tree.get_node_under_cursor()
+        if node then
+          vim.fn.jobstart({ "open", "-R", node.link_to or node.absolute_path }, { detach = true })
+        end
+      end, opts("Reveal in Finder"))
       vim.keymap.set("n", "x", api.node.navigate.parent_close, opts("Close parent directory"))
       vim.keymap.set("n", "<BS>", api.tree.collapse_all, opts("Close parent directory"))
     end
