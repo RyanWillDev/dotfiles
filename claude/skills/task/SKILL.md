@@ -10,7 +10,7 @@ hooks:
             cwd="$(printf '%s' "$input" | jq -r '.cwd')"
             active="$(printf '%s' "$input" | jq -r '.stop_hook_active // false')"
             if [ -d "$cwd/.task" ] && [ "$active" != "true" ]; then
-              jq -n '{hookSpecificOutput:{hookEventName:"Stop",additionalContext:"This task directory has a .task/ record from the task skill. Before moving on, check whether CONTEXT.md, PROGRESS.md, or DECISIONS.md need an update for what just happened this turn."}}'
+              jq -n '{hookSpecificOutput:{hookEventName:"Stop",additionalContext:"This task directory has a .task/ record from the task skill. Before moving on, check whether CONTEXT.md, PROGRESS.md, or DECISIONS.md need an update for what just happened this turn. If nothing needs updating state that plainly and summarize the result of the previous turn clearly and concisely so it does not need to be recreated from the trail of thoughts."}}'
             fi
 ---
 
