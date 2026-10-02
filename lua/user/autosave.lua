@@ -6,8 +6,8 @@ local auto_format_enabled = 0 -- Used by autoformat function. Default to off
 local function can_modify_file()
   local filename = vim.fn.expand('%')
   return vim.bo.modifiable
-      and filename ~= ''                         -- filename is not ''
-      and not string.match(filename, 'fugitive') -- git-fugitive windows are modifiable
+      and vim.bo.buftype == '' -- excludes plugin/UI windows (lazy, fugitive, etc.), which stay modifiable
+      and filename ~= ''       -- filename is not ''
 end
 
 local function auto_save()
