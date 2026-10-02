@@ -46,7 +46,9 @@ end
 
 function M.peek_config(_plugin, _opts)
   local vim = _G.vim -- Let lua lsp know that vim is global
-  require("peek").setup()
+  -- 'browser' opens the preview in your default system browser (a real tab
+  -- with find-in-page, zoom, etc.) instead of peek's chromeless webview.
+  require("peek").setup({ app = "browser" })
   vim.api.nvim_create_user_command("PeekOpen", require("peek").open, {})
   vim.api.nvim_create_user_command("PeekClose", require("peek").close, {})
 end
