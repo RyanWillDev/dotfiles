@@ -116,6 +116,15 @@ require("lazy").setup({
     ft = { "markdown" },
   },
   {
+    "dhruvasagar/vim-table-mode",
+    init = require('user.plugins.markdown').table_mode_init,
+    config = require('user.plugins.markdown').table_mode_config,
+    keys = {
+      { "<leader>tm", "<cmd>TableModeToggle<cr>", mode = "n", desc = "Toggle table mode" },
+    },
+    ft = { "markdown" },
+  },
+  {
     "toppair/peek.nvim",
     event = { "VeryLazy" },
     build = "deno task --quiet build:fast",

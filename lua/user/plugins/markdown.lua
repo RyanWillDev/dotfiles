@@ -25,6 +25,25 @@ function M.render_markdown_config(_plugin, _opts)
   })
 end
 
+function M.table_mode_init(_plugin)
+  local vim = _G.vim -- Let lua lsp know that vim is global
+  -- Must be set before the plugin loads: vim-table-mode reads this to build
+  -- its default mappings as soon as it's sourced, so setting it in `config`
+  -- (which runs after load) would be too late.
+  --
+  -- Default tableize map is <leader>tt, which collides with
+  -- <leader>tt ToggleCheckbox mapping (lua/user/notes/init.lua).
+  vim.g.table_mode_tableize_map = "<leader>ta"
+  vim.g.table_mode_delete_row = "<leader>trd"
+  vim.g.table_mode_delete_column = "<leader>tcd"
+end
+
+function M.table_mode_config(_plugin, _opts)
+  local vim = _G.vim -- Let lua lsp know that vim is global
+  -- Markdown pipe tables use '|' corners, not vim-table-mode's default '+'.
+  vim.g.table_mode_corner = "|"
+end
+
 function M.peek_config(_plugin, _opts)
   local vim = _G.vim -- Let lua lsp know that vim is global
   require("peek").setup()
