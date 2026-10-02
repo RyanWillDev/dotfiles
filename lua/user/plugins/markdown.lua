@@ -2,7 +2,11 @@ local M = {}
 
 function M.render_markdown_config(_plugin, _opts)
   local vim = _G.vim -- Let lua lsp know that vim is global
-  require("render-markdown").setup({})
+  -- 'padded' (default) breaks rows where prettier pads an otherwise-empty
+  -- cell with whitespace to match column width; 'overlay' redraws cells
+  -- fully instead of relying on raw spacing, at the cost of inline-code
+  -- concealment inside table cells.
+  require("render-markdown").setup({ pipe_table = { cell = "overlay" } })
 
   vim.api.nvim_create_autocmd("FileType", {
     pattern = "markdown",
