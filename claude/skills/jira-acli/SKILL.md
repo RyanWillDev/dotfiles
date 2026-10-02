@@ -246,7 +246,7 @@ Full JSON shapes for paragraphs, headings, ordered/nested lists, and strong/code
 
 **Rules for links specifically** (see ADF_REFERENCE.md for the JSON shape):
 
-- **Ticket links:** `acli` never prints a browsable URL directly (`--web` opens a browser instead of printing one, and `view`'s human/JSON output only has the REST `self` URL, e.g. `https://<jira-host>/rest/api/3/issue/<id>`). Get the host from that `self` field (`acli jira workitem view KEY --json`) and build `https://<host>/browse/KEY` — this convention is the same across Jira Cloud and Data Center. Do this for every ticket key mentioned in a description instead of leaving it as plain text.
+- **Ticket links:** don't use `view`'s `self` field to get the host — confirmed empirically that on Jira Cloud it returns an internal REST host (e.g. `jira-prod-us-72-3.prod.atl-paas.net`) that differs from the real browsable site and produces a dead link. Instead run `acli jira auth status`, which prints the real `Site:` host (e.g. `yoursite.atlassian.net`), and build `https://<site>/browse/KEY`. Do this for every ticket key mentioned in a description instead of leaving it as plain text.
 - **GitHub code links:** use a full commit SHA (`git rev-parse HEAD`), not a branch name, so the link keeps pointing at the exact lines even after the branch moves. Confirm the line range against the actual file before embedding it (`grep -n` or `sed -n '<range>p'`) — a link to the wrong lines is worse than no link. Only do this when it meaningfully helps the reader jump to the referenced behavior (a specific function, the exact failing branch) — not for every file mention.
 - **Never fabricate either kind of URL.** Only build one from data you've actually confirmed this session: a real `self` field for Jira, a real SHA + grep-verified line numbers for GitHub. If you can't verify a host or line range, leave the reference as plain `code`-marked text instead of guessing a link.
 
@@ -261,7 +261,7 @@ A full example payload assembling all of the above (summary, description with he
 3. **Use ordered lists** for numbered requirements
 4. **Use strong marks** for emphasis (bold text)
 5. **Use `code` marks for every identifier** — function/module names, file names, column names, error/status strings (e.g. `reminder_label_id can't be blank`). Writing these as plain text is a common miss; a reader should be able to tell "this is a symbol from the codebase" at a glance.
-6. **Link ticket keys and precise code references** instead of leaving them as bare text — see Links, above. Combine `code` + `link` marks on the same text node when linking a specific function or file.
+6. **Link ticket keys and precise code references** instead of leaving them as bare text — see Links, above. Use a plain `link` mark, not `code` + `link` combined on the same text node — see the warning in ADF_REFERENCE.md.
 7. **Keep the preamble tight** — one or two dense paragraphs stating the root cause and its consequence, not three-plus paragraphs that restate the same fact from different angles. Cut any sentence that doesn't add new information; ground claims in the specific file/line/column instead of generic description.
 8. **Test formatting** by viewing ticket in web browser after creation
 9. **Never use plain text** for `--description` or `--description-file` — both produce unformatted text; always use `--from-json` with ADF for anything that needs formatting

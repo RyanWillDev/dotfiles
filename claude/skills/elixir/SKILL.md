@@ -22,6 +22,10 @@ This skill provides expert guidance for Elixir development in this codebase, fol
 
 ### Do NOT proceed with Elixir file modifications without invoking this skill first.
 
+### Always invoke `software-design-philosophy` alongside this skill
+
+This skill covers Elixir-specific conventions only. It does not restate the language-agnostic design principles (simplicity, naming, abstraction, sequencing). Whenever this skill is invoked, also invoke `software-design-philosophy` in the same turn — don't rely on it triggering separately.
+
 ### Examples of Required Invocation:
 
 **Example 1:**

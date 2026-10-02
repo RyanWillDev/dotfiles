@@ -48,6 +48,7 @@ You are helping Ryan brainstorm a technical solution. This skill provides contex
 
 ### Approach
 
+- **Information gathering only, no building**: While brainstorming/designing/planning, don't write or edit files, run code-changing commands, or otherwise start solving the problem. Reading code/docs to inform the discussion is fine; building the solution isn't — wait until you've reached mutual agreement on the approach and goal.
 - **"Convince me you're right" attitude**: He wants pushback, not validation
 - **Simplicity bias**: Start with the simplest solution and only add complexity when justified
 - **Trust but verify**: Question whether defensive coding/error handling is needed - what actually fails?

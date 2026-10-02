@@ -10,7 +10,7 @@ hooks:
             cwd="$(printf '%s' "$input" | jq -r '.cwd')"
             active="$(printf '%s' "$input" | jq -r '.stop_hook_active // false')"
             if [ -d "$cwd/.task" ] && [ "$active" != "true" ]; then
-              jq -n '{hookSpecificOutput:{hookEventName:"Stop",additionalContext:"This task directory has a .task/ record from the task skill. Before moving on, check whether CONTEXT.md, PROGRESS.md, or DECISIONS.md need an update for what just happened this turn. If nothing needs updating state that plainly and summarize the result of the previous turn clearly and concisely so it does not need to be recreated from the trail of thoughts."}}'
+              jq -n '{hookSpecificOutput:{hookEventName:"Stop",additionalContext:"This task directory has a .task/ record from the task skill. Before moving on, check whether CONTEXT.md, PROGRESS.md, or DECISIONS.md need an update for what just happened this turn. If something needs updating, make the edit directly — the diff is the record, so do not add any summary or commentary afterward. If nothing needs updating, do not say anything further either; just stop."}}'
             fi
 ---
 
@@ -22,14 +22,30 @@ record for the task, not Claude's memory: any new session (yours or another) mus
 to pick up the task from these files alone, and a human must be able to audit them without
 any tool.
 
+These documents are artifacts: the primary way to capture and share information with the
+user, not just an internal log written for a future session. Markdown files and Mermaid diagrams
+are the default, but reach for whatever format communicates best — a table, an ASCII sketch,
+an exported data file, anything else useful — rather than forcing everything into prose.
+
+Most tasks are coding-adjacent enough to also warrant `software-design-philosophy` (code-shape
+decisions) and `solution-design-practice` (the design work before code exists — problem
+statements, decision matrices). Consider both when starting a task; skip only when the task is
+clearly outside their scope.
+
 `.task/` splits by audience:
 
 - **`CONTEXT.md`, `PROGRESS.md`, `DECISIONS.md`** — the audit trail. Write these plainly —
   run drafts through `writing-for-humans` before saving. Never let raw reasoning, dead
   ends, or working notes leak into them; that goes in `SCRATCHPAD.md` instead.
-  - **`CONTEXT.md`** — what the task is: ticket summary, key files, links, constraints. Read this first to get oriented.
+  - **`CONTEXT.md`** — what the task is: ticket summary, key files, links, constraints, and —
+    when the problem isn't already obvious from the ticket — a problem statement (see
+    `solution-design-practice`). Read this first to get oriented.
   - **`PROGRESS.md`** — a todo list: what's done, what's current, what's next. Completed items stay, never deleted — it's the record of how the task moved, not just its state.
   - **`DECISIONS.md`** — an append-only decision log: what was decided and why, in the style of a lightweight ADR. Never edit or delete a past entry; if a decision is reversed, add a new entry that says so.
+  - **`GLOSSARY.md`** (optional, ad hoc) — not one of the four created at setup. Add it later,
+    directly under the task root, only once the task's vocabulary is actually ambiguous enough
+    to need it (see `solution-design-practice`). One definition per term, in one place; no
+    fixed template. Fix or drop an entry the moment it stops fitting rather than let it go stale.
 
   A subtask with real weight of its own gets its own `CONTEXT.md`/`DECISIONS.md` under
   `subtasks/<slug>/` (see Maintaining, below) — so reviewing one piece of the plan doesn't
@@ -63,7 +79,7 @@ re-invocations and stands down rather than re-nudging.
 2. **Determine the task root.** Try `git rev-parse --show-toplevel`.
    - **Git repo** — root is its output. Task root will be `<root>/.worktrees/<slug>`.
      - **Ensure `.worktrees/` and `.task/` are ignored:** check `<root>/.git/info/exclude`; append either pattern that's missing. This file is shared by every worktree of the repo and isn't tracked, so it needs no commit and doesn't touch the team's `.gitignore`.
-   - **No git repo** — task root will be `~/.claude/tasks/<slug>`. There's no worktree, branch, or diff to isolate, so skip straight to step 4.
+   - **No git repo** — task root will be `<cwd>/task/<slug>`, where `<cwd>` is the current directory. There's no worktree, branch, or diff to isolate, so skip straight to step 4.
 
 3. **Check for a pre-existing task** at the task root. If it's already there, report its path (and branch, if any) and stop — do not recreate or modify it, and do not overwrite its `.task/`.
 
@@ -76,15 +92,15 @@ re-invocations and stands down rather than re-nudging.
      ```
      git worktree add <root>/.worktrees/<slug> feature/<slug>
      ```
-   - **No git repo:** `mkdir -p ~/.claude/tasks/<slug>`.
+   - **No git repo:** `mkdir -p ./task/<slug>` (relative to the current directory).
 
-5. **Create `.task/CONTEXT.md`, `PROGRESS.md`, `DECISIONS.md`, and `SCRATCHPAD.md`** inside the task root (templates below). Populate `CONTEXT.md` from whatever is known now — ticket ID, the user's own description, nothing invented; omit the `Branch`/`Worktree` fields (or mark them `none`) when there's no git repo. `PROGRESS.md` starts with a single Current entry; `DECISIONS.md` and `SCRATCHPAD.md` start empty — don't invent a first decision or note.
+5. **Create `.task/CONTEXT.md`, `PROGRESS.md`, `DECISIONS.md`, and `SCRATCHPAD.md`** inside the task root (templates below). Populate `CONTEXT.md` from whatever is known now — ticket ID, the user's own description, nothing invented; omit the `Branch`/`Worktree` fields (or mark them `none`) when there's no git repo, and omit the Problem Statement section unless the task's problem isn't already clear from the ticket. `PROGRESS.md` starts with a single Current entry; `DECISIONS.md` and `SCRATCHPAD.md` start empty — don't invent a first decision or note.
 
 6. **Report** the task root (plus branch name, if any), then switch into it (`cd`) for the rest of the session.
 
 ## Completion criterion
 
-The task root exists — a worktree on `feature/<slug>` (new or reattached) inside a git repo, or a plain directory at `~/.claude/tasks/<slug>` otherwise — all four of `.task/{CONTEXT,PROGRESS,DECISIONS,SCRATCHPAD}.md` exist inside it, and the user has been told where it is.
+The task root exists — a worktree on `feature/<slug>` (new or reattached) inside a git repo, or a plain directory at `./task/<slug>` otherwise — all four of `.task/{CONTEXT,PROGRESS,DECISIONS,SCRATCHPAD}.md` exist inside it, and the user has been told where it is.
 
 ## Maintaining `.task/` after setup
 
@@ -93,18 +109,18 @@ This is the task's memory — not the assistant's. Every session working in this
 - **CONTEXT.md** — update whenever a new fact worth resuming from surfaces: a file that turned out to matter, a constraint discovered mid-task, a linked ticket. Edit in place; it describes current understanding, not history.
 - **PROGRESS.md** — move items between Todo / Current / Done as work actually moves. Never delete a Done entry. When a Todo or Current item turns out to have real steps, break it into subtasks: nested `- [ ]` lines under it, added as soon as the breakdown is known rather than after the fact. Check off each subtask independently as it's done; the parent only moves to Done once every subtask under it is checked. PROGRESS.md stays the one place to see status for all of them — that doesn't change.
 - **Subtask docs** — when a subtask accumulates enough of its own context or decisions that burying them in the parent's `CONTEXT.md`/`DECISIONS.md` would make either harder to review, give it `.task/subtasks/<subtask-slug>/CONTEXT.md` and `DECISIONS.md` (same format and rules as the parent's, scoped to just that subtask) and link them from its PROGRESS.md line. Most subtasks don't need this — it's for the ones with real weight, so a person picking up just that piece can read its own docs instead of the whole task's.
-- **DECISIONS.md** — append a new entry the moment a real decision gets made (a choice between approaches, a tradeoff accepted, a constraint that shaped the plan) — not for routine steps that only have one reasonable way to do them.
+- **DECISIONS.md** — append a new entry the moment a real decision gets made (a choice between approaches, a tradeoff accepted, a constraint that shaped the plan) — not for routine steps that only have one reasonable way to do them. For a decision weighty enough to warrant comparing multiple approaches side by side, build the matrix per `solution-design-practice` and fold it into the entry (template below) rather than skipping straight to a conclusion.
 - **SCRATCHPAD.md** — write to it freely, any time thinking-out-loud helps: exploring an approach, working through why something broke, listing options before picking one. This is not read for audit; the other three are. If something there turns out to matter for resuming or auditing the task, promote it into `CONTEXT.md`, `PROGRESS.md`, or `DECISIONS.md` — don't leave the audit trail depending on the scratchpad.
 - In a git repo, `.task/` is ignored via `.git/info/exclude`, so it never pollutes the branch's diff. Outside a git repo there's no diff to pollute. Either way it stays on disk for the life of the task — open the files directly, no tooling required.
 
 ## Listing ongoing tasks
 
-Task roots live in two places that don't show up in a normal directory listing — check both:
+Task roots live under one of two places, depending on whether the current directory is a git repo:
 
-- **This repo's worktrees**, if in a git repo: `git worktree list`, cross-referenced against `<root>/.worktrees/`.
-- **Fallback tasks**, always, regardless of cwd — these are global, not tied to any repo: `ls ~/.claude/tasks/`.
+- **Git repo:** `git worktree list`, cross-referenced against `<root>/.worktrees/`.
+- **No git repo:** `ls ./task/` in the current directory.
 
-This is the only way to see fallback tasks at all outside a git repo — they don't live anywhere the user would otherwise think to look. For each task root found, read `.task/PROGRESS.md`'s Current entry (and `CONTEXT.md`'s Summary if more detail helps) so the answer is a one-line status per task, not a bare list of directory names.
+For each task root found, read `.task/PROGRESS.md`'s Current entry (and `CONTEXT.md`'s Summary if more detail helps) so the answer is a one-line status per task, not a bare list of directory names.
 
 ## Reference
 
@@ -120,6 +136,10 @@ This is the only way to see fallback tasks at all outside a git repo — they do
 
 ## Summary
 <the task as given — ticket summary or the user's own description>
+
+## Problem Statement
+<optional — only when the ticket doesn't already give you one: the unmet objective and the
+obstacle, not the symptom (that's Summary) or the remedy. See `solution-design-practice`.>
 
 ## Key Files
 - <path> — <why it matters>
@@ -186,6 +206,25 @@ Each entry, once a decision is made:
 **Decision:** <what was chosen>
 **Reasoning:** <why — the factors that made it the right call>
 **Alternatives considered:** <other options and why not, if any>
+```
+
+For a decision weighty enough to compare approaches side by side, fold the matrix in under
+the entry instead of just listing alternatives (see `solution-design-practice`):
+
+```markdown
+## <date> — <what was being decided>
+**Decision:** <what was chosen>
+**Reasoning:** <why — the factors that made it the right call>
+**Tradeoffs accepted:** <what's given up by this choice, even for the winner>
+
+<details>
+<summary>Decision matrix</summary>
+
+| Criterion | Approach A | Approach B |
+|---|---|---|
+| ... | ✅ ... | ⚠️ ... |
+
+</details>
 ```
 
 ### SCRATCHPAD.md template

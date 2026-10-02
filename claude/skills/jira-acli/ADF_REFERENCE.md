@@ -119,18 +119,21 @@ Supporting reference for the `jira-acli` skill's ADF section in SKILL.md. Load t
 
 **Links (other tickets, precise code lines, and other resources):**
 
-Reference other tickets and specific code with real hyperlinks, not bare text — a `text` node's `marks` array can include a `link` mark alongside `code` or `strong`:
+Reference other tickets and specific code with real hyperlinks, not bare text.
+
+**Never combine a `code` mark with a `link` mark on the same text node — confirmed empirically (not documented in Atlassian's ADF spec) to corrupt the ticket in the Jira web editor:** the node renders on view, but opening the ticket for editing breaks. When a piece of text needs to be both a code-styled identifier and a link, drop the `code` mark and keep only `link` — a plain hyperlink is better than a broken ticket:
 
 ```json
 {
   "type": "text",
   "text": "some_function/2",
   "marks": [
-    { "type": "code" },
     { "type": "link", "attrs": { "href": "https://github.com/ORG/REPO/blob/<full-sha>/path/to/file.ext#L10-L20" } }
   ]
 }
 ```
+
+A `link` mark alongside `strong` is fine — this issue is specific to pairing `code` with `link`.
 
 ```json
 {

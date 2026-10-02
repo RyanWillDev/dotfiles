@@ -34,6 +34,16 @@ Principles that guide how to think about code, not what syntax to use. These are
 - Reviewing your own change before presenting it
 - Catching yourself about to call a finding "tidiness"/"minor" or to offer an "option A or B" menu (see Principle 6)
 
+## Simple vs. Easy
+
+Two words used interchangeably that mean different things (Rich Hickey, "Simple Made Easy"). **Simple** (Latin *sim-plex*, "one fold") means unentangled — free of interleaving with something else. It's *objective*: look at the code and check whether one thing is braided together with another. **Easy** means near — at hand, familiar, or within current skill. It's *relative*: easy for whom?
+
+Simple doesn't mean "fewer things" — cardinality and entanglement are different axes. Untangling one complected thing often produces *more* named things, not fewer (see the note on Principle 1, below). What matters is whether those things are independent, not how many there are.
+
+Hickey's word for the failure is **complecting** — braiding together things that could have been independent, so you can no longer reason about one without the other. Its opposite is **composing** — placing simple things together without entangling them. Naming a review comment this way ("this complects X and Y") is a sharper, more falsifiable claim than "this feels messy" — use it that way.
+
+This is the axis most of the principles below operate on, named once here so they don't each have to re-derive it.
+
 ## Principles
 
 ### 1. Prefer Subtractive Solutions
@@ -43,6 +53,8 @@ Research shows humans have a cognitive bias toward addition — when solving pro
 This bias is especially strong in code. When existing code causes friction, the instinct is to add: a wrapper, a transaction, a special-case function, a compatibility shim. Each addition is code that exists only to compensate for a design problem — and it has to be understood, tested, and maintained forever.
 
 **Before adding, ask whether you can subtract.** Split an overloaded function. Remove a responsibility that doesn't belong. Narrow an interface. The best solution often has less code than what you started with.
+
+(Splitting or naming a role is still subtraction in this sense, even when the result has more named parts than you started with — you're removing a hidden coupling, not reducing a count. See Simple vs. Easy, above: cardinality isn't the target, entanglement is.)
 
 **The signal that you're adding when you should subtract:** your solution needs a comment explaining *why* it exists. That comment is compensating for a design problem upstream.
 
@@ -155,6 +167,8 @@ When you catch either phrase forming, stop and ask whether you've found a design
 
 This is Principle 1 applied to review: "tidiness" is the additive instinct (hide the symptom) where subtraction (fix the representation) is the better answer.
 
+Naming which kind of complexity you're looking at sharpens this further. **Incidental** complexity is "your fault" — it came from a construct or tool choice and can be designed away (Principle 1 applies). **Inherent** complexity is the problem's own difficulty — genuine resource contention, a domain that's actually hard — and no amount of rearranging code removes it; the honest move is to manage it, not keep proposing refactors that can't touch it. Say which one you mean before recommending a fix: treating inherent complexity as a design smell produces changes that can't work, and waving off incidental complexity as "just how it is" misses a real fix.
+
 ### 7. Name the Nothing (Active Nothing)
 
 The nothing in your domain is already there — a real participant that reveals its presence by the absence of code. When you write a nil-check, you aren't guarding against an edge case; you're encountering a concept that doesn't have a name yet. Zero didn't exist for most of human history. Before we named it, there were things we couldn't do. Your domain has zeros — absences that are actually something once named.
@@ -256,8 +270,46 @@ recite(data, &Enum.shuffle/1, &echo/1)  # random + echo — free composition
 
 The naming discipline is the same across paradigms: what you name, you can vary independently.
 
+This is Liskov's abstract data type, in code-shape form: "the programmer is concerned only with the behavior which that object exhibits... but not with any details of how that behavior is achieved" (*Programming with Abstract Data Types*, 1974). An abstraction is fully specified by its operations — the *what*; the representation behind it — the *how* — is free to change as long as those operations still hold. Hickey's version of the same rule: strictly separating what from how is what makes how somebody else's problem. Watch for a *how* leaking into a *what* even without a concrete type forcing it — an iteration order a caller starts depending on, a sort a function's name never promised, `fold`'s implicit left-to-right pass. If a caller can come to depend on it, it's part of the interface whether you documented it or not.
+
 The subclass felt easy because the *name* (Random House) seemed to describe a thing. The name was misleading — what actually varied was *order*, a role that any house could accept. Naming it correctly made the combination obvious and free.
 
 **The signal:** you subclass to specialize one thing and immediately realize you need another subclass for a second thing, and can't combine them. That's the moment to find what varies, name it, and inject it.
 
 **The connection:** Principle 7 (Active Nothing) is a specific case of this. The null object *is* the default specialization — the one that "looks like nothing." Before you name it, you compensate with conditions. After you name it, you inject it like any other player. Both patterns are the same idea: unnamed roles breed conditions; named roles enable composition.
+
+### 9. State Complects Value and Time
+
+A mutable reference conflates two things that should be independent: *what* the value is, and *when* you asked. Call the same getter twice and get two different answers — every consumer now has to reason about timing, not just data.
+
+Elixir mostly avoids this by construction: rebinding a name isn't mutation, and anywhere state genuinely exists, it already sits behind a process boundary (`GenServer`, `Agent`) — callers get one coherent snapshot per message, not a shared mutable structure they can alias. That boundary exists precisely to keep value and time from complecting; the failure mode isn't gone, it's fenced in.
+
+It still shows up in two places:
+
+- **Reaching for a raw escape hatch** — `:ets`, `Process.put`, config read mid-request from somewhere mutable — where the language's usual guarantee doesn't apply.
+- **Letting a process's state become an everything-bucket.** A `GenServer` holding a dozen unrelated fields still complects value and time for each of them; sampling `state` at two points gives two different composite answers even though only one field changed. Keep a process's state to one coherent concept, not a dumping ground.
+
+In languages without an enforced boundary (mutable objects passed by reference, shared globals), this is the default failure mode, not the exception — every plain `var` conflates value and time. The fix is the same: isolate the mutation behind something that hands out a stable value per ask, rather than letting statefulness leak through every caller.
+
+### 10. Don't Mistake Organization for Simplicity
+
+Separate files, modules, or classes that never call each other can still be fully complected — if each one presumes facts about the other's internal state or invariants that aren't expressed anywhere. Modularity is what makes simplicity possible; it doesn't guarantee it. You can build "modular" software this way and get none of the benefits.
+
+Two independent tests catch this:
+
+- **Hickey's question:** can you change A's internals without knowing anything about B's, even though they never call each other? If changing one silently breaks the other, they were never separate — the separation was cosmetic.
+- **Ousterhout's question** (*A Philosophy of Software Design* — deep vs. shallow modules): does this module's interface actually hide meaningful complexity, or is its interface about as complicated as what's behind it? A shallow module — many small classes each doing one trivial thing, one-to-one with what they wrap — imposes the cost of an abstraction (a name to learn, an indirection to trace) without the benefit: nothing was actually hidden.
+
+Both questions point at the same failure: code organization was mistaken for the thing it's supposed to produce. When reviewing something described as "modular," ask directly whether it passes either test — don't accept file/class separation as evidence on its own.
+
+### 11. Tell the Story of the Evolution
+
+When an implementation involves multiple genuinely different requirements building on each other, don't land the final, unified design as one large change. Build it in the order the design would actually be discovered: start from the simplest case, and generalize only when a second, genuinely different requirement demands it, not because the general form is foreseeable.
+
+Each phase should be:
+
+- **Independently correct and tested** — a complete step, not a fragment of a bigger unseen plan.
+- **Independently reviewable** — its diff reads as one step in the story, not "part 3 of 7."
+- **Sized as a single reviewable unit** — following the project's convention for what belongs together (e.g., a behavior's tests paired with the code that satisfies it) — regardless of whether or when it's actually committed.
+
+This is Principle 1's "earn your abstractions" corollary applied to sequencing instead of code shape: premature generalization is additive — building structure to handle a requirement that doesn't exist yet. A plan that starts from the unified mechanism and only later shows the simple case is presenting the destination as the journey; it denies the reviewer (and future git-blame/bisect) the ability to see which requirement justified which piece of generality.

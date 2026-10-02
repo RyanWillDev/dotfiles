@@ -1,0 +1,87 @@
+#!/usr/bin/env python3
+"""stdio proxy between Claude Code's LSP client and Expert.
+
+Claude Code never answers server->client LSP requests (anthropics/claude-code
+#32595, closed not-planned), and Expert blocks on client/registerCapability
+before starting its project node — so every LSP call hangs. This shim answers
+those requests on the client's behalf (null result, per spec a void ack) and
+swallows them; all other traffic passes through byte-for-byte.
+"""
+import json
+import subprocess
+import sys
+import threading
+
+# Server->client requests Claude Code won't answer. registerCapability is the
+# one Expert hard-blocks on; the others get the same treatment so a future
+# Expert version can't reintroduce the hang through them.
+INTERCEPT = {
+    "client/registerCapability",
+    "client/unregisterCapability",
+    "window/workDoneProgress/create",
+}
+
+
+def read_message(stream):
+    """Read one LSP message; returns raw payload bytes or None on EOF."""
+    length = None
+    while True:
+        line = stream.readline()
+        if not line:
+            return None
+        stripped = line.strip()
+        if not stripped:
+            break
+        if stripped.lower().startswith(b"content-length:"):
+            length = int(stripped.split(b":", 1)[1])
+    if length is None:
+        return None
+    return stream.read(length)
+
+
+def write_message(stream, payload, lock):
+    with lock:
+        stream.write(b"Content-Length: %d\r\n\r\n" % len(payload) + payload)
+        stream.flush()
+
+
+def main():
+    server = subprocess.Popen(
+        ["expert", "--stdio"], stdin=subprocess.PIPE, stdout=subprocess.PIPE
+    )
+    server_stdin_lock = threading.Lock()
+
+    def client_to_server():
+        client_in = sys.stdin.buffer
+        while True:
+            payload = read_message(client_in)
+            if payload is None:
+                break
+            write_message(server.stdin, payload, server_stdin_lock)
+        server.terminate()
+
+    threading.Thread(target=client_to_server, daemon=True).start()
+
+    client_out = sys.stdout.buffer
+    client_out_lock = threading.Lock()
+    while True:
+        payload = read_message(server.stdout)
+        if payload is None:
+            break
+        try:
+            message = json.loads(payload)
+        except ValueError:
+            message = {}
+        if message.get("method") in INTERCEPT and "id" in message:
+            response = json.dumps(
+                {"jsonrpc": "2.0", "id": message["id"], "result": None}
+            ).encode()
+            write_message(server.stdin, response, server_stdin_lock)
+            continue
+        write_message(client_out, payload, client_out_lock)
+
+    sys.exit(server.wait())
+
+
+if __name__ == "__main__":
+    main()
