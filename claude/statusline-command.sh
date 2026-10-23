@@ -1,8 +1,11 @@
 #!/bin/bash
-# Claude Code status line: model name, context usage progress bar, and total
-# tokens in context.
+# Claude Code status line: git branch/worktree, model name, context usage
+# progress bar, and total tokens in context.
 
 input=$(cat)
+
+dir=$(echo "$input" | jq -r '.workspace.current_dir')
+git_worktree=$(echo "$input" | jq -r '.workspace.git_worktree // empty')
 
 model=$(echo "$input" | jq -r '.model.display_name')
 used_pct=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
@@ -38,6 +41,15 @@ else
 fi
 reset="\033[0m"
 dim="\033[2m"
+cyan="\033[36m"
+
+# Git branch and worktree line (omitted outside a git repo).
+branch=$(git -C "$dir" branch --show-current 2>/dev/null)
+if [ -n "$branch" ]; then
+  git_line="${cyan}${branch}${reset}"
+  [ -n "$git_worktree" ] && git_line="${git_line} ${dim}(worktree: ${git_worktree})${reset}"
+  printf "${git_line}\n"
+fi
 
 bar=""
 i=0

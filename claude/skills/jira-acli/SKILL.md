@@ -28,7 +28,7 @@ The `acli` tool must be installed and authenticated. Users should have already r
 
 **Always link a new or edited ticket to any other ticket you already know is related, including ones from earlier in the same session — this is not optional, and not something to wait for the user to request.** The goal is to leave breadcrumbs so a future reader can trace how tickets connect without being told separately. See Breadcrumb Links under Linking Work Items below for the two cases this covers and the exact command syntax.
 
-**Always confirm labels before creating a ticket, and components if the project has that field — via the AskUserQuestion tool, not a plain chat question, so the user picks from real values instead of free-typing.** Don't guess or silently skip either. See Ticket Fields: Labels, Components, and QA Notes below for how to check whether Components applies to a given project, how to source real values for both prompts, and for the same field-existence check to run before deciding whether QA Notes goes in a dedicated custom field or just the description.
+**Always confirm labels before creating a ticket, and components if the project has that field — via the AskUserQuestion tool, not a plain chat question, so the user picks from real values instead of free-typing.** Don't guess or silently skip either. See Ticket Fields: Labels and Components below for how to check whether Components applies to a given project and how to source real values for both prompts.
 
 **It's fine to transition a ticket to "In Progress" when you start work on it; only transition to "Done" (or any other terminal/complete status) when the user explicitly asks.** Marking something done is a visible, easy-to-get-wrong action — don't infer completion from context.
 
@@ -152,7 +152,7 @@ acli jira workitem edit --key "KEY-1" --summary "New summary" --yes
 acli jira workitem edit --from-json "update.json"
 ```
 
-### Ticket Fields: Labels, Components, and QA Notes
+### Ticket Fields: Labels and Components
 
 Before creating (or editing) a ticket, check these rather than guessing or silently omitting them:
 
@@ -180,11 +180,6 @@ Look at the top-level `components` array. Empty means the project has no compone
 - If the user's answer doesn't match anything in the real list, that's a deliberate request to add a new component (the org does allow adding more as needed) — say so explicitly and confirm they mean to create a new one before proceeding, rather than silently letting a near-match typo through as if it were an existing value.
 - **Components cannot be changed after creation.** `acli jira workitem edit --from-json` rejects both a top-level `components` key and an `additionalAttributes` wrapper as unknown fields — there is no edit-time path at all. If an existing ticket needs a component added or corrected, tell the user to do it manually in the Jira web UI; don't imply `acli` can fix it.
 
-**QA Notes — use the dedicated custom field when one exists, not just the description section.** Some projects have a "QA Notes" (or similarly named) custom field on the create/edit screen, distinct from the QA Notes section in the Standard Ticket Template below. Check for it by viewing an existing ticket of the same type with `--fields "*all" --json` and looking for a `customfield_XXXXX` whose field name is QA Notes / Testing Notes / similar. If it exists:
-- Populate it via `--from-json` as its own top-level key alongside `description` — match its actual format (plain string vs. ADF doc); don't assume it takes ADF just because `description` does.
-- Leave testing guidance out of the description body once the dedicated field exists, so there's one source of truth instead of two copies that can drift.
-
-If no such custom field exists for the project, fall back to the QA Notes section under the description, as in the Standard Ticket Template.
 
 ## Working with Descriptions: Atlassian Document Format (ADF)
 
@@ -237,8 +232,10 @@ Use this structure for all tickets:
 1. **Brief description** - Concise but complete overview of the work. Ground it in specifics (relevant files, config, related tickets, dates) rather than generic language.
 2. **Extra context sections** (h2/h3 headings, as needed) - If there's background, a design decision, or a domain rule the reader needs before the Acceptance Criteria make sense, give it its own headed section instead of folding it into the intro paragraph. Use h2 for a major section and h3 for its subsections.
 3. **Acceptance Criteria** (h3 heading) - **Numbered** (ordered list). Each item should be specific and independently verifiable, not a vague one-liner — break multi-part requirements into nested sub-lists rather than cramming them into one bullet.
-4. **Considerations** (h2 heading, only when there's a decision to be made) - Bullet list (not numbered) of open questions, tradeoffs, or things the implementer/reviewer needs to decide or watch for — e.g. scope boundaries, cross-references to related tickets or docs. Omit this section if there's nothing left undecided.
-5. **QA Notes** (h3 heading, if applicable) - Testing guidance for QA, often broken into labeled scenarios (bold labels like "Feature:", "Regression:", "Repro:"). Check first whether the project has a dedicated QA Notes custom field (see Ticket Fields: Labels, Components, and QA Notes, above) — if it does, put this content there instead of in the description.
+4. **Considerations** (h2 heading, if applicable) - Bullet list (not numbered) of tradeoffs, dependencies, or things the implementer/reviewer needs to watch for — e.g. scope boundaries, cross-references to related tickets or docs. Open questions don't go here. Omit this section if there's nothing to note.
+5. **Open Questions** (h2 heading, if applicable) - **Numbered** (ordered list) of questions that still need an answer, each its own item so it can be referenced by number ("Open Question 2"). Keep these out of Considerations. Omit the section if nothing is unresolved.
+
+**Don't write QA notes when creating or editing tickets** — neither in the description nor the `QA Notes` field. Leave testing guidance to whoever owns QA for the ticket.
 
 ### ADF Structure Reference and Links
 
@@ -252,7 +249,7 @@ Full JSON shapes for paragraphs, headings, ordered/nested lists, and strong/code
 
 ### Complete Ticket Template Example
 
-A full example payload assembling all of the above (summary, description with headings, nested acceptance criteria, considerations, QA notes) is in [ADF_REFERENCE.md](ADF_REFERENCE.md#complete-ticket-template-example).
+A full example payload assembling all of the above (summary, description with headings, nested acceptance criteria, considerations, open questions) is in [ADF_REFERENCE.md](ADF_REFERENCE.md#complete-ticket-template-example).
 
 ### Best Practices for ADF Descriptions
 
@@ -268,7 +265,7 @@ A full example payload assembling all of the above (summary, description with he
 
 ### Transitioning Work Items
 
-**Transitioning to `In QA`: check for the dev-tested path.** If the user is skipping the QA workflow to test the ticket themselves (typically for low-risk, unit-tested, or hard-to-test work — see `DevTested` under Ticket Fields: Labels, Components, and QA Notes above), add the `DevTested` label alongside the transition:
+**Transitioning to `In QA`: check for the dev-tested path.** If the user is skipping the QA workflow to test the ticket themselves (typically for low-risk, unit-tested, or hard-to-test work — see `DevTested` under Ticket Fields: Labels and Components above), add the `DevTested` label alongside the transition:
 ```bash
 acli jira workitem edit --key "KEY-1" --labels "DevTested"
 acli jira workitem transition --key "KEY-1" --status "In QA"

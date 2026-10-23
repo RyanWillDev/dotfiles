@@ -196,7 +196,7 @@ A `link` mark alongside `strong` is fine — this issue is specific to pairing `
         "content": [
           {
             "type": "text",
-            "text": "Acceptance Criteria:"
+            "text": "Acceptance Criteria"
           }
         ]
       },
@@ -266,7 +266,7 @@ A `link` mark alongside `strong` is fine — this issue is specific to pairing `
         "content": [
           {
             "type": "text",
-            "text": "Considerations:"
+            "text": "Considerations"
           }
         ]
       },
@@ -306,48 +306,48 @@ A `link` mark alongside `strong` is fine — this issue is specific to pairing `
       {
         "type": "heading",
         "attrs": {
-          "level": 3
+          "level": 2
         },
         "content": [
           {
             "type": "text",
-            "text": "QA Notes:"
+            "text": "Open Questions"
           }
         ]
       },
       {
-        "type": "paragraph",
+        "type": "orderedList",
+        "attrs": {
+          "order": 1
+        },
         "content": [
           {
-            "type": "text",
-            "text": "Feature:",
-            "marks": [
+            "type": "listItem",
+            "content": [
               {
-                "type": "strong"
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Should X apply to archived records too?"
+                  }
+                ]
               }
             ]
           },
           {
-            "type": "text",
-            "text": " Test scenarios A, B, C. Verify edge case handling."
-          }
-        ]
-      },
-      {
-        "type": "paragraph",
-        "content": [
-          {
-            "type": "text",
-            "text": "Regression:",
-            "marks": [
+            "type": "listItem",
+            "content": [
               {
-                "type": "strong"
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Who owns the follow-up for Y?"
+                  }
+                ]
               }
             ]
-          },
-          {
-            "type": "text",
-            "text": " Ensure existing feature Y still works correctly."
           }
         ]
       }

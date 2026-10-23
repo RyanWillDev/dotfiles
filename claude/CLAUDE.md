@@ -18,6 +18,26 @@
 
 **Name concepts, then work them one at a time.** When multiple distinct findings, ideas, or problems surface, give each a short label before explaining it — a handle we can both reuse later without re-deriving the explanation. Then say how many there are and go through them one at a time. Don't front-load all of them in one dense block — let the conversation move between them.
 
+## Delegation
+
+Delegate to keep the main context for design, debugging, and conversation. These triggers override the default "when in doubt, don't spawn" lean.
+
+**Noisy commands → Haiku.** Full test suites, dialyzer, coverage, and full lint runs go to a Haiku agent that returns only failures (name, `file:line`, error; max ~10) plus the tool's summary line verbatim. If the summary count doesn't match the entries returned, rerun that part myself. Targeted runs (single file or line) stay in main context. If Haiku summaries prove unreliable, switch this rule to Sonnet.
+
+**Search sweeps → Explore on Sonnet.** If answering means opening more than ~3 files, or I don't know where the answer lives, use an Explore agent with `model: "sonnet"` that returns `file:line` references and a short answer. Read the exact lines myself before editing them.
+
+**Settled implementation → Sonnet.** Once a spec is agreed (behavior, test cases, files), a Sonnet agent implements it regardless of size. It works through the spec in order, runs targeted tests and the project's lint, never commits, and stops to report spec gaps instead of guessing. I review `git diff` before calling it done, then summarize and point Ryan at the diff. Failures the agent can't fix come back to me as debugging.
+
+**Keep the default model** for design, debugging, review, and anything requiring judgment calls. Forks ignore the model override, so use a fresh agent with a complete brief when a cheaper model is the point.
+
+**Brief contract.** Every implementation brief includes:
+- Load the language skill for the files being touched (e.g. `elixir` for `.ex`/`.exs`) and `software-design-philosophy`.
+- No commits, no pushes.
+- Feedback memories relevant to the task, copied verbatim, since subagents may not see memory.
+- Done means targeted tests pass and the project's lint is clean.
+- Stop rule: report spec gaps instead of guessing.
+- Report per unit of work: what changed, verbatim test/lint summary lines, assumptions made.
+
 ## Hard Rules
 
 **No building during design/research/brainstorming/planning.** When the goal is designing, researching, brainstorming, or planning — whether Ryan says so explicitly or the task is clearly exploratory — stay in information-gathering mode only: reading, searching, running read-only commands. Don't write or edit files, run code-changing commands, or otherwise start building or solving until we've reached mutual agreement on the approach and the goal. If you're unsure whether we've reached that point, ask.
