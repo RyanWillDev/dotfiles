@@ -5,28 +5,32 @@ local M = {}
 function M.config()
   vim.treesitter.language.register('tsx', 'typescriptreact')
 
-  require('nvim-treesitter').setup()
-  require('nvim-treesitter').install {
-    'bash',
-    'diff',
-    'erlang',
-    'git_rebase',
-    'gitcommit',
-    'go',
-    'javascript',
-    'lua',
-    'markdown',
-    'markdown_inline',
-    'proto',
-    'python',
-    'ruby',
-    'rust',
-    'sql',
-    'terraform',
-    'tmux',
-    'tsx',
-    'typescript',
-  }
+  require('nvim-treesitter').setup({
+    ensure_installed = {
+      'bash',
+      'diff',
+      'elixir',
+      'erlang',
+      'git_rebase',
+      'gitcommit',
+      'go',
+      'heex',
+      'html',
+      'javascript',
+      'lua',
+      'markdown',
+      'markdown_inline',
+      'proto',
+      'python',
+      'ruby',
+      'rust',
+      'sql',
+      'terraform',
+      'tmux',
+      'tsx',
+      'typescript',
+    }
+  })
 
   -- nvim-treesitter main removed the highlight module; Neovim only auto-starts
   -- treesitter for its bundled languages. Enable it for everything else.
