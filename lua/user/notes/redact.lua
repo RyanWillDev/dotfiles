@@ -2,6 +2,8 @@ local vim = _G.vim
 local M = {}
 
 local ns = vim.api.nvim_create_namespace('redact')
+-- Separate from ns because apply clears ns on every run.
+local reveal_ns = vim.api.nvim_create_namespace('redact_reveal')
 
 local function setup_highlights()
   local normal_hl = vim.api.nvim_get_hl(0, { name = 'Normal', link = false })
@@ -47,11 +49,11 @@ local function find_regions(bufnr)
   return regions
 end
 
--- Per-region reveal state (markers stay, overlay is toggled)
-local revealed_regions = {}
-
-local function region_key(r)
-  return r[1] .. ':' .. r[2] .. ':' .. r[3] .. ':' .. r[4]
+-- Reveal state is an extmark at the region's `!>`, so it moves with edits.
+-- Returns the mark id or nil.
+local function reveal_mark(bufnr, r)
+  local marks = vim.api.nvim_buf_get_extmarks(bufnr, reveal_ns, { r[1], r[2] }, { r[1], r[2] }, {})
+  return marks[1] and marks[1][1]
 end
 
 local function apply(bufnr)
@@ -59,7 +61,7 @@ local function apply(bufnr)
   vim.api.nvim_buf_clear_namespace(bufnr, ns, 0, -1)
 
   for _, r in ipairs(find_regions(bufnr)) do
-    if not revealed_regions[region_key(r)] then
+    if not reveal_mark(bufnr, r) then
       local sl, sc, el, ec = r[1], r[2], r[3], r[4]
 
       for lnum = sl, el do
@@ -103,11 +105,11 @@ local function reveal_at_cursor()
     end
 
     if inside then
-      local key = region_key(r)
-      if revealed_regions[key] then
-        revealed_regions[key] = nil
+      local mark = reveal_mark(bufnr, r)
+      if mark then
+        vim.api.nvim_buf_del_extmark(bufnr, reveal_ns, mark)
       else
-        revealed_regions[key] = true
+        vim.api.nvim_buf_set_extmark(bufnr, reveal_ns, sl, sc, {})
       end
       apply(bufnr)
       return
@@ -162,7 +164,7 @@ vim.api.nvim_create_autocmd({ 'BufReadPost', 'TextChanged', 'InsertLeave' }, {
 vim.api.nvim_create_autocmd({'BufLeave', 'FocusLost'}, {
   pattern = '*.md',
   callback = function(ev)
-    revealed_regions = {}
+    vim.api.nvim_buf_clear_namespace(ev.buf, reveal_ns, 0, -1)
     apply(ev.buf)
   end,
 })
