@@ -1,0 +1,4 @@
+interface:
+  display_name: "Skill Authoring"
+  short_description: "Design predictable Codex skills"
+  default_prompt: "Use $skill-authoring to create or improve this Codex skill so its behavior is focused and predictable."

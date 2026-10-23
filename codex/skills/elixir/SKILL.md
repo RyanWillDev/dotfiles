@@ -1,6 +1,6 @@
 ---
 name: elixir
-description: Use before modifying, reviewing, or debugging `.ex` or `.exs` files. Provides project-specific Elixir guidance and points to `style.md` and the `style/` references for on-demand conventions covering naming, testing, observability, Ecto, comments, state management, and dialyzer.
+description: "Use before modifying, reviewing, or debugging `.ex` or `.exs` files. Provides project-specific Elixir guidance and points to `style.md` and the `style/` references for on-demand conventions covering naming, testing, observability, Ecto, comments, state management, and dialyzer."
 ---
 
 # Elixir Development
@@ -20,6 +20,10 @@ This skill provides expert guidance for Elixir development in this codebase, fol
 - ANY task that involves Elixir code changes
 
 ### Do NOT proceed with Elixir file modifications without invoking this skill first.
+
+### Always invoke `software-design-philosophy` alongside this skill
+
+This skill covers Elixir-specific conventions only. It does not restate the language-agnostic design principles (simplicity, naming, abstraction, sequencing). Whenever this skill is invoked, also invoke `software-design-philosophy` in the same turn — don't rely on it triggering separately.
 
 ### Examples of Required Invocation:
 
@@ -54,7 +58,7 @@ This skill provides expert guidance for Elixir development in this codebase, fol
 
 ### When to Read style.md
 
-Read the relevant style reference in these situations:
+Read `style.md` in these situations:
 
 | Task                        | Read This File                       |
 | --------------------------- | ------------------------------------ |
@@ -75,7 +79,7 @@ User requests Elixir task
   ↓
 Identify what you'll be writing (functions, tests, metrics, etc.)
   ↓
-Read the relevant sections of `style.md` and the linked style files
+Read relevant sections of style.md by reading it
   ↓
 Implement following the documented patterns
   ↓
@@ -206,17 +210,17 @@ User: "Add a new webhook validation function"
 
 ## Maintaining This Skill
 
-This skill and `style.md` exist to bridge the gap between Codex's default Elixir patterns and the project's preferred patterns. When using this skill, actively identify and document these differences.
+This skill and style.md exist to bridge the gap between Codex's learned Elixir patterns and the user's preferred patterns. When using this skill, actively identify and document these differences.
 
 ### Purpose
 
-Codex has seen Elixir code from many sources, which may differ from this project's conventions. The skill plus `style.md` system captures these divergences to ensure consistent, preferred patterns.
+Codex's training includes Elixir code from many sources, which may differ from this project's conventions. The skill + style.md system captures these divergences to ensure consistent, preferred patterns.
 
 ### Common Divergences to Watch For
 
 Codex's natural tendencies vs this project's preferences:
 
-| Codex's Default                                           | This Project Prefers                                   | Document In                            |
+| Codex's Default                                          | This Project Prefers                                   | Document In                            |
 | --------------------------------------------------------- | ------------------------------------------------------ | -------------------------------------- |
 | Multiple separate assertions                              | Pattern matching in single assertion                   | style.md - Testing Patterns            |
 | `Map.has_key?()` checks                                   | Pattern matching with implicit key validation          | style.md - Testing Patterns            |

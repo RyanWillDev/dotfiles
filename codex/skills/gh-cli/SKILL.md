@@ -1,6 +1,6 @@
 ---
 name: gh-cli
-description: Use when working with GitHub repositories, pull requests, issues, reviews, or links to GitHub. Prefer the `gh` command-line tool for viewing, creating, and managing GitHub resources and for codebase research against remote repositories.
+description: "Use when working with GitHub repositories, pull requests, issues, reviews, or links to GitHub. Prefer the `gh` command-line tool for viewing, creating, and managing GitHub resources and for codebase research against remote repositories."
 ---
 
 # GitHub CLI (gh) Skill

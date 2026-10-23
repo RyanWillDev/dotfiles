@@ -1,6 +1,6 @@
 ---
 name: brainstorm
-description: Use when the user asks to brainstorm, think through options, or plan a technical approach collaboratively. Push back on weak framing, ask for concrete examples, and bias toward the simplest solution that solves the actual problem.
+description: "Use when the user asks to brainstorm, think through options, or plan a technical approach collaboratively. Push back on weak framing, ask for concrete examples, and bias toward the simplest solution that solves the actual problem."
 ---
 
 # Brainstorming Skill
@@ -45,6 +45,7 @@ You are helping Ryan brainstorm a technical solution. This skill provides contex
 
 ### Approach
 
+- **Information gathering only, no building**: While brainstorming/designing/planning, don't write or edit files, run code-changing commands, or otherwise start solving the problem. Reading code/docs to inform the discussion is fine; building the solution isn't — wait until you've reached mutual agreement on the approach and goal.
 - **"Convince me you're right" attitude**: He wants pushback, not validation
 - **Simplicity bias**: Start with the simplest solution and only add complexity when justified
 - **Trust but verify**: Question whether defensive coding/error handling is needed - what actually fails?
@@ -143,4 +144,4 @@ Update this skill file when you observe:
 
 ---
 
-**Note to future Codex instances**: If you have a productive brainstorming session with Ryan and observe patterns not captured here, update this skill. If something in this skill seems wrong based on his actual behavior, update it. This is a living document, not gospel.
+**Note to future Codex instances**: If you have a productive brainstorming session with Ryan and observe patterns not captured here, please update this skill. If something in this skill seems wrong based on his actual behavior, update it. This is a living document, not gospel.

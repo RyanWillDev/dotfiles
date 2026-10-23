@@ -10,6 +10,24 @@
   - ❌ `patients` — tells the reader what the values are, but not how to look things up
   - Applies to any lookup map where the key is non-obvious from the value type alone
 
+## Function Naming
+
+- **Name functions for what they do, not what they return**
+
+  A function's name should tell the caller something they can't already see. Return type is usually visible from context — what isn't visible is the approach, source, or strategy. Naming by return type repeats information the caller already has; naming by approach gives them something new.
+
+  ```elixir
+  # GOOD: names describe the approach — distinguishes the two functions
+  defp from_cache(key), do: Cache.get(key)
+  defp from_database(key), do: Repo.get_by(Record, key: key)
+
+  # BAD: names describe the return type — says nothing about how they differ
+  defp cached_record(key), do: Cache.get(key)
+  defp database_record(key), do: Repo.get_by(Record, key: key)
+  ```
+
+  This is most apparent when functions are parallel alternatives that all return the same type — naming by return type is especially unhelpful when the return is identical.
+
 ## Function Organization
 - **Inline simple helper functions** rather than creating separate private functions
   - If a helper is only used once and is simple (1-3 lines), inline it at the call site

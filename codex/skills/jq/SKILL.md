@@ -1,6 +1,6 @@
 ---
 name: jq
-description: Use when the user needs to parse, query, transform, validate, or reformat JSON. Covers extracting fields, filtering arrays, reshaping JSON structures, pretty-printing output, and processing JSON from files, stdin, or command output with `jq`.
+description: "Use when the user needs to parse, query, transform, validate, or reformat JSON. Covers extracting fields, filtering arrays, reshaping JSON structures, pretty-printing output, and processing JSON from files, stdin, or command output with `jq`."
 ---
 
 # jq - Command-line JSON Processor

@@ -17,4 +17,4 @@
 
 ## Migrations & Indexes
 
-When writing Ecto migrations that add indexes, invoke the **postgres** skill for guidance on index type selection and column ordering. See `~/.claude/skills/postgres/SKILL.md`.
+When writing Ecto migrations that add indexes, invoke the **postgres** skill for guidance on index type selection and column ordering. See `~/.codex/skills/postgres/SKILL.md`.

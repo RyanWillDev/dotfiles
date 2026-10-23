@@ -1,0 +1,4 @@
+interface:
+  display_name: "Task"
+  short_description: "Create and track isolated tasks"
+  default_prompt: "Use $task to start this work in an isolated task directory with a durable task record."

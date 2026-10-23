@@ -1,0 +1,4 @@
+interface:
+  display_name: "Writing for Humans"
+  short_description: "Make prose concise and scannable"
+  default_prompt: "Use $writing-for-humans to rewrite this draft for clarity, concision, and human readers."

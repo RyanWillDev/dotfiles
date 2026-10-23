@@ -9,6 +9,11 @@ Principles that guide how to think about code, not what syntax to use. These are
 
 ## When to Consult This Skill
 
+**Always** — reading or writing code in any language:
+- Opening, reading, or exploring a code file
+- Writing new code or editing existing code
+- Any task where code appears in the context
+
 **Proactive** — building or changing code:
 - Choosing between two implementation approaches
 - Extracting a helper, utility, or abstraction
@@ -22,6 +27,22 @@ Principles that guide how to think about code, not what syntax to use. These are
 **Planning & debugging** — understanding before acting:
 - Debugging a chain of failures — trace to the root cause before deciding on a fix
 - Weighing whether to fix locally or address an upstream design issue
+- For diagnosis *method* — isolating causes, simplifying repros, verifying hypotheses — see the `debugging` skill; this skill covers the design decisions a diagnosis surfaces (how to fix, what shape), not how to find the bug.
+
+**Reviewing** — judging code, not just writing it:
+- Reviewing a diff, PR, or change — judge the *shape*, not just whether it's correct within the structure as given
+- Reviewing your own change before presenting it
+- Catching yourself about to call a finding "tidiness"/"minor" or to offer an "option A or B" menu (see Principle 6)
+
+## Simple vs. Easy
+
+Two words used interchangeably that mean different things (Rich Hickey, "Simple Made Easy"). **Simple** (Latin *sim-plex*, "one fold") means unentangled — free of interleaving with something else. It's *objective*: look at the code and check whether one thing is braided together with another. **Easy** means near — at hand, familiar, or within current skill. It's *relative*: easy for whom?
+
+Simple doesn't mean "fewer things" — cardinality and entanglement are different axes. Untangling one complected thing often produces *more* named things, not fewer (see the note on Principle 1, below). What matters is whether those things are independent, not how many there are.
+
+Hickey's word for the failure is **complecting** — braiding together things that could have been independent, so you can no longer reason about one without the other. Its opposite is **composing** — placing simple things together without entangling them. Naming a review comment this way ("this complects X and Y") is a sharper, more falsifiable claim than "this feels messy" — use it that way.
+
+This is the axis most of the principles below operate on, named once here so they don't each have to re-derive it.
 
 ## Principles
 
@@ -32,6 +53,8 @@ Research shows humans have a cognitive bias toward addition — when solving pro
 This bias is especially strong in code. When existing code causes friction, the instinct is to add: a wrapper, a transaction, a special-case function, a compatibility shim. Each addition is code that exists only to compensate for a design problem — and it has to be understood, tested, and maintained forever.
 
 **Before adding, ask whether you can subtract.** Split an overloaded function. Remove a responsibility that doesn't belong. Narrow an interface. The best solution often has less code than what you started with.
+
+(Splitting or naming a role is still subtraction in this sense, even when the result has more named parts than you started with — you're removing a hidden coupling, not reducing a count. See Simple vs. Easy, above: cardinality isn't the target, entanglement is.)
 
 **The signal that you're adding when you should subtract:** your solution needs a comment explaining *why* it exists. That comment is compensating for a design problem upstream.
 
@@ -48,7 +71,35 @@ The subtractive solution had less code than any workaround and left the module b
 - "Is the existing abstraction doing too much?" before "What do I add on top?"
 - "Can I solve this by splitting or removing something?" before reaching for new code
 
+This is the keystone principle. Three corollaries follow from it — *earn your abstractions* and *the minimal change carries information* (both below), plus **1a** (promoted to its own numbered subsection because it's referenced by anchor elsewhere and carries a code example). Principles 4 and 6 are also applications of it.
+
 **Corollary — earn your abstractions.** The additive bias also shows up as premature extraction. Before creating a helper, wrapper, or utility, ask "why is this needed?" Simple inline code is often clearer than an abstraction with a name to learn. Only extract when there's clear reuse or the abstraction genuinely clarifies. Three similar lines of code is better than a premature abstraction.
+
+The mirror image is just as real: when a block reappears with only the nouns swapped — same operation, different field/source/label — that is earned reuse, and copying it instead of collapsing it is the additive mistake. When you do collapse it, parameterize over the **values that differ** (pass the extracted list, the lookup source, the label), not over a **discriminator you branch on inside the helper**. A `case kind do …` inside the "shared" function hasn't removed the branch, only relocated it (see 1a) — the values are what vary, so the values are what you pass.
+
+**Corollary — the minimal change carries information; extra is misinformation.** A change should include only what the job demonstrably needs. A diff is read as a *claim about what mattered* — a reviewer, a `git bisect`, and a future debugger all trust that the change *is* the change. Every incidental edit (a drive-by rename, an unrelated reformat, a "while I'm here" tweak, a defensive guard you never proved necessary) is a false signal: it tells the next reader "this was required," when it wasn't, and it buries the load-bearing edit in noise. So narrow the change to what you can show is essential — if you can remove a line and the goal still holds, it was never part of the job. Work that's genuinely worth doing but isn't part of *this* job belongs in its own change.
+
+### 1a. Explicit Branching Is Not Noise
+
+A corollary to Principle 1: resist refactoring explicit branching into indirection just to eliminate a `case` or `if`. Keeping a decision's arms together — in one `case` statement — is almost always clearer than distributing them across function clauses or helpers that must be read in combination to understand the decision.
+
+```elixir
+# GOOD: the decision and its outcomes are co-located
+case items do
+  [item] -> resolve(item) || default
+  _      -> default   # zero or multiple: always fall back
+end
+
+# LESS GOOD: looks simpler, but hides the branching across two clauses
+defp try_resolve([item]), do: resolve(item)
+defp try_resolve(_),      do: nil
+
+try_resolve(items) || default
+```
+
+The second form appears to eliminate the `case`, but it has only moved the branching — a reader now has to hold two function clauses in mind to understand a single decision. The `case` was not the problem; it was the honest expression of the logic.
+
+**The signal that you've over-refactored:** a helper whose only purpose is to return `nil` for the uninteresting case, so the caller can use `||` to reach a default. That nil is doing the work the `case` arm was already doing explicitly.
 
 ### 2. Comments Mean "Why", Not "How"
 
@@ -61,6 +112,14 @@ Follow the *Philosophy of Software Design* approach: comments should explain thi
 - **Skip:** Repeats the name of a function, class, or test group
 
 Good comments explain the forces that shaped the code — why this approach over an alternative, what constraint makes this necessary, what would break if you changed it. Bad comments narrate what the code does, which the reader can already see.
+
+**Writing a comment well:**
+
+- **Name the subject explicitly.** Don't use pronouns or vague references. "retry_budget is also decremented here" is immediately parseable; "also decremented here" leaves the reader guessing what "it" is. The same trap applies when two different values share a name: reusing the identical noun for both (e.g. "checksum" for the value being written and the value it's overwriting) forces the reader to infer which one each mention means. Give at least one a distinguishing label — "the existing value from a prior run" — instead of repeating the name.
+- **Put volatile context in parentheticals.** When a comment references current implementation state that could change, parenthesize it. The invariant — the *why* — should stand on its own; the parenthetical gives orientation without making the comment load-bearing on details that may rot.
+- **Clarity is not the same as brevity.** Trimming a comment until the subject is ambiguous is not an improvement. A comment that's slightly longer but unambiguous is better than one that's terse but forces the reader to infer what's being said.
+- **At a bug-fix or workaround site, keep the comment to the causal core.** State cause → consequence in one or two lines. Save the mechanism's full chain of effects, alternatives considered, and cross-references to sibling files for the commit message, PR description, or a decision log — not the source comment. Check the codebase for an established convention on anchoring such comments to a tracking ID (e.g. existing `# TICKET-123:` or CVE/issue-ID comments elsewhere) and follow it if present — that's Principle 3 (local precedent over a general "don't reference tickets in code" default), applied to comments specifically.
+- **Distribute explanation across the lines it belongs to; don't front-load it into one block.** When a short sequence of code carries several facts that only matter one at a time — why this match can't crash, why *this* value gets used two lines later, why the next call needs the whole list instead of one item — attach each fact to the line it explains, in the order the reader reaches them. One comment justifying four downstream decisions at once forces the reader to hold all four in mind before they've seen any of the code that needs them; as the code unfolds line by line, let the comments unfold with it. Also don't restate a fact a nearby comment already covers (a sibling function's header, a module attribute's own comment) — trust it's already been said.
 
 ### 3. Consistency Over Personal Preference
 
@@ -94,3 +153,163 @@ An untyped dictionary as a parameter tells the caller nothing about what a funct
 This also applies to function behavior. Don't hide decisions inside a function that the caller should own. If a behavior is sometimes desired and sometimes not (e.g., setting a timestamp, activating a flag), make it an explicit argument — don't default it internally. Let the caller state their intent; let the function do the work.
 
 Clojure's spec library is a good reference point: describe the shape of data at boundaries without creating rigid types that couple everything together. Specs live at the edges, not in the core.
+
+### 6. Name the Design Smell; Don't Soften It
+
+When reviewing code — yours or someone else's — judge whether the structure is the right *shape*, not just whether the change is correct within the structure as given. The trap is anchoring on what's in front of you ("is this diff correct?") instead of questioning the frame ("is this the right shape?").
+
+Two signals in your own writing mean you've spotted a design problem and are softening it into a style note:
+
+- **Calling something "tidiness," "minor," or "nitpick."** You're usually treating a symptom while ignoring the root cause it points to. Example: flagging a repeated `to_string(value)` conversion as "tidiness to DRY up" — when the real issue is that `value` shouldn't be that type at all if every consumer converts it. The fix isn't to hide the conversion in a helper; it's to subtract the wrong representation (Principle 1).
+- **Offering "option A or option B."** You usually already have an opinion on which is better and are offloading the decision to avoid committing. A menu reads as thorough but is weaker review — say which one and why.
+
+When you catch either phrase forming, stop and ask whether you've found a design issue. If so, name it directly and recommend.
+
+This is Principle 1 applied to review: "tidiness" is the additive instinct (hide the symptom) where subtraction (fix the representation) is the better answer.
+
+Naming which kind of complexity you're looking at sharpens this further. **Incidental** complexity is "your fault" — it came from a construct or tool choice and can be designed away (Principle 1 applies). **Inherent** complexity is the problem's own difficulty — genuine resource contention, a domain that's actually hard — and no amount of rearranging code removes it; the honest move is to manage it, not keep proposing refactors that can't touch it. Say which one you mean before recommending a fix: treating inherent complexity as a design smell produces changes that can't work, and waving off incidental complexity as "just how it is" misses a real fix.
+
+### 7. Name the Nothing (Active Nothing)
+
+The nothing in your domain is already there — a real participant that reveals its presence by the absence of code. When you write a nil-check, you aren't guarding against an edge case; you're encountering a concept that doesn't have a name yet. Zero didn't exist for most of human history. Before we named it, there were things we couldn't do. Your domain has zeros — absences that are actually something once named.
+
+A nil-check at a call site is how an unnamed concept announces itself. (Sandi Metz, RailsConf 2015; Bruce Anderson, "Active Nothing".)
+
+**Conditions breed.** One nil-check means there will be more — scattered across every caller, every future caller, every path through the system. The fix: don't check for nothing; give nothing a representation that participates in the same operations as something. Call sites stop branching because both paths behave the same way.
+
+**This is not OOP-specific.** Every paradigm has the same problem and a native form of the fix:
+
+- **OOP (Null Object pattern):** Make "nothing" an object with the same interface as the real thing. `NullDuck` implements `quack`; callers never branch.
+
+  ```ruby
+  find_duck || NullDuck.new  # .quack is unconditional — NullDuck owns its behavior
+  ```
+
+- **FP (same-type value):** Return a value of the *same type* that participates in the same operations — not a wrapper that requires unwrapping. `Maybe`/`Option` defers the branch to the edge (`or_else`, `unwrap_or`); it doesn't eliminate it.
+
+  When "nothing" should be transparent, return the **identity element** for the operation (`fn x -> x end`, `0`, `[]`). When it has domain-specific behavior, return a concrete value with the right defaults.
+
+  ```elixir
+  # Transparent: a discount that changes nothing (identity)
+  find_discount(order) || &Function.identity/1
+
+  # Domain-specific: a missing animal with defined behavior
+  find_animal(id) || %Animal{sound: "...", name: "Unknown"}
+  ```
+
+  The empty list is the canonical case — `map`/`filter`/`reduce` over `[]` produce correct results with no guard; returning `[]` instead of `nil` eliminates every empty-check at call sites.
+
+**When the nil comes from an external API you don't control:** wrap the API in your own adapter — catch the message, make the external call, handle the nil there, and return a domain object. Callers talk to your adapter; they never touch the external API or see a nil. One place owns the condition.
+
+```ruby
+# OOP — adapter calls the external API and returns a real domain object
+class AnimalService
+  def find(id)
+    ExternalApi.find_animal(id) || NullAnimal.new
+  end
+end
+# callers: AnimalService.new.find(id).name — never a branch
+```
+
+```elixir
+# FP — one function owns the external call and the nil case
+defmodule AnimalService do
+  def find(id) do
+    case ExternalApi.find_animal(id) do
+      nil    -> missing_animal()
+      animal -> animal
+    end
+  end
+end
+```
+
+**When to apply it:**
+
+- A nil-check (or `present?`, `exists?`, empty-guard) exists at a call site — even one is the concept announcing itself
+- A function returns `nil`/`null`/`None` to mean "no result" and callers branch on it
+- A collection can be empty and every consumer has a separate empty-guard
+- An external API is untrustworthy and callers scatter guards around every call to it
+
+**The design insight:** the named nothing is not a workaround — it is the concept that was missing. This is Principle 1 applied to the case where what's being checked is absence itself.
+
+### 8. Specialization Is by Definition at Least Two Things
+
+The urge to subclass is a signal, not a solution. When you feel it, you've already found two things: the variant *and* the default — even if the default "looks like nothing." Both are real. The mistake is to name only the variant and hide the default inside the parent class, where it becomes invisible.
+
+Metz's lesson from the House that Jack Built: once you have Random House and Echo House as subclasses, you can't combine them. Inheritance worked for one specialization, then broke at two. The failure was in assuming the thing that varied (order, formatting) belonged *inside* the class rather than *outside* it as an injectable role.
+
+**The move:** isolate what varies → name it → define a role → inject the players.
+
+**OOP:** the role becomes an interface; players are objects injected at construction or call time.
+
+```ruby
+# Before: House subclassed for ordering; can't compose ordering + formatting
+class RandomHouse < House
+  def data = super.shuffle
+end
+
+# After: ordering is a named role, injected — composes freely
+House.new(order: RandomOrder.new, format: EchoFormat.new).recite
+```
+
+**FP:** the role is a function parameter; players are functions passed as arguments. Branching on a variant *inside* a function is the FP equivalent of subclassing — the fix is the same.
+
+```elixir
+# Before: dispatch on a variant — ordering hidden inside the function
+def recite(data, :random),   do: data |> Enum.shuffle() |> build_lines()
+def recite(data, :in_order), do: data |> build_lines()
+# can't combine :random with :echo — same problem as inheritance
+
+# After: order is a named parameter (a function); players are just functions
+def recite(data, order \\ &Function.identity/1, format \\ &identity_format/1) do
+  data |> order.() |> format.() |> build_lines()
+end
+
+recite(data, &Enum.shuffle/1, &echo/1)  # random + echo — free composition
+```
+
+The naming discipline is the same across paradigms: what you name, you can vary independently.
+
+This is Liskov's abstract data type, in code-shape form: "the programmer is concerned only with the behavior which that object exhibits... but not with any details of how that behavior is achieved" (*Programming with Abstract Data Types*, 1974). An abstraction is fully specified by its operations — the *what*; the representation behind it — the *how* — is free to change as long as those operations still hold. Hickey's version of the same rule: strictly separating what from how is what makes how somebody else's problem. Watch for a *how* leaking into a *what* even without a concrete type forcing it — an iteration order a caller starts depending on, a sort a function's name never promised, `fold`'s implicit left-to-right pass. If a caller can come to depend on it, it's part of the interface whether you documented it or not.
+
+The subclass felt easy because the *name* (Random House) seemed to describe a thing. The name was misleading — what actually varied was *order*, a role that any house could accept. Naming it correctly made the combination obvious and free.
+
+**The signal:** you subclass to specialize one thing and immediately realize you need another subclass for a second thing, and can't combine them. That's the moment to find what varies, name it, and inject it.
+
+**The connection:** Principle 7 (Active Nothing) is a specific case of this. The null object *is* the default specialization — the one that "looks like nothing." Before you name it, you compensate with conditions. After you name it, you inject it like any other player. Both patterns are the same idea: unnamed roles breed conditions; named roles enable composition.
+
+### 9. State Complects Value and Time
+
+A mutable reference conflates two things that should be independent: *what* the value is, and *when* you asked. Call the same getter twice and get two different answers — every consumer now has to reason about timing, not just data.
+
+Elixir mostly avoids this by construction: rebinding a name isn't mutation, and anywhere state genuinely exists, it already sits behind a process boundary (`GenServer`, `Agent`) — callers get one coherent snapshot per message, not a shared mutable structure they can alias. That boundary exists precisely to keep value and time from complecting; the failure mode isn't gone, it's fenced in.
+
+It still shows up in two places:
+
+- **Reaching for a raw escape hatch** — `:ets`, `Process.put`, config read mid-request from somewhere mutable — where the language's usual guarantee doesn't apply.
+- **Letting a process's state become an everything-bucket.** A `GenServer` holding a dozen unrelated fields still complects value and time for each of them; sampling `state` at two points gives two different composite answers even though only one field changed. Keep a process's state to one coherent concept, not a dumping ground.
+
+In languages without an enforced boundary (mutable objects passed by reference, shared globals), this is the default failure mode, not the exception — every plain `var` conflates value and time. The fix is the same: isolate the mutation behind something that hands out a stable value per ask, rather than letting statefulness leak through every caller.
+
+### 10. Don't Mistake Organization for Simplicity
+
+Separate files, modules, or classes that never call each other can still be fully complected — if each one presumes facts about the other's internal state or invariants that aren't expressed anywhere. Modularity is what makes simplicity possible; it doesn't guarantee it. You can build "modular" software this way and get none of the benefits.
+
+Two independent tests catch this:
+
+- **Hickey's question:** can you change A's internals without knowing anything about B's, even though they never call each other? If changing one silently breaks the other, they were never separate — the separation was cosmetic.
+- **Ousterhout's question** (*A Philosophy of Software Design* — deep vs. shallow modules): does this module's interface actually hide meaningful complexity, or is its interface about as complicated as what's behind it? A shallow module — many small classes each doing one trivial thing, one-to-one with what they wrap — imposes the cost of an abstraction (a name to learn, an indirection to trace) without the benefit: nothing was actually hidden.
+
+Both questions point at the same failure: code organization was mistaken for the thing it's supposed to produce. When reviewing something described as "modular," ask directly whether it passes either test — don't accept file/class separation as evidence on its own.
+
+### 11. Tell the Story of the Evolution
+
+When an implementation involves multiple genuinely different requirements building on each other, don't land the final, unified design as one large change. Build it in the order the design would actually be discovered: start from the simplest case, and generalize only when a second, genuinely different requirement demands it, not because the general form is foreseeable.
+
+Each phase should be:
+
+- **Independently correct and tested** — a complete step, not a fragment of a bigger unseen plan.
+- **Independently reviewable** — its diff reads as one step in the story, not "part 3 of 7."
+- **Sized as a single reviewable unit** — following the project's convention for what belongs together (e.g., a behavior's tests paired with the code that satisfies it) — regardless of whether or when it's actually committed.
+
+This is Principle 1's "earn your abstractions" corollary applied to sequencing instead of code shape: premature generalization is additive — building structure to handle a requirement that doesn't exist yet. A plan that starts from the unified mechanism and only later shows the simple case is presenting the destination as the journey; it denies the reviewer (and future git-blame/bisect) the ability to see which requirement justified which piece of generality.

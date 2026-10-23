@@ -1,0 +1,4 @@
+interface:
+  display_name: "Validate Claim"
+  short_description: "Verify claims independently"
+  default_prompt: "Use $validate-claim to falsify or verify this factual claim against the strongest available evidence."

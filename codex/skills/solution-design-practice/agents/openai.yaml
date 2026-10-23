@@ -1,0 +1,4 @@
+interface:
+  display_name: "Solution Design"
+  short_description: "Choose a direction before coding"
+  default_prompt: "Use $solution-design-practice to clarify the problem, compare viable directions, and recommend an approach."

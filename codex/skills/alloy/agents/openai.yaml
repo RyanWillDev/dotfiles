@@ -1,0 +1,4 @@
+interface:
+  display_name: "Alloy"
+  short_description: "Model and validate Alloy 6 systems"
+  default_prompt: "Use $alloy to model or debug this Alloy 6 specification and validate the result with the solver."

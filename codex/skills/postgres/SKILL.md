@@ -1,6 +1,6 @@
 ---
 name: postgres
-description: Use when making PostgreSQL design decisions involving migrations, indexes, schemas, constraints, queries, or performance. Read the relevant topic file on demand for index selection, index ordering, composite indexes, and covering indexes.
+description: "Use when making PostgreSQL design decisions involving migrations, indexes, schemas, constraints, queries, or performance. Read the relevant topic file on demand for index selection, index ordering, composite indexes, and covering indexes."
 ---
 
 # PostgreSQL
@@ -24,7 +24,7 @@ This skill provides expert guidance for PostgreSQL design decisions in this code
 
 ### When to Read Reference Files
 
-Read the relevant file in these situations:
+Read files in these situations:
 
 | Task                                      | Read This File           |
 | ----------------------------------------- | ------------------------ |
@@ -40,7 +40,7 @@ User requests database task
   ↓
 Identify what you'll be working on (indexes, schema, queries, etc.)
   ↓
-Read the relevant reference file
+Read relevant reference file by reading it
   ↓
 Implement following the documented patterns
   ↓

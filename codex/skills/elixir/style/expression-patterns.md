@@ -1,7 +1,7 @@
 # Expression Patterns
 
 ## Pipeline Usage
-- **Avoid over-using the pipe operator** - prefer pipes when they clarify a transformation, not by default
+- **Avoid over-using the pipe operator** - Codex tends to "fetishize pipes"
   - Use pipes for clear data transformations, not just to chain everything
   - Don't create pipelines just because you can
 
@@ -49,6 +49,24 @@
   ```
   - Shadowing the variable is fine — it keeps each line doing one thing
 
+## List Literals for Strings and Atoms
+- **Use explicit list literals — never `~w()` sigils — when declaring lists of strings or atoms.** Readability over keystrokes; the user wants to see the actual quoted/atom values at the point of declaration.
+  - ✅ Strings:
+  ```elixir
+  @allowed_statuses ["pending", "active", "archived"]
+  ```
+  - ✅ Atoms:
+  ```elixir
+  @required_fields [:name, :email]
+  ```
+  - ❌ Sigil form:
+  ```elixir
+  @required_fields ~w(name email)a
+  @allowed_statuses ~w(pending active archived)
+  ```
+  - Applies to module attributes, function bodies, and anywhere else a literal list is constructed — including the common `cast(..., @required_fields ++ @optional_fields)` pattern.
+  - Exception: nothing — even one- or two-element lists go through the literal form. Consistency matters more than the keystrokes saved on a short list.
+
 ## Map Construction
 - **Use `Map.new/2` instead of `Enum.into/3`** when building maps from enumerables
   - ✅ `Map.new(list, fn {k, v} -> {k, v} end)`
@@ -87,11 +105,33 @@
   - ✅ `get_in(record, [Access.key(:association), Access.key(:field)])`
   - ❌ Chaining `record.association.field` after filtering nils with `Enum.reject`
 
+- **Don't add defensive defaults at intermediate lookup steps** — `get_in` short-circuits to `nil` on any miss, so `|| %{}` or `Map.get/3` with an empty-map default are unnecessary. Handle `nil` once, at the point where it actually matters.
+  ```elixir
+  # GOOD: nil is handled once by the caller
+  get_in(outer, [:inner_map, key, Access.key(:field)])
+
+  # BAD: defensive default exists only to prevent a crash on the next lookup
+  inner = outer[:inner_map] || %{}
+  get_in(inner, [key, Access.key(:field)])
+  ```
+
 ## Collection Pipeline Visibility
 - **Keep `Enum` pipelines at the call site** — don't wrap them in single-use named functions
   - `Enum.filter |> Enum.map` already describes the transformation
   - ✅ Inline the pipeline where it's used
   - ❌ `defp extract_provider_ids(items), do: items |> Enum.filter(...) |> Enum.map(...)`
+
+## `||` Priority Waterfall
+
+When resolving a value through a sequence of fallback strategies, chain nil-returning helpers with `||` to express the priority order directly:
+
+```elixir
+from_cache(key) ||
+  from_database(key) ||
+  default_value
+```
+
+Each helper returns the resolved value or `nil` on a miss. The chain terminates at the first non-nil result, and the final term is the guaranteed fallback. This pairs naturally with naming helpers by their strategy rather than their return type — the call site reads as a prioritized list of approaches.
 
 ## Conditional Simplification
 - **Omit explicit `else: nil`** in if/unless statements (nil is the default)
