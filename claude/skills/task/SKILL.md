@@ -2,14 +2,11 @@
 name: task
 description: Start work on a new task or ticket by creating an isolated git worktree, feature branch, and task record; finish a task (remove its worktree, keep its record); or list ongoing tasks. Invoke on /task, when the user says to start/begin/finish/wrap up a ticket, feature, or task, or asks what tasks are in progress/ongoing/active.
 hooks:
-  Stop:
+  UserPromptSubmit:
     - hooks:
         - type: command
           command: |
-            active="$(jq -r '.stop_hook_active // false')"
-            if [ "$active" != "true" ]; then
-              jq -n '{hookSpecificOutput:{hookEventName:"Stop",additionalContext:"If this session is working on a task from the task skill, check whether CONTEXT.md, PROGRESS.md, or DECISIONS.md in ~/tasks/<slug>/ need an update for what just happened this turn. If something needs updating, make the edit directly — the diff is the record, so do not add any summary or commentary afterward. If nothing needs updating, or no task is in progress, do not say anything further either; just stop."}}'
-            fi
+            jq -n '{hookSpecificOutput:{hookEventName:"UserPromptSubmit",additionalContext:"If this session is working on a task from the task skill, make any record edits before writing any reply text. Update CONTEXT.md, PROGRESS.md, or DECISIONS.md in ~/tasks/<slug>/ only for what this turn settles (decisions, status changes, confirmed facts); open questions go in SCRATCHPAD.md. If nothing needs updating, or no task is in progress, just reply."}}'
 ---
 
 # Task
@@ -59,13 +56,14 @@ The record splits by audience:
   pass, no obligation to be tidy or even correct. Don't move things out of it into the other
   three unless they've become a real fact, a real decision, or a real status change.
 
-Invoking this skill registers a `Stop` hook (in frontmatter above) for the rest of the
-session. On every turn it adds a reminder as context you see: if this session is working on a
-task, consider whether `CONTEXT.md`, `PROGRESS.md`, or `DECISIONS.md` in `~/tasks/<slug>/` need
-updating for what just happened. The hook doesn't know the slug; you do, from the `/task`
-invocation in this conversation. If a session resumes without it, run `/task <slug>` again.
-The hook fires once per turn, not repeatedly within one — it recognizes its own re-invocations
-and stands down rather than re-nudging.
+Invoking this skill registers a `UserPromptSubmit` hook (in frontmatter above) for the rest
+of the session. Alongside every user prompt it adds a reminder as context you see: if this
+session is working on a task, update `CONTEXT.md`, `PROGRESS.md`, or `DECISIONS.md` in
+`~/tasks/<slug>/` for what the turn settles, before writing any reply text. Doing the edits
+first keeps the reply the last thing in the turn; a `Stop` hook would reopen the turn after
+the reply and leave bookkeeping output below it. The hook doesn't know the slug; you do, from
+the `/task` invocation in this conversation. If a session resumes without it, run
+`/task <slug>` again.
 
 ## Steps
 
