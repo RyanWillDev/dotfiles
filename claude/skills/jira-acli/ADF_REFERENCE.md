@@ -1,6 +1,6 @@
 # ADF JSON Reference
 
-Supporting reference for the `jira-acli` skill's ADF section in SKILL.md. Load this before hand-building a `--from-json` payload — don't guess the ADF shape from memory.
+ADF shapes for `--from-json` descriptions, referenced from SKILL.md.
 
 ## ADF Structure Reference
 
@@ -119,8 +119,6 @@ Supporting reference for the `jira-acli` skill's ADF section in SKILL.md. Load t
 
 **Links (other tickets, precise code lines, and other resources):**
 
-Reference other tickets and specific code with real hyperlinks, not bare text.
-
 **Never combine a `code` mark with a `link` mark on the same text node — confirmed empirically (not documented in Atlassian's ADF spec) to corrupt the ticket in the Jira web editor:** the node renders on view, but opening the ticket for editing breaks. When a piece of text needs to be both a code-styled identifier and a link, drop the `code` mark and keep only `link` — a plain hyperlink is better than a broken ticket:
 
 ```json
@@ -145,213 +143,53 @@ A `link` mark alongside `strong` is fine — this issue is specific to pairing `
 }
 ```
 
-## Complete Ticket Template Example
+## Collapsible Sections (expand)
+
+Use an `expand` node for supporting sections and the Agent Implementation Guide (see SKILL.md, Writing the description). The section name goes in `attrs.title`, not in a heading inside the node. The body is ordinary block content, and inline marks work as usual, so identifiers still get `code` marks rather than literal backticks:
 
 ```json
 {
-  "summary": "Implement feature X",
-  "projectKey": "PROJ",
-  "type": "Story",
-  "parentIssueId": "PROJ-123",
-  "assignee": "user@example.com",
-  "description": {
-    "type": "doc",
-    "version": 1,
-    "content": [
-      {
-        "type": "paragraph",
-        "content": [
-          {
-            "type": "text",
-            "text": "Implement feature X to improve user workflow. This feature allows users to..."
-          }
-        ]
-      },
-      {
-        "type": "heading",
-        "attrs": {
-          "level": 2
-        },
-        "content": [
-          {
-            "type": "text",
-            "text": "Background"
-          }
-        ]
-      },
-      {
-        "type": "paragraph",
-        "content": [
-          {
-            "type": "text",
-            "text": "Only add sections like this one when there's context, a design decision, or a domain rule the reader needs before the Acceptance Criteria make sense. Give each one its own heading rather than folding it into the intro paragraph. Omit entirely for simple tickets."
-          }
-        ]
-      },
-      {
-        "type": "heading",
-        "attrs": {
-          "level": 3
-        },
-        "content": [
-          {
-            "type": "text",
-            "text": "Acceptance Criteria"
-          }
-        ]
-      },
-      {
-        "type": "orderedList",
-        "attrs": {
-          "order": 1
-        },
-        "content": [
-          {
-            "type": "listItem",
-            "content": [
-              {
-                "type": "paragraph",
-                "content": [
-                  {
-                    "type": "text",
-                    "text": "Requirement 1 is met"
-                  }
-                ]
-              },
-              {
-                "type": "orderedList",
-                "attrs": {
-                  "order": 1
-                },
-                "content": [
-                  {
-                    "type": "listItem",
-                    "content": [
-                      {
-                        "type": "paragraph",
-                        "content": [
-                          {
-                            "type": "text",
-                            "text": "Sub-requirement 1a"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "type": "listItem",
-            "content": [
-              {
-                "type": "paragraph",
-                "content": [
-                  {
-                    "type": "text",
-                    "text": "Requirement 2 is met"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "type": "heading",
-        "attrs": {
-          "level": 2
-        },
-        "content": [
-          {
-            "type": "text",
-            "text": "Considerations"
-          }
-        ]
-      },
-      {
-        "type": "bulletList",
-        "content": [
-          {
-            "type": "listItem",
-            "content": [
-              {
-                "type": "paragraph",
-                "content": [
-                  {
-                    "type": "text",
-                    "text": "Database indexes needed on fields X, Y"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "type": "listItem",
-            "content": [
-              {
-                "type": "paragraph",
-                "content": [
-                  {
-                    "type": "text",
-                    "text": "Impacts existing module Z - coordinate with team"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "type": "heading",
-        "attrs": {
-          "level": 2
-        },
-        "content": [
-          {
-            "type": "text",
-            "text": "Open Questions"
-          }
-        ]
-      },
-      {
-        "type": "orderedList",
-        "attrs": {
-          "order": 1
-        },
-        "content": [
-          {
-            "type": "listItem",
-            "content": [
-              {
-                "type": "paragraph",
-                "content": [
-                  {
-                    "type": "text",
-                    "text": "Should X apply to archived records too?"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "type": "listItem",
-            "content": [
-              {
-                "type": "paragraph",
-                "content": [
-                  {
-                    "type": "text",
-                    "text": "Who owns the follow-up for Y?"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  }
+  "type": "expand",
+  "attrs": { "title": "How it was confirmed" },
+  "content": [
+    {
+      "type": "bulletList",
+      "content": [
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                { "type": "text", "text": "The stack trace shows every worker blocked in " },
+                { "type": "text", "text": "fetch_records/2", "marks": [{ "type": "code" }] },
+                { "type": "text", "text": "." }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
+```
+
+Verified: `--from-json` accepts a top-level `expand`, and it renders and edits normally in the Jira web editor.
+
+Placement rules (from the ADF schema):
+
+- **Put `expand` directly in the doc's top-level `content`.** It can't go inside a list, a table cell, or another `expand`. Tables use the separate `nestedExpand` node, which this skill doesn't need.
+- **Inside it, use paragraphs, bullet or ordered lists, headings, code blocks or tables.** One `expand` per supporting section. Don't wrap the whole description in one.
+
+## Description skeleton
+
+The top-level `content` order for a full ticket (see SKILL.md, Writing the description). Build each piece from the shapes above:
+
+```
+paragraph+                                   summary
+heading(2) + blocks | expand(title)          context, one per section
+heading(3) "Acceptance Criteria" + orderedList
+heading(2) "Considerations" + bulletList     if any
+expand("Agent Implementation Guide")         optional
+heading(2) "Open Questions" + orderedList    if any
 ```
