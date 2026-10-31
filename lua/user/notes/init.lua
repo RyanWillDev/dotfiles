@@ -335,12 +335,12 @@ local search_presets = {
   --  -- Sorts most recently modified first
   --  args = company_name .. "/tickets --modified-after 'last monday' --sort modified",
   --},
-  --{
-  --  name = "Weekly Review",
-  --  description = "Show all notes updated this week",
-  --  -- Sorts most recently modified first
-  --  args = "--modified-after 'last monday' --sort modified",
-  --},
+  {
+    name = "Weekly Review",
+    description = "Show all notes updated this week",
+    -- Sorts most recently modified first
+    args = "--modified-after 'last monday' --sort modified",
+  },
   --{
   --  name = "Daily Notes",
   --  description = "Show daily journal entries",
