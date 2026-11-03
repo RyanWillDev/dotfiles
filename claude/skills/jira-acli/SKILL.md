@@ -13,6 +13,8 @@ This file holds only what `--help` gets wrong or leaves out, plus this org's con
 
 - **Comments:** create one only when the user asks. `comment create` is deliberately missing from `allowed-tools`, so every comment goes through a permission prompt. Never route around that prompt (e.g. with a broader Bash allowance, or by batching the command in with approved ones).
 - **Type:** use `Story` unless the user names another type. Use `Bug` only when the user explicitly asks for a bug. Words like "fix", "broken" or "crash" don't count.
+- **New tickets:** unless the user says otherwise, assign every ticket you create to the user and move it to `Refining`.
+  Jira can't set status at creation, so run `acli jira workitem transition --key KEY-1 --status "Refining" --yes` right after `create`.
 - **Status:** moving a ticket to `In Progress` when you start work is fine. Move it to `Done` or any other terminal status only when the user asks.
 - **Projects:** never run `acli jira project create`. It's deliberately missing from `allowed-tools`. Point the user to the Jira UI.
 - **QA notes:** leave them out of both the description and the `QA Notes` field. Testing guidance belongs to whoever owns QA.
@@ -23,7 +25,9 @@ This file holds only what `--help` gets wrong or leaves out, plus this org's con
 - **Payload shape:** get it from `acli jira workitem create --generate-json`, not from another tool.
   - Create payloads use `projectKey` (not `project`) and `parentIssueId` (not `parent`).
   - Edit payloads name their targets with `"issues": ["KEY-1"]`. Run them with `acli jira workitem edit --from-json <file> --yes`.
-- **Assign to the user by email.** `--assignee "@me"` silently falls back to the project's default assignee instead of erroring.
+- **Assign to the user by email**, taken from the `Email:` line of `acli jira auth status`.
+  In a `--from-json` payload, set `"assignee": "<email>"`.
+  `--assignee "@me"` silently falls back to the project's default assignee instead of erroring.
 
 ## Labels and components
 

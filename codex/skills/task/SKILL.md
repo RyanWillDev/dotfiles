@@ -1,6 +1,6 @@
 ---
 name: task
-description: "Start work on a new task or ticket by creating an isolated git worktree, feature branch, and task record; finish a task (remove its worktree, keep its record); or list ongoing tasks. Use when the user invokes `$task`, asks to begin or finish a task or ticket, or asks what work is in progress."
+description: "Start work on a new task or ticket by creating an isolated git worktree, feature branch, and task record; finish a task (remove its worktree, archive its record); or list ongoing tasks. Use when the user invokes `$task`, asks to begin or finish a task or ticket, or asks what work is in progress."
 ---
 
 # Task
@@ -66,7 +66,7 @@ At the end of every turn spent working on a task, check whether `CONTEXT.md`, `P
      - **Ensure `.worktrees/` and `.task` are ignored:** check `<root>/.git/info/exclude`; append either pattern that's missing, and replace an existing `.task/` line (from older versions of this skill) with `.task`. This file is shared by every worktree of the repo and isn't tracked, so it needs no commit and doesn't touch the team's `.gitignore`. Write `.task` with no trailing slash: a trailing slash matches only directories, so the `.task` symlink would show as untracked and block `git worktree remove`.
    - **No git repo** — there's no worktree, branch, or diff to isolate. Only the record is created; make nothing in the current directory and don't `cd`.
 
-3. **Check for a pre-existing task** at `~/tasks/<slug>/`. If it's there, resume it instead of creating anything: in a git repo, if the worktree is missing, recreate it with the existing-branch form in step 4 and re-create the `.task` symlink, then `cd` into it; report the record path (plus branch and worktree, if any) and stop. Never overwrite existing record files.
+3. **Check for a pre-existing task** at `~/tasks/<slug>/` or `~/tasks/archive/<slug>/`. If it's archived, reopen it first: if the shell is inside the archived record, `cd ~/tasks` before the move and `cd ~/tasks/<slug>` after it; `mv ~/tasks/archive/<slug> ~/tasks/<slug>`, add `**Reopened:** <date>` to the `CONTEXT.md` header fields, and add a "Task reopened" entry under Current in `PROGRESS.md`. Then resume it instead of creating anything: in a git repo, if the worktree is missing, recreate it with the existing-branch form in step 4 and re-create the `.task` symlink, then `cd` into it; report the record path (plus branch and worktree, if any) and stop. Never overwrite existing record files.
 
 4. **Set up the record and workspace.** `mkdir -p ~/tasks/<slug>`. Then, in a git repo, create the worktree, branching from current `HEAD`:
    ```
@@ -98,19 +98,20 @@ This is the task's memory — not the assistant's. Every session working on this
 - **Subtask docs** — when a subtask accumulates enough of its own context or decisions that burying them in the parent's `CONTEXT.md`/`DECISIONS.md` would make either harder to review, give it `subtasks/<subtask-slug>/CONTEXT.md` and `DECISIONS.md` (same format and rules as the parent's, scoped to just that subtask) and link them from its PROGRESS.md line. Most subtasks don't need this — it's for the ones with real weight, so a person picking up just that piece can read its own docs instead of the whole task's.
 - **DECISIONS.md** — append a new entry the moment a real decision gets made (a choice between approaches, a tradeoff accepted, a constraint that shaped the plan) — not for routine steps that only have one reasonable way to do them. For a decision weighty enough to warrant comparing multiple approaches side by side, build the matrix per `solution-design-practice` and fold it into the entry (template below) rather than skipping straight to a conclusion.
 - **SCRATCHPAD.md** — write to it freely, any time thinking-out-loud helps: exploring an approach, working through why something broke, listing options before picking one. This is not read for audit; the other three are. If something there turns out to matter for resuming or auditing the task, promote it into `CONTEXT.md`, `PROGRESS.md`, or `DECISIONS.md` — don't leave the audit trail depending on the scratchpad.
-- The record lives in `~/tasks/<slug>/` and, in a git repo, is symlinked into the worktree as `.task` and ignored via `.git/info/exclude`, so it never pollutes the branch's diff and survives worktree removal. Open the files directly, no tooling required.
+- The record lives in `~/tasks/<slug>/` (moved to `~/tasks/archive/<slug>/` once finished) and, in a git repo, is symlinked into the worktree as `.task` and ignored via `.git/info/exclude`, so it never pollutes the branch's diff and survives worktree removal. Open the files directly, no tooling required.
 
 ## Finishing a task
 
 On `$task done <slug>`, in order:
 
 1. **Remove the worktree** (git repo only, i.e. `Worktree` in `CONTEXT.md` isn't `none`). If the shell is inside it, `cd` to `Location` first. Run `git worktree remove <root>/.worktrees/<slug>` without `--force`. If git refuses (uncommitted changes), report why and stop — the task stays active, nothing is forced. Leave the branch alone.
-2. **Close the record**, kept in place: add `**Finished:** <date>` to the `CONTEXT.md` header fields, and move remaining Current items to Done with a final "Task finished" entry. Unfinished Todo items stay as they are.
-3. **Report** that the record at `~/tasks/<slug>/` is kept and the branch `feature/<slug>` is not deleted.
+2. **Close the record**: add `**Finished:** <date>` to the `CONTEXT.md` header fields, and move remaining Current items to Done with a final "Task finished" entry. Unfinished Todo items stay as they are.
+3. **Archive the record.** If the shell is inside `~/tasks/<slug>/` (common outside a git repo), `cd ~/tasks` first and stay there. Then `mkdir -p ~/tasks/archive && mv ~/tasks/<slug> ~/tasks/archive/<slug>`. Never merge into or overwrite an existing `~/tasks/archive/<slug>/`; if one exists, report it and stop with the record left in `~/tasks/<slug>/`.
+4. **Report** that the record is kept at `~/tasks/archive/<slug>/` (`$task <slug>` reopens it) and the branch `feature/<slug>` is not deleted.
 
 ## Listing ongoing tasks
 
-`ls ~/tasks/` — one directory per task. For each, read `CONTEXT.md`'s Location and `PROGRESS.md`'s Current entry (and `CONTEXT.md`'s Summary if more detail helps), so the answer is one line per task — slug, Location, Current entry — not a bare list of directory names. List active tasks first, then tasks whose `CONTEXT.md` has a `Finished` field, marked finished.
+`ls ~/tasks/` — one directory per active task, except `archive/`, which holds finished ones. For each active task, read `CONTEXT.md`'s Location and `PROGRESS.md`'s Current entry (and `CONTEXT.md`'s Summary if more detail helps), so the answer is one line per task — slug, Location, Current entry — not a bare list of directory names. List only active tasks unless the user asks about finished ones; then list `~/tasks/archive/` the same way, with each task's `Finished` date.
 
 ## Reference
 

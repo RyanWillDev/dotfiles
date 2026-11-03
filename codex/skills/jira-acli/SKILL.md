@@ -29,6 +29,10 @@ The `acli` tool must be installed and authenticated. Users should have already r
 
 **Always confirm labels before creating a ticket, and components if the project has that field. Use the structured question UI when available so the user picks from real values instead of free-typing; otherwise ask one concise plain-text question.** Don't guess or silently skip either. See Ticket Fields: Labels, Components, and QA Notes below for how to check whether Components applies to a given project, how to source real values for both prompts, and for the same field-existence check to run before deciding whether QA Notes goes in a dedicated custom field or just the description.
 
+**Unless the user says otherwise, assign every ticket you create to the user and move it to `Refining`.**
+Assign with the user's email from the `Email:` line of `acli jira auth status` (`--assignee "<email>"`, or `"assignee": "<email>"` in a `--from-json` payload).
+Jira can't set status at creation, so run `acli jira workitem transition --key "KEY-1" --status "Refining" --yes` right after `create`.
+
 **It's fine to transition a ticket to "In Progress" when you start work on it; only transition to "Done" (or any other terminal/complete status) when the user explicitly asks.** Marking something done is a visible, easy-to-get-wrong action — don't infer completion from context.
 
 **Never run `acli jira project create`.** Project creation is out of scope for this skill and outside this skill's authorized command scope — see Projects below.
