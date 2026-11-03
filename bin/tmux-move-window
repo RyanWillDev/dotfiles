@@ -1,0 +1,25 @@
+#!/bin/bash
+# Move a window to another session, picked via fzf. Typing a name with no match creates that session.
+# The window comes from @move_src, which the key binding sets before opening the popup.
+
+win=$(tmux show -gv @move_src)
+current=$(tmux display -p -t "$win" '#{session_name}')
+
+out=$(tmux list-sessions -F '#{session_name}' | grep -vFx "$current" |
+  fzf --print-query --prompt="Move window to session: ")
+[ $? -eq 130 ] && exit 0  # Esc / Ctrl-C
+
+query=$(sed -n 1p <<< "$out")
+pick=$(sed -n 2p <<< "$out")
+# tmux rejects ':' and '.' in session names
+name=$(tr ':.' '__' <<< "${pick:-$query}")
+[ -z "$name" ] && exit 0
+
+if tmux has-session -t "=$name" 2>/dev/null; then
+  tmux move-window -s "$win" -t "=$name:"
+else
+  dir=$(tmux display -p -t "$win" '#{pane_current_path}')
+  placeholder=$(tmux new-session -d -P -F '#{window_id}' -s "$name" -c "$dir")
+  tmux move-window -k -s "$win" -t "$placeholder"
+fi
+tmux switch-client -t "=$name"
