@@ -45,6 +45,7 @@ function M.config()
           buffer = '[Buffer]',
           luasnip = '[LuaSnip]',
           nvim_lsp = '[LSP]',
+          path = '[Path]',
           spell = '[Spell]'
         },
       }),
@@ -54,6 +55,7 @@ function M.config()
     sources = cmp.config.sources({
       { name = 'nvim_lsp' },
       { name = 'luasnip' },
+      { name = 'path' },
     }, {
       { name = 'spell' },
       { name = 'buffer' },
