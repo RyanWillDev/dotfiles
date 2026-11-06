@@ -11,9 +11,10 @@ hooks:
 
 # Task
 
-Sets up an isolated git worktree (in a git repo) plus a record at `~/tasks/<slug>/` that holds
-every document pertaining to the task. The record lives outside the workspace, so removing the
-worktree doesn't destroy it. This is the durable record for the task, not Claude's memory: any
+Sets up a task directory at `~/tasks/<slug>/` that holds every document pertaining to the task
+and, for each git repo the task touches, a worktree of that repo at `~/tasks/<slug>/<repo>/`.
+Code and notes sit in one tree, and the record sits beside the worktrees rather than inside them,
+so removing a worktree doesn't touch it. This is the durable record for the task, not Claude's memory: any
 new session (yours or another) must be able
 to pick up the task from these files alone, and a human must be able to audit them without
 any tool.
@@ -68,39 +69,36 @@ the `/task` invocation in this conversation. If a session resumes without it, ru
 ## Steps
 
 1. **Derive the slug and branch name** from the invocation argument.
-   - Ticket-shaped (`[A-Za-z]+-[0-9]+`, e.g. `pip-42`, `PIP-42`): uppercase it for the slug and branch — `PIP-42` — regardless of the case given.
+   - Ticket-shaped (`[A-Za-z]+-[0-9]+`, e.g. `abc-42`, `ABC-42`): uppercase it for the slug and branch — `ABC-42` — regardless of the case given.
    - Free-text description, no ticket: compress it to a short kebab-case slug, 2–4 words, that still reads as the task — not a full slugified sentence (e.g. "fix the bug where login redirects to the wrong page after SSO" → `fix-login-redirect`).
    - No argument: ask what the task is before continuing.
 
    Branch name is always `feature/<slug>`.
 
-2. **Locate the workspace.** Try `git rev-parse --show-toplevel`.
-   - **Git repo** — root is its output. The worktree will be `<root>/.worktrees/<slug>`.
-     - **Ensure `.worktrees/` and `.task` are ignored:** check `<root>/.git/info/exclude`; append either pattern that's missing, and replace an existing `.task/` line (from older versions of this skill) with `.task`. This file is shared by every worktree of the repo and isn't tracked, so it needs no commit and doesn't touch the team's `.gitignore`. Write `.task` with no trailing slash: a trailing slash matches only directories, so the `.task` symlink would show as untracked and block `git worktree remove`.
-   - **No git repo** — there's no worktree, branch, or diff to isolate. Only the record is created; make nothing in the current directory and don't `cd`.
+2. **Locate the repo.** Try `git rev-parse --show-toplevel`.
+   - **Inside a git repo** — `<root>` is its output and `<repo>` is its basename. The worktree will be `~/tasks/<slug>/<repo>`.
+   - **Not inside a git repo** — if the user named a repo, use its checkout as `<root>`. Otherwise ask which repo the task needs, or whether it needs none. With no repo there's no worktree, branch, or diff to isolate: only the record is created, and nothing is made in the current directory.
 
-3. **Check for a pre-existing task** at `~/tasks/<slug>/` or `~/tasks/archive/<slug>/`. If it's archived, reopen it first: if the shell is inside the archived record, `cd ~/tasks` before the move and `cd ~/tasks/<slug>` after it; `mv ~/tasks/archive/<slug> ~/tasks/<slug>`, add `**Reopened:** <date>` to the `CONTEXT.md` header fields, and add a "Task reopened" entry under Current in `PROGRESS.md`. Then resume it instead of creating anything: in a git repo, if the worktree is missing, recreate it with the existing-branch form in step 4 and re-create the `.task` symlink, then `cd` into it; report the record path (plus branch and worktree, if any) and stop. Never overwrite existing record files.
+3. **Check for a pre-existing task** at `~/tasks/<slug>/` or `~/tasks/archive/<slug>/`. If it's archived, reopen it first: if the shell is inside the archived record, `cd ~/tasks` before the move and `cd ~/tasks/<slug>` after it; `mv ~/tasks/archive/<slug> ~/tasks/<slug>`, add `**Reopened:** <date>` to the `CONTEXT.md` header fields, and add a "Task reopened" entry under Current in `PROGRESS.md`. Then resume it instead of creating anything: for each `Worktree` in `CONTEXT.md` that isn't `none` and is missing, recreate it with the existing-branch form in step 4; then `cd ~/tasks/<slug>`; report the record path (plus branch and worktree, if any) and stop. Never overwrite existing record files.
 
 4. **Set up the record and workspace.** `mkdir -p ~/tasks/<slug>`. Then, in a git repo, create the worktree, branching from current `HEAD`:
    ```
-   git worktree add -b feature/<slug> <root>/.worktrees/<slug>
+   git -C <root> worktree add -b feature/<slug> ~/tasks/<slug>/<repo>
    ```
    If that fails because `feature/<slug>` already exists (e.g. the worktree was removed earlier but the branch survived), attach the worktree to the existing branch instead:
    ```
-   git worktree add <root>/.worktrees/<slug> feature/<slug>
-   ```
-   Then symlink the record into it:
-   ```
-   ln -s ~/tasks/<slug> <root>/.worktrees/<slug>/.task
+   git -C <root> worktree add ~/tasks/<slug>/<repo> feature/<slug>
    ```
 
-5. **Create `CONTEXT.md`, `PROGRESS.md`, `DECISIONS.md`, and `SCRATCHPAD.md`** in `~/tasks/<slug>/` (templates below). Populate `CONTEXT.md` from whatever is known now — ticket ID, the user's own description, nothing invented; set `Location` to the repo root or current directory, mark `Branch`/`Worktree` as `none` when there's no git repo, and omit the Problem Statement section unless the task's problem isn't already clear from the ticket. `PROGRESS.md` starts with a single Current entry; `DECISIONS.md` and `SCRATCHPAD.md` start empty — don't invent a first decision or note.
+5. **Create `CONTEXT.md`, `PROGRESS.md`, `DECISIONS.md`, and `SCRATCHPAD.md`** in `~/tasks/<slug>/` (templates below). Populate `CONTEXT.md` from whatever is known now — ticket ID, the user's own description, nothing invented; set `Location` to `<root>` (or the current directory when there's no repo), mark `Branch`/`Worktree` as `none` when there's no repo, and omit the Problem Statement section unless the task's problem isn't already clear from the ticket. `PROGRESS.md` starts with a single Current entry; `DECISIONS.md` and `SCRATCHPAD.md` start empty — don't invent a first decision or note.
 
-6. **Report** the record path (plus branch and worktree, if any). In a git repo, `cd` into the worktree for the rest of the session.
+6. **Report** the record path (plus branch and worktree, if any). `cd ~/tasks/<slug>` and work from there for the rest of the session.
+   The task directory isn't a git repo, so run git, build, and test commands from inside the worktree
+   (`cd <repo> && ...` or `git -C <repo> ...`).
 
 ## Completion criterion
 
-`~/tasks/<slug>/` exists with all four of `{CONTEXT,PROGRESS,DECISIONS,SCRATCHPAD}.md`; in a git repo, a worktree on `feature/<slug>` (new or reattached) exists with `.task` symlinked to the record; and the user has been told where they are.
+`~/tasks/<slug>/` exists with all four of `{CONTEXT,PROGRESS,DECISIONS,SCRATCHPAD}.md`; with a repo, a worktree on `feature/<slug>` (new or reattached) exists at `~/tasks/<slug>/<repo>`; and the user has been told where they are.
 
 ## Maintaining the record after setup
 
@@ -111,15 +109,16 @@ This is the task's memory — not the assistant's. Every session working on this
 - **Subtask docs** — when a subtask accumulates enough of its own context or decisions that burying them in the parent's `CONTEXT.md`/`DECISIONS.md` would make either harder to review, give it `subtasks/<subtask-slug>/CONTEXT.md` and `DECISIONS.md` (same format and rules as the parent's, scoped to just that subtask) and link them from its PROGRESS.md line. Most subtasks don't need this — it's for the ones with real weight, so a person picking up just that piece can read its own docs instead of the whole task's.
 - **DECISIONS.md** — append a new entry the moment a real decision gets made (a choice between approaches, a tradeoff accepted, a constraint that shaped the plan) — not for routine steps that only have one reasonable way to do them. For a decision weighty enough to warrant comparing multiple approaches side by side, build the matrix per `solution-design-practice` and fold it into the entry (template below) rather than skipping straight to a conclusion.
 - **SCRATCHPAD.md** — write to it freely, any time thinking-out-loud helps: exploring an approach, working through why something broke, listing options before picking one. This is not read for audit; the other three are. If something there turns out to matter for resuming or auditing the task, promote it into `CONTEXT.md`, `PROGRESS.md`, or `DECISIONS.md` — don't leave the audit trail depending on the scratchpad.
-- The record lives in `~/tasks/<slug>/` (moved to `~/tasks/archive/<slug>/` once finished) and, in a git repo, is symlinked into the worktree as `.task` and ignored via `.git/info/exclude`, so it never pollutes the branch's diff and survives worktree removal. Open the files directly, no tooling required.
+- **Another repo** — if the task turns out to need a second repo, add its worktree with step 4's commands as another sibling `~/tasks/<slug>/<repo>/`, and add a `Location`/`Worktree` pair for it to `CONTEXT.md`.
+- The record lives in `~/tasks/<slug>/` (moved to `~/tasks/archive/<slug>/` once finished), beside the worktrees rather than inside them, so it never pollutes a branch's diff and survives worktree removal. Open the files directly, no tooling required.
 
 ## Finishing a task
 
 On `/task done <slug>`, in order:
 
-1. **Remove the worktree** (git repo only, i.e. `Worktree` in `CONTEXT.md` isn't `none`). If the shell is inside it, `cd` to `Location` first. Run `git worktree remove <root>/.worktrees/<slug>` without `--force`. If git refuses (uncommitted changes), report why and stop — the task stays active, nothing is forced. Leave the branch alone.
+1. **Remove each worktree** listed in `CONTEXT.md` (skip any `Worktree` that's `none`). If the shell is inside one, `cd ~/tasks/<slug>` first. Run `git -C <Location> worktree remove <Worktree>` without `--force`. If git refuses (uncommitted changes), report why and stop — the task stays active, nothing is forced. Leave the branch alone.
 2. **Close the record**: add `**Finished:** <date>` to the `CONTEXT.md` header fields, and move remaining Current items to Done with a final "Task finished" entry. Unfinished Todo items stay as they are.
-3. **Archive the record.** If the shell is inside `~/tasks/<slug>/` (common outside a git repo), `cd ~/tasks` first and stay there. Then `mkdir -p ~/tasks/archive && mv ~/tasks/<slug> ~/tasks/archive/<slug>`. Never merge into or overwrite an existing `~/tasks/archive/<slug>/`; if one exists, report it and stop with the record left in `~/tasks/<slug>/`.
+3. **Archive the record.** Every worktree must be gone first, because git records each worktree's absolute path and moving a live one breaks the link. If the shell is inside `~/tasks/<slug>/` (the usual case), `cd ~/tasks` first and stay there. Then `mkdir -p ~/tasks/archive && mv ~/tasks/<slug> ~/tasks/archive/<slug>`. Never merge into or overwrite an existing `~/tasks/archive/<slug>/`; if one exists, report it and stop with the record left in `~/tasks/<slug>/`.
 4. **Report** that the record is kept at `~/tasks/archive/<slug>/` (`/task <slug>` reopens it) and the branch `feature/<slug>` is not deleted.
 
 ## Listing ongoing tasks
@@ -135,8 +134,8 @@ On `/task done <slug>`, in order:
 
 **Ticket:** <ID and link, if any>
 **Location:** <repo root or directory the work happens in>
-**Branch:** feature/<slug> — or `none` outside a git repo
-**Worktree:** <root>/.worktrees/<slug> — or `none` outside a git repo
+**Branch:** feature/<slug> — or `none` with no repo
+**Worktree:** ~/tasks/<slug>/<repo> — or `none` with no repo
 **Started:** <date>
 
 ## Summary
